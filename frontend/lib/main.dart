@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
+import 'data/app_database.dart';
+import 'state/providers.dart';
 
-void main() => runApp(const LifeFastingApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final db = await AppDatabase.open();
+  runApp(ProviderScope(overrides: [databaseProvider.overrideWithValue(db)], child: const LifeFastingApp()));
+}
 
 class LifeFastingApp extends StatelessWidget {
   const LifeFastingApp({super.key});
