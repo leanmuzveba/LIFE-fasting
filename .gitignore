@@ -1,0 +1,16 @@
+# graphify (local knowledge graph)
+graphify-out/
+
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

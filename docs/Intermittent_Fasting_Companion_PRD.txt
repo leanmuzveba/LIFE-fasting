@@ -1,0 +1,212 @@
+INTERMITTENT FASTING
+COMPANION
+Project Requirements Document
+1. Executive Summary
+The proposed application is a mobile fasting-tracker concept inspired by the clarity and visual focus of LIFE Fasting. Its defining feature is a large circular progress ring that displays elapsed time, remaining planned time, and small milestone icons positioned around the ring. Milestone examples include the fed/early-fasting period, changing fuel use, possible ketosis, and later fasting-related processes. The experience should be calm, readable, and easy to understand at a glance.
+The app must not claim that a timer can detect a user's metabolic state. Milestones are general educational estimates, vary between individuals, and must be presented as approximate rather than as a diagnosis or guaranteed biological event. Because fasting can be unsuitable for children and teenagers and for some people with medical conditions or a history of disordered eating, the product must include age-appropriate safety controls and must not encourage minors to undertake fasting.
+2. Product Vision and Objectives
+Recreate the simple, motivating feel of a circular fasting countdown without copying proprietary source code, assets, or distinctive artwork.
+Make the countdown ring the primary focus of the home screen.
+Show visual milestone markers around the circle, with a clear explanation when a marker is selected.
+Allow users to review past sessions and correct accidental start/end times.
+Use a light-blue visual theme inspired by the requested LIFE-style look.
+Prioritise accuracy, privacy, accessibility, and health-safe language over streak pressure or competitive fasting.
+3. Target Users and Safety Boundaries
+Intended audience: adults who want to record their own eating/fasting schedule. The app is a tracking and educational tool, not a medical device and not a source of personalised medical advice.
+Age gate: users under 18 must not be offered active fasting plans, recommended fasting durations, or encouragement to continue a fast. Provide a neutral educational screen and recommend discussing dietary changes with a parent/guardian and qualified healthcare professional.
+Do not promote extended fasting, weight-loss pressure, calorie restriction, or 'push through' messaging.
+Do not use guilt-inducing streak-loss language. Allow users to stop a session at any time without negative judgement.
+Show a persistent disclaimer that milestone times are estimates and that the app cannot confirm ketosis, autophagy, fat burning, or other internal processes.
+Include a safety notice advising users to seek qualified healthcare advice before changing eating patterns, especially if they have a medical condition, take medication, are pregnant, or have a history of disordered eating.
+Avoid collecting weight or body measurements in the MVP. If considered later, they require a separate privacy and safety review.
+4. Scope
+4.1 Minimum Viable Product (MVP)
+Onboarding, safety notice, and adult eligibility flow.
+Home screen with circular timer, elapsed duration, planned target, remaining time, and start/end controls.
+Milestone markers positioned around the ring; tap a marker to open an explanation card.
+Preset schedule selection for eligible adult users and a custom target option, with no claim that any schedule is medically appropriate.
+Local session history and calendar view.
+Optional local notifications for user-selected reminders.
+Settings for theme, time format, notification preferences, and data deletion.
+Offline operation for core timer and history.
+4.2 Out of Scope for MVP
+Social feeds, circles, public profiles, and competitive leaderboards.
+Medical diagnosis, biomarker measurement, or integration with medical devices.
+Meal plans, calorie counting, weight-loss targets, or automated advice to extend a fast.
+Subscription payments, advertisements, cloud sync, and account-based analytics.
+Wearable integration and home-screen widgets; these may be considered after the MVP is validated.
+5. Core User Experience
+5.1 Home / Countdown Screen
+Display a large circular ring occupying the main visual area.
+Centre text: elapsed time in HH:MM:SS format; provide a clear secondary label such as 'elapsed'.
+Show planned duration and estimated end time beneath or adjacent to the ring.
+Show remaining planned time while the target has not been reached. Once the target is reached, clearly mark 'Target reached' while allowing the elapsed session to continue until the user ends it.
+Provide a prominent Start control before a session begins and an End session control during a session.
+Include an edit-start-time option for users who forgot to start the timer on time, and confirm changes before saving.
+Use calm, neutral wording. Do not frame reaching a milestone as a requirement or a health achievement.
+5.2 Circular Ring and Milestone Icons
+The ring is the signature UI component. It must show overall progress toward the user's chosen target and place small icons at configured milestone positions. The marker position is a visual reference, not proof that a biological event has occurred.
+Milestone thresholds must be configurable in data rather than hard-coded into the widget.
+Each marker must have a label, icon asset, estimated time window (if used), short explanation, source/review status, and safety disclaimer.
+The active/nearest marker may be highlighted, but colour and icon shape must both communicate state for accessibility.
+Do not force milestones to align with the user's target duration. If a target is shorter than a milestone estimate, show that milestone as beyond the planned target rather than urging the user to continue.
+The ring must remain legible at small screen sizes and with large system text enabled.
+5.3 Session History
+List completed and ended sessions with start time, end time, elapsed duration, and target status.
+Calendar view to browse sessions by date.
+Allow a user to edit or delete a session entry.
+Distinguish 'target reached' from 'session ended'; do not treat shorter sessions as failures.
+Provide a clear empty state for users who have not recorded a session.
+5.4 Notifications
+All notifications are opt-in and can be disabled at any time.
+Support user-configured reminders and a neutral notice when a chosen target time is reached.
+No notifications urging a user to extend a session, reach ketosis, or ignore hunger or symptoms.
+Respect device quiet hours where supported; do not send repeated or shame-based reminders.
+6. Visual Design Requirements
+The requested direction is a light-blue theme reminiscent of the calm, minimal LIFE Fasting experience. The following palette is an initial approximation for implementation, not a verified extraction of LIFE's original brand values. To achieve a pixel-level match, the team should compare a legally obtained archived screenshot and sample its colours.
+Use a clean sans-serif typeface, generous spacing, rounded surfaces, and restrained shadows.
+Use the circular ring as the strongest visual element; avoid crowding it with charts or multiple cards.
+Use simple, consistent line icons. Do not reuse LIFE's proprietary icon files or artwork.
+Ensure text contrast meets WCAG AA where applicable and do not communicate a state by colour alone.
+Support light mode in the MVP; dark mode can be considered later.
+7. Functional Requirements
+8. Non-Functional Requirements
+Performance: timer screen should open quickly and update smoothly without unnecessary battery drain.
+Reliability: persisted timestamps and session records must survive app restarts and normal device reboots.
+Privacy: core MVP data stays on-device; do not transmit health-related data without a clear, explicit need and consent.
+Security: use platform secure storage for any future sensitive credentials; validate all persisted inputs.
+Accessibility: support screen readers, scalable text, sufficient contrast, touch targets, and reduced motion.
+Compatibility: support current stable Flutter and Dart releases selected at project start, with Android and iOS builds.
+Maintainability: separate timer logic, milestone data, storage, notifications, and UI widgets into testable modules.
+Localization readiness: avoid hard-coded UI strings in widgets so languages can be added later.
+9. Technical Architecture
+Timer rule: store a UTC timestamp (or an unambiguous timestamp with offset) for session start and compute elapsed time as current time minus start time. Do not store the displayed HH:MM:SS counter as the source of truth. Persist target duration and session status separately.
+10. Suggested Data Model
+Do not store inferred metabolic state as a verified health fact. Derive a display label from reviewed educational milestone configuration and the elapsed time.
+11. Key Screens and Navigation
+12. Acceptance Criteria for the Signature Ring
+The ring shows a clearly distinguishable completed arc and remaining track.
+The centre displays elapsed time in HH:MM:SS and a clear status label.
+The target duration and planned end time are visible without scrolling on a typical phone screen.
+Milestone icons sit at their configured positions on the ring and remain tappable.
+Selecting a milestone opens a short explanation and a visible uncertainty disclaimer.
+The timer remains correct after backgrounding, force-closing, reopening, or changing device time zone.
+When the target is reached, the UI changes to 'Target reached' but does not tell the user to keep fasting.
+The UI works with screen readers and larger text and does not rely on colour alone.
+For an under-18 user, the app does not start an active fasting session or recommend a fasting duration.
+13. Testing Requirements
+Unit tests for elapsed-time calculation, target reached state, sessions crossing midnight, and edited timestamps.
+Unit tests for milestone selection, including target shorter than a milestone threshold.
+Widget tests for ring rendering, marker tap targets, text scaling, and screen-reader labels.
+Integration tests for start/end flow, history persistence, deletion, and app lifecycle recovery.
+Notification tests for opt-in, opt-out, rescheduling, and cancellation.
+Safety tests confirming under-18 flows do not expose active fasting controls or encouraging copy.
+Manual tests on small and large Android and iOS devices, with offline mode and different time zones.
+14. Risks and Mitigations
+15. Delivery Plan
+16. Definition of Done
+All Must-priority functional requirements are implemented and tested.
+The timer is accurate across app lifecycle changes and sessions spanning midnight.
+The circular ring, milestone icons, and light-blue design are implemented and accessible.
+All milestone copy has been reviewed for uncertainty and health safety.
+Under-18 safeguards are tested and active.
+Users can review and delete their local session history.
+No proprietary LIFE Fasting artwork, icon assets, source code, or branding has been copied.
+A test build is produced for Android and iOS with known limitations documented.
+17. References and Notes
+The original LIFE Fasting app has an archived listing with screenshots and feature metadata. Historical descriptions mention a circular fasting timer and a visual indicator of approximate changes during a fast.
+Archived LIFE Fasting listing: https://appshunter.io/ios/app/life-fasting-timer-and-tracker/id1319306064
+Historical design case study: https://algarra.design/lifefasting
+Important: These references support general product understanding, not an exact verified colour specification or medical validation of specific milestone times. Confirm the visual palette from reference imagery and have health-related copy reviewed before release.
+
+A Flutter-based mobile app concept inspired by the discontinued LIFE Fasting experience, centred on a large circular timer, visual milestone markers, and a calm light-blue interface.
+
+
+Document detail | Value
+Document version | 1.0 — Draft
+Date | 4 October 2026
+Product type | Mobile application
+Frontend | Flutter (Dart)
+Initial target | Android and iOS
+Working name | Intermittent Fasting Companion (name to be confirmed)
+Product inspiration | LIFE Fasting Timer & Tracker; archived listing and historical descriptions
+
+
+Marker / example | Visual treatment | Required interaction and wording
+Start / early phase | Start dot or simple meal/clock icon | Explain that the timer has started; avoid a physiological claim.
+Fuel-use transition | Small flame or energy icon | Explain that fuel use changes over time and varies by person.
+Possible ketosis onset | Distinct droplet/wave icon | Label 'Ketosis may begin' or 'Possible ketosis window'; explicitly state that timing varies and the app cannot measure ketones.
+Later ketosis milestone | Second-stage icon, such as a brighter flame | Only show as an optional educational marker; never label it as guaranteed 'deep ketosis'.
+Other educational milestone | Simple line icon with a tooltip/card | Any claims about autophagy or similar processes must be carefully qualified and reviewed by a credible health reviewer before release.
+
+
+Token | Suggested value | Usage
+Primary sky blue | #65BFE8 | Primary buttons, active ring, selected controls
+Deep blue | #246B8E | Headings, key labels, high-contrast text accents
+Pale blue | #EAF7FC | Cards, soft surfaces, highlighted milestone background
+Very light blue | #F5FBFE | Main background
+Ring track | #D8EDF6 | Unfilled portion of progress ring
+White | #FFFFFF | Cards and foreground surfaces
+Body text | #203443 | Primary readable text
+Secondary text | #526775 | Supporting labels and metadata
+
+
+ID | Requirement | Priority | Acceptance criteria
+FR-01 | Start a session | Must | Eligible adult user can start a session; start timestamp is persisted.
+FR-02 | Live timer | Must | Elapsed time is derived from timestamps and refreshes visibly without relying on a fragile decrement-only counter.
+FR-03 | App lifecycle recovery | Must | Closing, backgrounding, or reopening the app restores the correct timer state.
+FR-04 | Target configuration | Must | User can choose a target duration from the app's supported options or enter a custom target.
+FR-05 | Ring progress | Must | Ring progress is calculated from elapsed time and target duration; progress is capped visually at 100% while elapsed time continues.
+FR-06 | Milestone markers | Must | Markers appear at configured positions and open explanatory cards when tapped.
+FR-07 | End session | Must | User can end a session at any time and is asked to confirm accidental taps.
+FR-08 | Edit timestamps | Should | User can correct a start or end time; the ring and history recalculate.
+FR-09 | History | Must | Saved sessions appear in a list and calendar, and can be edited or deleted.
+FR-10 | Notifications | Should | Only enabled notification types are scheduled and can be cancelled from settings.
+FR-11 | Data export/delete | Should | User can delete local history; export may be added if it fits MVP time.
+FR-12 | Age safety flow | Must | Under-18 users do not receive active fasting schedules or encouragement to fast.
+FR-13 | Educational disclaimer | Must | Metabolic markers always communicate uncertainty and cannot be mistaken for a measurement.
+
+
+Layer | Recommendation | Responsibility
+Frontend | Flutter / Dart | Cross-platform mobile UI and app navigation.
+State management | Provider, Riverpod, or Bloc (choose one) | Session state, settings, timer display, and user actions.
+Timer domain service | Pure Dart service | Calculate elapsed time, remaining time, target status, and milestone state from timestamps.
+Circular UI | CustomPainter or a maintained Flutter chart/progress package | Draw ring, progress arc, marker positions, and accessible semantics.
+Local persistence | SQLite via a maintained Flutter package, or Isar/Hive after evaluation | Store sessions, settings, and milestone content.
+Notifications | Local notification plugin | Schedule and cancel opt-in reminders.
+Backend | None required for MVP | Keep the first release offline-first; add a backend only if account sync becomes necessary.
+
+
+Entity | Key fields
+FastingSession | id, startedAt, endedAt (nullable), targetDurationMinutes, status, createdAt, updatedAt
+Milestone | id, key, title, iconName, estimatedOffsetMinutes or range, description, disclaimer, sourceReference, reviewStatus, enabled
+AppSettings | theme, timeFormat, notificationsEnabled, targetDurationMinutes, onboardingComplete
+NotificationPreference | id, type, enabled, scheduledLocalTime (optional)
+
+
+Screen | Purpose | Primary actions
+Welcome & safety | Explain app purpose, limitations, privacy, and eligibility | Continue / view safety information
+Home timer | Show ring, elapsed time, target and markers | Start / end / inspect marker
+Target setup | Configure an eligible adult user's tracking target | Select or customise target
+Milestone details | Explain a marker in plain language with uncertainty notes | Close / read more
+History | Review recorded sessions | Open session / edit / delete
+Calendar | View sessions by date | Select date / open session
+Settings | Manage preferences and privacy | Notifications / theme / delete data
+
+
+Risk | Mitigation
+Metabolic stages may be misunderstood as guaranteed | Use cautious wording, show a disclaimer on every milestone detail, and require qualified review of health content.
+Original LIFE colours may not be exactly reproduced | Treat hex values in this document as approximations; sample a legitimate archived screenshot before final design sign-off.
+App timer drifts or resets | Use persisted timestamps as the source of truth and cover lifecycle cases with automated tests.
+Users feel pressured to continue | Neutral copy, no punitive streaks, no extension prompts, and an always-available end control.
+Health data exposure | Offline-first MVP, minimal collection, clear deletion, and a privacy review before any cloud sync.
+Intellectual-property concerns | Use original implementation, assets, icons, copy, and branding; take inspiration from general interaction patterns only.
+
+
+Phase | Deliverables
+1. Discovery | Confirm product name, validate reference screenshots, finalise palette and reviewed milestone content.
+2. UX/UI | Wireframes for onboarding, timer, milestone detail, history, and settings; accessible design tokens.
+3. Flutter foundation | Navigation, theme, state management, local database, and timer domain service.
+4. Signature ring | Circular progress painter, marker placement, tap interactions, and responsive layout.
+5. History & notifications | Session list/calendar, edit/delete flows, and opt-in reminders.
+6. Quality & safety | Automated tests, device testing, content review, privacy review, and release checklist.
