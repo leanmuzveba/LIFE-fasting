@@ -10,6 +10,7 @@ import 'package:life_fasting/state/providers.dart';
 import 'helpers.dart';
 
 late StreamController<DateTime> _ticks;
+late FakeNotifications notifications;
 
 /// Boots the real app on an in-memory database with a fake clock.
 
@@ -18,10 +19,12 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   final clock = FakeClock(DateTime(2026, 10, 4, 7, 24, 36));
   final db = await openTestDb();
   _ticks = StreamController<DateTime>.broadcast();
+  notifications = FakeNotifications();
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
       clockProvider.overrideWithValue(clock.call),
+      notificationServiceProvider.overrideWithValue(notifications),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {
         yield clock();

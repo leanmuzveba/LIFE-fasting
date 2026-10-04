@@ -1,23 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/icons.dart';
 import '../../core/theme/tokens.dart';
 import '../../domain/milestone.dart';
+import '../../state/providers.dart';
 import '../history/history_screen.dart';
 import '../home/home_screen.dart';
 import '../milestones/milestone_detail_screen.dart';
+import '../settings/settings_screen.dart';
 import '../setup/target_setup_screen.dart';
 
 /// Root layout: Timer / History / Settings tabs with the mockup's bottom nav.
-class AppShell extends StatefulWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 
   @override
-  State<AppShell> createState() => _AppShellState();
+  ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends ConsumerState<AppShell> {
   int _tab = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Re-apply scheduled reminders on launch (also corrects DST drift).
+    ref.read(launchSyncProvider);
+  }
 
   void _go(int i) => setState(() => _tab = i);
 
@@ -38,7 +48,7 @@ class _AppShellState extends State<AppShell> {
               onReadMore: (Milestone m) => _push(MilestoneDetailScreen(milestone: m)),
             ),
             const HistoryScreen(),
-            const _Placeholder('Settings'),
+            SettingsScreen(onChangeTarget: () => _push(const TargetSetupScreen())),
           ],
         ),
       ),
@@ -113,16 +123,4 @@ class _BottomNav extends StatelessWidget {
       ),
     );
   }
-}
-
-/// Temporary stand-in until the screen is built in a later step.
-class _Placeholder extends StatelessWidget {
-  const _Placeholder(this.title);
-  final String title;
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: Text(title)),
-    body: const Center(child: Text('Coming in a later step')),
-  );
 }

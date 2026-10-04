@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../data/notification_service.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
 import '../domain/fasting_session.dart';
@@ -68,6 +70,7 @@ class ActiveSessionNotifier extends AsyncNotifier<FastingSession?> {
     );
     state = AsyncData(s);
     ref.invalidate(historyProvider);
+    await syncNotifications(ref);
   }
 
   /// Ends the session and returns it as saved.
@@ -81,6 +84,7 @@ class ActiveSessionNotifier extends AsyncNotifier<FastingSession?> {
     await _repo.update(ended);
     state = const AsyncData(null);
     ref.invalidate(historyProvider);
+    await syncNotifications(ref);
     return ended;
   }
 
@@ -95,6 +99,7 @@ class ActiveSessionNotifier extends AsyncNotifier<FastingSession?> {
     await _repo.update(edited);
     state = AsyncData(edited);
     ref.invalidate(historyProvider);
+    await syncNotifications(ref);
     return null;
   }
 }
@@ -141,7 +146,76 @@ class SessionActions {
   void _refresh() {
     _ref.invalidate(historyProvider);
     _ref.invalidate(activeSessionProvider);
+    syncNotifications(_ref);
+  }
+
+  /// "Delete all data": sessions, settings, preferences and scheduled reminders.
+  Future<void> deleteEverything() async {
+    await _ref.read(sessionRepositoryProvider).deleteAll();
+    await _ref.read(settingsRepositoryProvider).clear();
+    await _ref.read(notificationServiceProvider).cancelAll();
+    _ref.invalidate(historyProvider);
+    _ref.invalidate(activeSessionProvider);
+    _ref.invalidate(notificationPrefsProvider);
+    _ref.invalidate(settingsProvider);
   }
 }
 
 final sessionActionsProvider = Provider(SessionActions.new);
+
+final notificationServiceProvider = Provider((ref) => NotificationService());
+
+class NotificationPrefsNotifier extends AsyncNotifier<List<NotificationPreference>> {
+  @override
+  Future<List<NotificationPreference>> build() => ref.watch(settingsRepositoryProvider).notificationPrefs();
+
+  /// Saves a preference. Turning one on asks the OS for permission first;
+  /// returns false (and keeps it off) if permission is refused.
+  Future<bool> set(NotificationPreference p) async {
+    if (p.enabled && !await ref.read(notificationServiceProvider).requestPermission()) return false;
+    await ref.read(settingsRepositoryProvider).saveNotificationPref(p);
+    final all = [for (final x in await future) x.type == p.type ? p : x];
+    state = AsyncData(all);
+    await ref
+        .read(settingsProvider.notifier)
+        .change((s) => s.copyWith(notificationsEnabled: all.any((x) => x.enabled)));
+    await syncNotifications(ref);
+    return true;
+  }
+}
+
+final notificationPrefsProvider = AsyncNotifierProvider<NotificationPrefsNotifier, List<NotificationPreference>>(
+  NotificationPrefsNotifier.new,
+);
+
+/// Idempotently (re)schedules exactly the notifications the user has enabled.
+/// Called after every session change and on app launch.
+Future<void> syncNotifications(Ref ref) async {
+  final svc = ref.read(notificationServiceProvider);
+  final settings = await ref.read(settingsProvider.future);
+  final prefs = {for (final p in await ref.read(settingsRepositoryProvider).notificationPrefs()) p.type: p};
+  final active = await ref.read(sessionRepositoryProvider).active();
+  final allowed = settings.canFast; // Never notify under-18 or unconfirmed users.
+
+  final target = prefs[NotificationType.targetReached];
+  if (allowed && active != null && (target?.enabled ?? false)) {
+    await svc.scheduleTargetReached(active.plannedEnd);
+  } else {
+    await svc.cancel(NotificationService.targetReachedId);
+  }
+
+  final daily = prefs[NotificationType.dailyReminder];
+  if (allowed && daily != null && daily.enabled && daily.hour != null && daily.minute != null) {
+    await svc.scheduleDailyReminder(daily.hour!, daily.minute!);
+  } else {
+    await svc.cancel(NotificationService.dailyReminderId);
+  }
+}
+
+final launchSyncProvider = FutureProvider<void>((ref) async {
+  try {
+    await syncNotifications(ref);
+  } catch (e) {
+    debugPrint('Notification sync failed: $e'); // Never block the app on reminders.
+  }
+});
