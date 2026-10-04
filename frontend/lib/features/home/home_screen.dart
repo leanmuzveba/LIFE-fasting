@@ -68,8 +68,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: FastingRing(
             snapshot: snap,
             size: _ringSize,
-            onPick: (m) =>
-                showMilestoneSheet(context, milestone: m, target: snap.target, onReadMore: () => widget.onReadMore(m)),
+            onPick: (m) => showMilestoneSheet(context, milestone: m, onReadMore: () => widget.onReadMore(m)),
           ),
         ),
         Padding(

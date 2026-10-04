@@ -38,14 +38,13 @@ void main() {
 
   testWidgets('Read more opens the milestone page with disclaimer', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.text('Later stage · after your target'));
+    await tester.tap(find.bySemanticsLabel(RegExp(r'^Ketosis may begin')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Read more'));
     await tester.pumpAndSettle();
     expect(find.text('Milestone'), findsOneWidget);
-    expect(find.text('Later fasting stage'), findsOneWidget);
+    expect(find.text('Ketosis may begin'), findsOneWidget);
     expect(find.textContaining('cannot measure ketones'), findsOneWidget);
-    expect(find.textContaining('falls after your planned target'), findsOneWidget);
     expect(find.textContaining('awaiting review'), findsOneWidget);
     await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();

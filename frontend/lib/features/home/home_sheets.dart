@@ -44,20 +44,6 @@ class DisclaimerBox extends StatelessWidget {
   );
 }
 
-class BeyondTargetNote extends StatelessWidget {
-  const BeyondTargetNote({super.key});
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-    decoration: BoxDecoration(color: AppColors.pale, borderRadius: BorderRadius.circular(12)),
-    child: Text(
-      beyondTargetNote,
-      style: AppText.small.copyWith(fontWeight: FontWeight.w600, color: AppColors.deep),
-    ),
-  );
-}
-
 class MilestoneHeader extends StatelessWidget {
   const MilestoneHeader({super.key, required this.milestone});
   final Milestone milestone;
@@ -94,7 +80,6 @@ class MilestoneHeader extends StatelessWidget {
 Future<void> showMilestoneSheet(
   BuildContext context, {
   required Milestone milestone,
-  required Duration target,
   required VoidCallback onReadMore,
 }) => showAppSheet<void>(
   context,
@@ -102,7 +87,6 @@ Future<void> showMilestoneSheet(
     children: [
       MilestoneHeader(milestone: milestone),
       Text(milestone.body, style: AppText.body),
-      if (milestone.offset > target) const BeyondTargetNote(),
       const DisclaimerBox(),
       _buttonRow([
         PillButton(

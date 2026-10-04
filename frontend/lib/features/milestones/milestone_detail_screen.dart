@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/page_header.dart';
 import '../../domain/milestone.dart';
-import '../../state/providers.dart';
 import '../home/home_sheets.dart';
 
 /// Full milestone explanation with uncertainty notes ("Read more").
-class MilestoneDetailScreen extends ConsumerWidget {
+class MilestoneDetailScreen extends StatelessWidget {
   const MilestoneDetailScreen({super.key, required this.milestone});
   final Milestone milestone;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final target = Duration(
-      minutes:
-          ref.watch(activeSessionProvider).value?.targetMinutes ??
-          ref.watch(settingsProvider).value?.targetMinutes ??
-          16 * 60,
-    );
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -35,7 +27,6 @@ class MilestoneDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   Text(milestone.body, style: AppText.body),
                   const SizedBox(height: 16),
-                  if (milestone.offset > target) ...[const BeyondTargetNote(), const SizedBox(height: 16)],
                   const DisclaimerBox(),
                   const SizedBox(height: 16),
                   const Text(

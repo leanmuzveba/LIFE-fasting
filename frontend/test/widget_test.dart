@@ -108,10 +108,6 @@ void main() {
     await tester.tap(find.text('Close'));
     await tester.pumpAndSettle();
     expect(find.text('Roughly 12–18 hours (estimate)'), findsNothing);
-
-    await tester.tap(find.text('Later stage · after your target'));
-    await tester.pumpAndSettle();
-    expect(find.textContaining('falls after your planned target'), findsOneWidget);
   });
 
   testWidgets('edit start time sheet previews the resolved start', (tester) async {

@@ -43,7 +43,7 @@ void main() {
     expect(find.text('READY WHEN YOU ARE'), findsOneWidget);
     expect(find.text('00:00:00'), findsOneWidget);
     expect(find.text('16 h target'), findsOneWidget);
-    expect(find.text('Later stage · after your target'), findsOneWidget);
+    expect(find.textContaining('after your target'), findsNothing);
   });
 
   testWidgets('half-way ring shows progress and marker states', (tester) async {
@@ -62,11 +62,11 @@ void main() {
     expect(find.text('16:12:05'), findsOneWidget);
   });
 
-  testWidgets('markers and chips open the milestone', (tester) async {
+  testWidgets('markers open the milestone', (tester) async {
     final picked = await _pump(tester, _snap(const Duration(hours: 3)));
     await tester.tap(find.bySemanticsLabel(RegExp(r'^Ketosis may begin')));
-    await tester.tap(find.text('Later stage · after your target'));
-    expect(picked.map((m) => m.id), ['ketosis', 'later']);
+    await tester.tap(find.bySemanticsLabel(RegExp(r'^Fast begins')));
+    expect(picked.map((m) => m.id), ['ketosis', 'start']);
   });
 
   testWidgets('tap targets meet the 44/48px guidelines and are labelled', (tester) async {

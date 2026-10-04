@@ -8,7 +8,6 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../domain/fasting_timer.dart';
 import '../../domain/milestone.dart';
-import 'dashed_stadium_border.dart';
 
 AppIcon milestoneIcon(MilestoneKind k, {bool detailed = false}) => switch (k) {
   MilestoneKind.clock => AppIcon.clock,
@@ -18,7 +17,7 @@ AppIcon milestoneIcon(MilestoneKind k, {bool detailed = false}) => switch (k) {
 };
 
 /// The signature circular timer: track, progress arc, centre readout,
-/// tappable milestone markers and "after your target" chips.
+/// and tappable milestone markers. Milestones past the target are not shown.
 class FastingRing extends StatelessWidget {
   const FastingRing({super.key, required this.snapshot, required this.onPick, this.size = 300});
 
@@ -97,14 +96,6 @@ class FastingRing extends StatelessWidget {
             ],
           ),
         ),
-        if (s.beyondTarget.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          for (final m in s.beyondTarget)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: _BeyondChip(milestone: m, onTap: () => onPick(m)),
-            ),
-        ],
       ],
     );
   }
@@ -231,56 +222,6 @@ class _Marker extends StatelessWidget {
                     ),
                   ),
               ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _BeyondChip extends StatelessWidget {
-  const _BeyondChip({required this.milestone, required this.onTap});
-
-  final Milestone milestone;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      button: true,
-      label: '${milestone.title}, estimated after your planned target. Opens details.',
-      child: ExcludeSemantics(
-        child: Material(
-          color: AppColors.white,
-          shape: const DashedStadiumBorder(color: AppColors.dashed, width: 1.5),
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minHeight: 44),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 6, 14, 6),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 28,
-                      height: 28,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(color: AppColors.background, shape: BoxShape.circle),
-                      child: AppIconView(milestoneIcon(milestone.kind), size: 15, color: AppColors.muted),
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        '${milestone.short} · after your target',
-                        style: AppText.cardSub.copyWith(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             ),
           ),
         ),

@@ -36,9 +36,6 @@ class Milestone {
 const milestoneDisclaimer =
     'Timing varies between individuals. This timer records time only. It cannot measure ketones or tell what is happening in your body.';
 
-const beyondTargetNote =
-    'This estimate falls after your planned target. Your target is your choice, and there is no need to extend it.';
-
 /// Milestone configuration lives here as data, not inside the ring widget.
 /// Draft copy from the mockup: requires qualified health review before release.
 const defaultMilestones = <Milestone>[
