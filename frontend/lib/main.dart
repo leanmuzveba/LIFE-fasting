@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'core/theme/app_theme.dart';
+
 void main() => runApp(const LifeFastingApp());
 
 class LifeFastingApp extends StatelessWidget {
@@ -7,10 +9,11 @@ class LifeFastingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Fasting Companion',
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: Center(child: Text('Fasting Companion'))),
+      theme: buildAppTheme(),
+      home: const Scaffold(body: Center(child: Text('Fasting Companion'))),
     );
   }
 }
