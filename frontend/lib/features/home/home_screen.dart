@@ -13,16 +13,9 @@ import '../ring/fasting_ring.dart';
 import 'home_sheets.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({
-    super.key,
-    required this.onOpenSettings,
-    required this.onOpenHistory,
-    required this.onChangeTarget,
-    required this.onReadMore,
-  });
+  const HomeScreen({super.key, required this.onOpenSettings, required this.onChangeTarget, required this.onReadMore});
 
   final VoidCallback onOpenSettings;
-  final VoidCallback onOpenHistory;
   final VoidCallback onChangeTarget;
   final ValueChanged<Milestone> onReadMore;
 
@@ -72,16 +65,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     PillButton(label: 'End fast', large: true, onPressed: _askEnd),
                     const SizedBox(height: 4),
                     _LinkRow(
-                      links: {
-                        'Edit start time': () => showEditStartSheet(context, startedAt: session.startedAt),
-                        'View history': widget.onOpenHistory,
-                      },
+                      links: {'Edit start time': () => showEditStartSheet(context, startedAt: session.startedAt)},
                     ),
                   ]
                 : [
                     PillButton(label: 'Start fast', large: true, onPressed: _start),
                     const SizedBox(height: 4),
-                    _LinkRow(links: {'Change target': widget.onChangeTarget, 'View history': widget.onOpenHistory}),
+                    _LinkRow(links: {'Change target': widget.onChangeTarget}),
                   ],
           ),
         ),

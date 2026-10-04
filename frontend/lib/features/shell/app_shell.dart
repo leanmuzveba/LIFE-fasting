@@ -43,7 +43,6 @@ class _AppShellState extends ConsumerState<AppShell> {
           children: [
             HomeScreen(
               onOpenSettings: () => _go(2),
-              onOpenHistory: () => _go(1),
               onChangeTarget: () => _push(const TargetSetupScreen()),
               onReadMore: (Milestone m) => _push(MilestoneDetailScreen(milestone: m)),
             ),
