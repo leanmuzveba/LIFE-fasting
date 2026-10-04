@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
 import 'data/app_database.dart';
+import 'domain/settings.dart';
+import 'features/onboarding/onboarding.dart';
 import 'features/shell/app_shell.dart';
 import 'state/providers.dart';
 
@@ -21,7 +23,21 @@ class LifeFastingApp extends StatelessWidget {
       title: 'Fasting Companion',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
-      home: const AppShell(),
+      home: const _Gate(),
     );
+  }
+}
+
+/// Onboarding → (adult) app, or (under 18) education-only screen.
+class _Gate extends ConsumerWidget {
+  const _Gate();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(settingsProvider).value;
+    if (settings == null) return const Scaffold();
+    if (!settings.onboardingComplete) return const OnboardingScreen();
+    if (settings.eligibility != AgeEligibility.adult) return const UnderageScreen();
+    return const AppShell();
   }
 }
