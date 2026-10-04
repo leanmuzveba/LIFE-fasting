@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/format.dart';
@@ -14,6 +15,14 @@ AppIcon milestoneIcon(MilestoneKind k, {bool detailed = false}) => switch (k) {
   MilestoneKind.bolt => AppIcon.bolt,
   MilestoneKind.drop => detailed ? AppIcon.dropDetail : AppIcon.drop,
   MilestoneKind.flame => AppIcon.flame,
+};
+
+/// Arc / icon colour a milestone starts. Kinds without one keep the previous
+/// phase colour (the later stage stays red).
+(Color, Color)? phaseColors(MilestoneKind k) => switch (k) {
+  MilestoneKind.bolt => (AppColors.fatBurning, AppColors.onFatBurning),
+  MilestoneKind.drop => (AppColors.ketosis, AppColors.onKetosis),
+  _ => null,
 };
 
 /// The signature circular timer: track, progress arc, centre readout,
@@ -61,7 +70,15 @@ class FastingRing extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: _RingPainter(progress: s.progress, radius: r, stroke: _stroke),
+                  painter: _RingPainter(
+                    progress: s.progress,
+                    radius: r,
+                    stroke: _stroke,
+                    phases: [
+                      for (final m in s.markers)
+                        if (phaseColors(m.milestone.kind) case (final c, _)) (m.fraction, c),
+                    ],
+                  ),
                 ),
               ),
               Positioned.fill(
@@ -174,25 +191,27 @@ class _Marker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final m = placement.milestone;
+    final phase = phaseColors(m.kind);
+    final accent = phase?.$1 ?? AppColors.sky;
     final (bg, border, fg, shadows, word) = switch (placement.state) {
       MarkerState.current => (
-        AppColors.sky,
-        const BorderSide(color: AppColors.sky, width: 2),
-        AppColors.onSky,
-        const [BoxShadow(color: Color(0x4765BFE8), spreadRadius: 6)],
+        accent,
+        BorderSide(color: accent, width: 2),
+        phase?.$2 ?? AppColors.onSky,
+        [BoxShadow(color: accent.withValues(alpha: 0.28), spreadRadius: 6)],
         'current estimate',
       ),
       MarkerState.passed => (
         AppColors.white,
-        const BorderSide(color: AppColors.sky, width: 2),
-        AppColors.deep,
+        BorderSide(color: accent, width: 2),
+        phase?.$1 ?? AppColors.deep,
         const [BoxShadow(color: Color(0x24203443), offset: Offset(0, 1), blurRadius: 3)],
         'passed',
       ),
       MarkerState.upcoming => (
         AppColors.background,
         const BorderSide(color: AppColors.inputBorder, width: 1.5),
-        AppColors.muted,
+        phase?.$1 ?? AppColors.muted,
         const <BoxShadow>[],
         'upcoming',
       ),
@@ -249,42 +268,51 @@ class _Marker extends StatelessWidget {
 }
 
 class _RingPainter extends CustomPainter {
-  _RingPainter({required this.progress, required this.radius, required this.stroke});
+  _RingPainter({required this.progress, required this.radius, required this.stroke, required this.phases});
 
   final double progress;
   final double radius;
   final double stroke;
 
+  /// (start fraction, colour) for each phase after the initial sky blue.
+  final List<(double, Color)> phases;
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = size.center(Offset.zero);
-    final base = Paint()
+    final rect = Rect.fromCircle(center: center, radius: radius);
+    final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = stroke;
-    canvas.drawCircle(center, radius, base..color = AppColors.track);
+    canvas.drawCircle(center, radius, paint..color = AppColors.track);
     if (progress <= 0) return;
-    if (progress >= 1) {
-      canvas.drawCircle(center, radius, base..color = AppColors.sky);
-      return;
+
+    final end = math.min(progress, 1.0);
+    Offset at(double f) {
+      final a = f * 2 * math.pi - math.pi / 2;
+      return center + Offset(radius * math.cos(a), radius * math.sin(a));
     }
-    final sweep = progress * 2 * math.pi;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      -math.pi / 2,
-      sweep,
-      false,
-      base
-        ..color = AppColors.sky
-        ..strokeCap = StrokeCap.round,
-    );
-    final a = sweep - math.pi / 2;
-    canvas.drawCircle(
-      center + Offset(radius * math.cos(a), radius * math.sin(a)),
-      3.5,
-      Paint()..color = AppColors.white,
-    );
+
+    // Segments: sky until the first phase, then each phase colour until the next.
+    final stops = [(0.0, AppColors.sky), ...phases];
+    var endColor = AppColors.sky;
+    for (var i = 0; i < stops.length; i++) {
+      final from = stops[i].$1;
+      if (from >= end) break;
+      final to = math.min(i + 1 < stops.length ? stops[i + 1].$1 : 1.0, end);
+      endColor = stops[i].$2;
+      canvas.drawArc(rect, from * 2 * math.pi - math.pi / 2, (to - from) * 2 * math.pi, false, paint..color = endColor);
+    }
+    if (end >= 1) return;
+
+    // Round caps at both ends, then the white knob at the tip.
+    final dot = Paint()..color = AppColors.sky;
+    canvas.drawCircle(at(0), stroke / 2, dot);
+    canvas.drawCircle(at(end), stroke / 2, dot..color = endColor);
+    canvas.drawCircle(at(end), 3.5, Paint()..color = AppColors.white);
   }
 
   @override
-  bool shouldRepaint(_RingPainter old) => old.progress != progress || old.radius != radius;
+  bool shouldRepaint(_RingPainter old) =>
+      old.progress != progress || old.radius != radius || !listEquals(old.phases, phases);
 }

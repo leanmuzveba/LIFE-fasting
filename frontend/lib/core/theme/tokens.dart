@@ -17,6 +17,12 @@ abstract final class AppColors {
   static const dashed = Color(0xFFB9D3E0);
   static const onSky = Color(0xFF0F3A52); // icon on the current marker
   static const scrim = Color(0x61102634); // rgba(16,38,52,0.38)
+
+  // Ring phases (user request): fat burning = yellow, ketosis = red.
+  static const fatBurning = Color(0xFFF2B705);
+  static const onFatBurning = Color(0xFF4A3800);
+  static const ketosis = Color(0xFFE5484D);
+  static const onKetosis = Color(0xFFFFFFFF);
 }
 
 abstract final class AppShadows {

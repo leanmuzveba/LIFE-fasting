@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/core/theme/app_theme.dart';
+import 'package:life_fasting/core/theme/tokens.dart';
 import 'package:life_fasting/domain/fasting_session.dart';
 import 'package:life_fasting/domain/fasting_timer.dart';
 import 'package:life_fasting/domain/milestone.dart';
@@ -81,5 +82,12 @@ void main() {
     await _pump(tester, _snap(const Duration(hours: 3)), textScale: 2);
     expect(tester.takeException(), isNull);
     expect(find.text('03:00:00'), findsOneWidget);
+  });
+
+  test('fat burning is yellow and ketosis is red; other kinds keep the current phase', () {
+    expect(phaseColors(MilestoneKind.bolt)!.$1, AppColors.fatBurning);
+    expect(phaseColors(MilestoneKind.drop)!.$1, AppColors.ketosis);
+    expect(phaseColors(MilestoneKind.clock), isNull);
+    expect(phaseColors(MilestoneKind.flame), isNull);
   });
 }
