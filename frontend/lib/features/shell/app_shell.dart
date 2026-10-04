@@ -4,6 +4,8 @@ import '../../core/icons.dart';
 import '../../core/theme/tokens.dart';
 import '../../domain/milestone.dart';
 import '../home/home_screen.dart';
+import '../milestones/milestone_detail_screen.dart';
+import '../setup/target_setup_screen.dart';
 
 /// Root layout: Timer / History / Settings tabs with the mockup's bottom nav.
 class AppShell extends StatefulWidget {
@@ -31,8 +33,8 @@ class _AppShellState extends State<AppShell> {
             HomeScreen(
               onOpenSettings: () => _go(2),
               onOpenHistory: () => _go(1),
-              onChangeTarget: () => _push(const _Placeholder('Target setup')),
-              onReadMore: (Milestone m) => _push(_Placeholder(m.title)),
+              onChangeTarget: () => _push(const TargetSetupScreen()),
+              onReadMore: (Milestone m) => _push(MilestoneDetailScreen(milestone: m)),
             ),
             const _Placeholder('History'),
             const _Placeholder('Settings'),
