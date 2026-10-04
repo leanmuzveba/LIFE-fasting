@@ -13,7 +13,6 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save target'));
     await tester.pumpAndSettle();
-    expect(find.text('14 hours'), findsOneWidget); // TARGET card on home
     expect(find.text('14 h target'), findsOneWidget);
   });
 
@@ -31,7 +30,7 @@ void main() {
     expect(find.text('24 h'), findsOneWidget);
     await tester.tap(find.text('Save target'));
     await tester.pumpAndSettle();
-    expect(find.text('24 hours'), findsOneWidget);
+    expect(find.text('24 h target'), findsOneWidget);
     // Every milestone now fits on the ring; nothing listed as "after your target".
     expect(find.textContaining('after your target'), findsNothing);
   });

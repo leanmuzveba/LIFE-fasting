@@ -60,6 +60,9 @@ void main() {
     expect(find.text('Fasting Companion'), findsOneWidget);
     expect(find.text('Sunday 4 October'), findsOneWidget);
     expect(find.text('READY WHEN YOU ARE'), findsOneWidget);
+    expect(find.text('TARGET'), findsNothing, reason: 'cards live in the pop-up now');
+    await tester.tap(find.text('00:00:00'));
+    await tester.pumpAndSettle();
     expect(find.text('TARGET'), findsOneWidget);
     expect(find.text('16 hours'), findsOneWidget);
     expect(find.text('IF STARTED NOW'), findsOneWidget);
@@ -72,7 +75,12 @@ void main() {
     final clock = await pumpApp(tester);
     await tester.tap(find.text('Start fast'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('00:00:00'));
+    await tester.pumpAndSettle();
     expect(find.text('FAST STARTED'), findsOneWidget);
+    expect(find.text('PLANNED END'), findsOneWidget);
+    await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
     expect(find.text('Sunday 4 October · Session in progress'), findsOneWidget);
 
     await tick(tester, clock, const Duration(hours: 12, minutes: 24));

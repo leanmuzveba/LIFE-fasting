@@ -19,10 +19,13 @@ AppIcon milestoneIcon(MilestoneKind k, {bool detailed = false}) => switch (k) {
 /// The signature circular timer: track, progress arc, centre readout,
 /// and tappable milestone markers. Milestones past the target are not shown.
 class FastingRing extends StatelessWidget {
-  const FastingRing({super.key, required this.snapshot, required this.onPick, this.size = 300});
+  const FastingRing({super.key, required this.snapshot, required this.onPick, this.onCenterTap, this.size = 300});
 
   final TimerSnapshot snapshot;
   final ValueChanged<Milestone> onPick;
+
+  /// Tapping inside the ring (the time readout) — Home shows session times.
+  final VoidCallback? onCenterTap;
   final double size;
 
   static const _stroke = 14.0;
@@ -64,22 +67,37 @@ class FastingRing extends StatelessWidget {
               Positioned.fill(
                 child: Semantics(
                   container: true,
-                  liveRegion: false,
+                  button: onCenterTap != null,
+                  hint: onCenterTap == null ? null : 'Shows start and planned end times',
+                  onTap: onCenterTap,
                   label:
                       '$status. ${formatHoursMinutes(s.elapsed)} elapsed, $targetLine'
                       '${s.running && !s.targetReached ? ', ${formatHoursMinutes(s.remaining)} remaining' : ''}.',
                   child: ExcludeSemantics(
                     child: Center(
-                      child: SizedBox(
-                        width: (r - _stroke) * 1.55,
-                        height: (r - _stroke) * 1.3,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: _Readout(
-                            status: status,
-                            time: formatHms(s.elapsed),
-                            targetLine: targetLine,
-                            timerSize: (size * 0.135).roundToDouble(),
+                      child: Material(
+                        type: MaterialType.transparency,
+                        shape: const CircleBorder(),
+                        clipBehavior: Clip.antiAlias,
+                        child: InkWell(
+                          onTap: onCenterTap,
+                          child: SizedBox.square(
+                            dimension: 2 * (r - _stroke / 2 - 4),
+                            child: Center(
+                              child: SizedBox(
+                                width: (r - _stroke) * 1.55,
+                                height: (r - _stroke) * 1.3,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: _Readout(
+                                    status: status,
+                                    time: formatHms(s.elapsed),
+                                    targetLine: targetLine,
+                                    timerSize: (size * 0.135).roundToDouble(),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),

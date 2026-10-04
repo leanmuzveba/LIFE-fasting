@@ -6,6 +6,7 @@ import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/pill_button.dart';
+import '../../core/widgets/sheet.dart';
 import '../../domain/milestone.dart';
 import '../../state/providers.dart';
 import '../ring/fasting_ring.dart';
@@ -44,10 +45,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (snap == null || settings == null || now == null) {
       return const Center(child: CircularProgressIndicator());
     }
-    final use24h = settings.use24HourTime;
     final running = snap.running && session != null;
-    final cardBase = running ? session.startedAt : now;
-    final plannedEnd = cardBase.add(snap.target);
 
     final (strong, tail) = running
         ? snap.targetReached
@@ -69,33 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             snapshot: snap,
             size: _ringSize,
             onPick: (m) => showMilestoneSheet(context, milestone: m, onReadMore: () => widget.onReadMore(m)),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 14, 20, 0),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: running
-                      ? _InfoCard(
-                          label: 'FAST STARTED',
-                          value: formatClock(session.startedAt, use24h: use24h),
-                          sub: formatShortDay(session.startedAt),
-                        )
-                      : _InfoCard(label: 'TARGET', value: _targetWords(snap.target), sub: 'Change any time'),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _InfoCard(
-                    label: running ? 'PLANNED END' : 'IF STARTED NOW',
-                    value: formatClock(plannedEnd, use24h: use24h),
-                    sub: formatShortDay(plannedEnd),
-                  ),
-                ),
-              ],
-            ),
+            onCenterTap: () => showSessionTimesSheet(context),
           ),
         ),
         const SizedBox(height: 14),
@@ -163,8 +135,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setState(() => _saved = formatHoursMinutes(ended.elapsedAt(ended.endedAt!)));
     }
   }
-
-  static String _targetWords(Duration d) => d.inMinutes.remainder(60) == 0 ? '${d.inHours} hours' : formatTarget(d);
 }
 
 class _Header extends StatelessWidget {
@@ -237,3 +207,50 @@ class _LinkRow extends StatelessWidget {
     children: [for (final e in links.entries) TextButton(onPressed: e.value, child: Text(e.key))],
   );
 }
+
+/// FAST STARTED / PLANNED END (or TARGET / IF STARTED NOW) cards, shown as a
+/// pop-up when the centre of the ring is tapped.
+Future<void> showSessionTimesSheet(BuildContext context) => showAppSheet<void>(
+  context,
+  (ctx) => Consumer(
+    builder: (ctx, ref, _) {
+      final session = ref.watch(activeSessionProvider).value;
+      final settings = ref.watch(settingsProvider).value;
+      final now = ref.watch(nowProvider).value ?? DateTime.now();
+      final use24h = settings?.use24HourTime ?? false;
+      final target = Duration(minutes: session?.targetMinutes ?? settings?.targetMinutes ?? 16 * 60);
+      final plannedEnd = (session?.startedAt ?? now).add(target);
+      return Gap16Column(
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: session != null
+                      ? _InfoCard(
+                          label: 'FAST STARTED',
+                          value: formatClock(session.startedAt, use24h: use24h),
+                          sub: formatShortDay(session.startedAt),
+                        )
+                      : _InfoCard(label: 'TARGET', value: _targetWords(target), sub: 'Change any time'),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _InfoCard(
+                    label: session != null ? 'PLANNED END' : 'IF STARTED NOW',
+                    value: formatClock(plannedEnd, use24h: use24h),
+                    sub: formatShortDay(plannedEnd),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          PillButton(label: 'Close', onPressed: () => Navigator.pop(ctx)),
+        ],
+      );
+    },
+  ),
+);
+
+String _targetWords(Duration d) => d.inMinutes.remainder(60) == 0 ? '${d.inHours} hours' : formatTarget(d);

@@ -16,6 +16,8 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Timer'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('00:00:00'));
+    await tester.pumpAndSettle();
     expect(find.text('23:24'), findsOneWidget); // IF STARTED NOW
   });
 
