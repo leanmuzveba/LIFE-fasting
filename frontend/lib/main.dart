@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
 import 'data/app_database.dart';
+import 'features/shell/app_shell.dart';
 import 'state/providers.dart';
 
 Future<void> main() async {
@@ -20,7 +21,7 @@ class LifeFastingApp extends StatelessWidget {
       title: 'Fasting Companion',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
-      home: const Scaffold(body: Center(child: Text('Fasting Companion'))),
+      home: const AppShell(),
     );
   }
 }

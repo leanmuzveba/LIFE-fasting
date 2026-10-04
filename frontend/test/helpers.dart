@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:life_fasting/data/app_database.dart';
 import 'package:life_fasting/state/providers.dart';
@@ -23,4 +26,18 @@ Future<ProviderContainer> testContainer(Database db, FakeClock clock) async {
   await c.read(settingsProvider.future);
   await c.read(activeSessionProvider.future);
   return c;
+}
+
+bool _fontsLoaded = false;
+
+/// Loads the bundled Manrope so widget tests lay out like the real app
+/// (the default test font renders every glyph as a wide box).
+Future<void> loadAppFonts() async {
+  if (_fontsLoaded) return;
+  final loader = FontLoader('Manrope');
+  for (final w in [500, 600, 700, 800]) {
+    loader.addFont(Future.value(ByteData.sublistView(File('assets/fonts/Manrope-$w.ttf').readAsBytesSync())));
+  }
+  await loader.load();
+  _fontsLoaded = true;
 }
