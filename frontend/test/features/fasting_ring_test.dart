@@ -48,7 +48,7 @@ void main() {
 
   testWidgets('half-way ring shows progress and marker states', (tester) async {
     await _pump(tester, _snap(const Duration(hours: 12, minutes: 24, seconds: 36)));
-    expect(find.text('FASTING IN PROGRESS'), findsOneWidget);
+    expect(find.text('FASTING IN PROGRESS'), findsNothing);
     expect(find.text('12:24:36'), findsOneWidget);
     expect(find.text('of 16 h target'), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp(r'^Fuel use shifts, around 10 h, current estimate')), findsOneWidget);

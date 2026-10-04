@@ -123,8 +123,11 @@ class _Readout extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(status.toUpperCase(), style: AppText.overline.copyWith(letterSpacing: 1.32, color: AppColors.deep)),
-        const SizedBox(height: 4),
+        // Running-but-not-reached shows no label: the ring speaks for itself.
+        if (status != 'Fasting in progress') ...[
+          Text(status.toUpperCase(), style: AppText.overline.copyWith(letterSpacing: 1.32, color: AppColors.deep)),
+          const SizedBox(height: 4),
+        ],
         Text(
           time,
           style: TextStyle(
