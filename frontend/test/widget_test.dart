@@ -85,7 +85,7 @@ void main() {
 
     await tick(tester, clock, const Duration(hours: 12, minutes: 24));
     expect(find.text('12:24:00'), findsOneWidget);
-    expect(find.textContaining('03:36:00 remaining', findRichText: true), findsOneWidget);
+    expect(find.textContaining('remaining', findRichText: true), findsNothing);
 
     await tester.tap(find.text('End fast'));
     await tester.pumpAndSettle();
@@ -94,7 +94,7 @@ void main() {
     await tester.tap(find.text('End session'));
     await tester.pumpAndSettle();
     expect(find.text('Start fast'), findsOneWidget);
-    expect(find.textContaining('Saved to history · 12 h 24 m', findRichText: true), findsOneWidget);
+    expect(find.text('00:00:00'), findsOneWidget);
   });
 
   testWidgets('target reached keeps counting and never asks to continue', (tester) async {
@@ -103,7 +103,6 @@ void main() {
     await tester.pumpAndSettle();
     await tick(tester, clock, const Duration(hours: 17));
     expect(find.text('TARGET REACHED'), findsOneWidget);
-    expect(find.textContaining('end whenever you’re ready', findRichText: true), findsOneWidget);
     expect(find.text('17:00:00'), findsOneWidget);
   });
 

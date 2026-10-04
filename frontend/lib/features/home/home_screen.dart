@@ -33,9 +33,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   static const _ringSize = 300.0;
 
-  /// "Saved to history · 12 h 24 m" after ending, until the next start.
-  String? _saved;
-
   @override
   Widget build(BuildContext context) {
     final snap = ref.watch(timerSnapshotProvider(FastingRing.gapFor(_ringSize)));
@@ -46,12 +43,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     final running = snap.running && session != null;
-
-    final (strong, tail) = running
-        ? snap.targetReached
-              ? ('Target reached', ' · end whenever you’re ready')
-              : (formatHms(snap.remaining), ' remaining')
-        : ('', _saved != null ? 'Saved to history · $_saved' : 'Your timer is ready');
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -68,23 +59,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             size: _ringSize,
             onPick: (m) => showMilestoneSheet(context, milestone: m, onReadMore: () => widget.onReadMore(m)),
             onCenterTap: () => showSessionTimesSheet(context),
-          ),
-        ),
-        const SizedBox(height: 14),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: strong,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-                TextSpan(text: tail),
-              ],
-            ),
-            textAlign: TextAlign.center,
-            style: AppText.link.copyWith(fontWeight: FontWeight.w600, fontFeatures: AppText.tabular),
           ),
         ),
         const SizedBox(height: 20),
@@ -124,17 +98,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  Future<void> _start() async {
-    setState(() => _saved = null);
-    await ref.read(activeSessionProvider.notifier).start();
-  }
+  Future<void> _start() => ref.read(activeSessionProvider.notifier).start();
 
-  Future<void> _askEnd() async {
-    final ended = await showEndSheet(context);
-    if (ended != null && mounted) {
-      setState(() => _saved = formatHoursMinutes(ended.elapsedAt(ended.endedAt!)));
-    }
-  }
+  Future<void> _askEnd() => showEndSheet(context);
 }
 
 class _Header extends StatelessWidget {
