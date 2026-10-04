@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../core/icons.dart';
 import '../../core/theme/tokens.dart';
 import '../../domain/milestone.dart';
+import '../history/history_screen.dart';
 import '../home/home_screen.dart';
 import '../milestones/milestone_detail_screen.dart';
 import '../setup/target_setup_screen.dart';
@@ -36,7 +37,7 @@ class _AppShellState extends State<AppShell> {
               onChangeTarget: () => _push(const TargetSetupScreen()),
               onReadMore: (Milestone m) => _push(MilestoneDetailScreen(milestone: m)),
             ),
-            const _Placeholder('History'),
+            const HistoryScreen(),
             const _Placeholder('Settings'),
           ],
         ),

@@ -65,4 +65,27 @@ void main() {
     c.dispose();
     await db.close();
   });
+
+  test('editing a saved session validates and recalculates', () async {
+    final db = await openTestDb();
+    final clock = FakeClock(t0);
+    final c = await testContainer(db, clock);
+    await c.read(settingsProvider.notifier).change((s) => s.copyWith(eligibility: AgeEligibility.adult));
+    await c.read(activeSessionProvider.notifier).start();
+    clock.advance(const Duration(hours: 10));
+    final s = (await c.read(activeSessionProvider.notifier).end())!;
+    final actions = c.read(sessionActionsProvider);
+
+    expect(await actions.save(s.copyWith(endedAt: () => s.startedAt)), isNotNull);
+    expect(await actions.save(s.copyWith(endedAt: () => clock.now.add(const Duration(hours: 1)))), isNotNull);
+    expect(await actions.save(s.copyWith(startedAt: t0.subtract(const Duration(hours: 7)))), isNull);
+    final saved = (await c.read(historyProvider.future)).single;
+    expect(saved.elapsedAt(clock.now), const Duration(hours: 17));
+    expect(saved.targetReachedAt(clock.now), isTrue);
+
+    await actions.delete(saved);
+    expect(await c.read(historyProvider.future), isEmpty);
+    c.dispose();
+    await db.close();
+  });
 }

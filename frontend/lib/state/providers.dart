@@ -117,3 +117,31 @@ final timerSnapshotProvider = Provider.family<TimerSnapshot?, double>((ref, gapF
     gapFraction: gapFraction,
   );
 });
+
+/// Edit / delete any saved session from History (FR-08, FR-09).
+class SessionActions {
+  SessionActions(this._ref);
+  final Ref _ref;
+
+  /// Returns a validation error, or null when saved.
+  Future<String?> save(FastingSession edited) async {
+    final now = _ref.read(clockProvider)().toUtc();
+    final error = validateSessionTimes(start: edited.startedAt, end: edited.endedAt, now: now);
+    if (error != null) return error;
+    await _ref.read(sessionRepositoryProvider).update(edited.copyWith(updatedAt: now));
+    _refresh();
+    return null;
+  }
+
+  Future<void> delete(FastingSession s) async {
+    await _ref.read(sessionRepositoryProvider).delete(s.id!);
+    _refresh();
+  }
+
+  void _refresh() {
+    _ref.invalidate(historyProvider);
+    _ref.invalidate(activeSessionProvider);
+  }
+}
+
+final sessionActionsProvider = Provider(SessionActions.new);
