@@ -51,7 +51,7 @@ void main() {
     expect(find.text('FASTING IN PROGRESS'), findsNothing);
     expect(find.text('12:24:36'), findsOneWidget);
     expect(find.text('of 16 h target'), findsOneWidget);
-    expect(find.bySemanticsLabel(RegExp(r'^Fuel use shifts, around 10 h, current estimate')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Fat burning, around 10 h, current estimate')), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp(r'^Fast begins, passed')), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp(r'^Ketosis may begin, around 14 h, upcoming')), findsOneWidget);
   });

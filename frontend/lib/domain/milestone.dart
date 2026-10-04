@@ -51,8 +51,8 @@ const defaultMilestones = <Milestone>[
   Milestone(
     id: 'fuel',
     kind: MilestoneKind.bolt,
-    title: 'Fuel use shifts',
-    short: 'Fuel use shifts',
+    title: 'Fat burning',
+    short: 'Fat burning',
     offsetMinutes: 10 * 60,
     window: 'Roughly 8–12 hours (estimate)',
     body: 'Some hours after eating, the body may rely less on recently eaten food and more on stored energy. When this happens differs widely between people.',
