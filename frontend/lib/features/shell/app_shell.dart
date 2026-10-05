@@ -11,7 +11,7 @@ import '../history/history_screen.dart';
 import '../home/timer_screen.dart';
 import '../activity_water/activity_water_screen.dart';
 import '../milestones/milestone_detail_screen.dart';
-import '../nutrition/nutrition_screen.dart';
+import '../kitchen/my_kitchen_screen.dart';
 import '../settings/settings_screen.dart';
 import '../setup/target_setup_screen.dart';
 import '../today/today_screen.dart';
@@ -57,7 +57,7 @@ class _AppShellState extends ConsumerState<AppShell> {
               ),
             ),
             const HistoryScreen(),
-            const NutritionScreen(),
+            const MyKitchenScreen(),
             SettingsScreen(onChangeTarget: () => _push(const TargetSetupScreen())),
           ],
         ),

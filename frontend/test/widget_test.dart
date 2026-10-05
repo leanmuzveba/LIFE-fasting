@@ -176,7 +176,7 @@ void main() {
     expect(find.text('Start fast'), findsNothing);
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
     await tester.pumpAndSettle();
-    expect(find.text('Nutrition is on its way'), findsOneWidget);
+    expect(find.text('My Kitchen'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Today'));
     await tester.pumpAndSettle();
     expect(find.text('Start fast'), findsOneWidget);

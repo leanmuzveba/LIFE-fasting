@@ -829,18 +829,6 @@ abstract class AppLocalizations {
   /// **'Milestones on the timer are estimates and vary between people.'**
   String get milestoneEstimateNote;
 
-  /// No description provided for @nutritionEmptyTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Nutrition is on its way'**
-  String get nutritionEmptyTitle;
-
-  /// No description provided for @nutritionEmptyBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Your food diary, My Kitchen and recipe ideas will live here.'**
-  String get nutritionEmptyBody;
-
   /// No description provided for @notifWaterBody.
   ///
   /// In en, this message translates to:

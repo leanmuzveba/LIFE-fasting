@@ -157,8 +157,6 @@
   "@heroIfStartedNow": {"placeholders": {"target": {"type": "String"}, "time": {"type": "String"}}},
   "openTimer": "Open timer",
   "milestoneEstimateNote": "Milestones on the timer are estimates and vary between people.",
-  "nutritionEmptyTitle": "Nutrition is on its way",
-  "nutritionEmptyBody": "Your food diary, My Kitchen and recipe ideas will live here.",
   "notifWaterBody": "A gentle reminder to have some water, if you'd like.",
   "waterTitle": "Water",
   "waterToday": "WATER TODAY",

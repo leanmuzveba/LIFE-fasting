@@ -432,12 +432,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get milestoneEstimateNote => 'Milestones on the timer are estimates and vary between people.';
 
   @override
-  String get nutritionEmptyTitle => 'Nutrition is on its way';
-
-  @override
-  String get nutritionEmptyBody => 'Your food diary, My Kitchen and recipe ideas will live here.';
-
-  @override
   String get notifWaterBody => 'A gentle reminder to have some water, if you\'d like.';
 
   @override
