@@ -35,15 +35,22 @@ Future<ProviderContainer> testContainer(Database db, FakeClock clock) async {
 
 bool _fontsLoaded = false;
 
-/// Loads the bundled Manrope so widget tests lay out like the real app
+/// Loads the bundled brand fonts so widget tests lay out like the real app
 /// (the default test font renders every glyph as a wide box).
 Future<void> loadAppFonts() async {
   if (_fontsLoaded) return;
-  final loader = FontLoader('Manrope');
-  for (final w in [500, 600, 700, 800]) {
-    loader.addFont(Future.value(ByteData.sublistView(File('assets/fonts/Manrope-$w.ttf').readAsBytesSync())));
+  const families = {
+    'Lexend': ('Lexend', [500, 600, 700, 800]),
+    'DM Sans': ('DMSans', [400, 500, 600, 700]),
+    'JetBrains Mono': ('JetBrainsMono', [500, 600]),
+  };
+  for (final MapEntry(key: family, value: (file, weights)) in families.entries) {
+    final loader = FontLoader(family);
+    for (final w in weights) {
+      loader.addFont(Future.value(ByteData.sublistView(File('assets/fonts/$file-$w.ttf').readAsBytesSync())));
+    }
+    await loader.load();
   }
-  await loader.load();
   _fontsLoaded = true;
 }
 

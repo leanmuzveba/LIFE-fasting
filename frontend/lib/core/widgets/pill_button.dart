@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 
 /// Rounded full-width button from the mockup.
@@ -25,9 +26,9 @@ class PillButton extends StatelessWidget {
       side: outlined ? const BorderSide(color: AppColors.primary, width: 1.5) : BorderSide.none,
     );
     final style = TextStyle(
-      fontFamily: 'Manrope',
+      fontFamily: AppFonts.display,
       fontSize: large ? 17 : 15,
-      fontWeight: FontWeight.w800,
+      fontWeight: FontWeight.w600,
       color: outlined ? AppColors.primary : AppColors.white,
     );
     return Semantics(

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n.dart';
 import '../../core/icons.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../domain/milestone.dart';
 import '../../state/providers.dart';
@@ -106,9 +107,9 @@ class _BottomNav extends StatelessWidget {
                           Text(
                             items[i].$1,
                             style: TextStyle(
-                              fontFamily: 'Manrope',
+                              fontFamily: AppFonts.display,
                               fontSize: 12,
-                              fontWeight: i == index ? FontWeight.w800 : FontWeight.w700,
+                              fontWeight: i == index ? FontWeight.w600 : FontWeight.w500,
                               color: i == index ? AppColors.primary : AppColors.textSecondary,
                             ),
                           ),

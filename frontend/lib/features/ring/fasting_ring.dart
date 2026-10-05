@@ -168,10 +168,10 @@ class _Readout extends StatelessWidget {
         Text(
           time,
           style: TextStyle(
-            fontFamily: 'Manrope',
+            fontFamily: AppFonts.display,
             fontSize: timerSize,
             height: 1.1,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
             letterSpacing: -0.01 * timerSize,
             color: AppColors.text,
             fontFeatures: AppText.tabular,

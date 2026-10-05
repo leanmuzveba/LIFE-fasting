@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../../core/l10n.dart';
+import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 
 /// Loading screen from the "LIFE Fasting" splash design: a ring logo that
@@ -42,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    const secondary = TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, color: AppColors.textSecondary);
+    const secondary = TextStyle(fontFamily: AppFonts.mono, fontWeight: FontWeight.w500, color: AppColors.textSecondary);
     return Scaffold(
       body: Semantics(
         label: l.splashLoading,
@@ -121,7 +122,7 @@ class _Wordmark extends StatelessWidget {
       ],
     ),
     textAlign: TextAlign.center,
-    style: TextStyle(fontFamily: 'Inter', fontSize: 36, height: 40 / 36, letterSpacing: -0.9),
+    style: TextStyle(fontFamily: AppFonts.display, fontSize: 36, height: 40 / 36, letterSpacing: -0.9),
   );
 }
 

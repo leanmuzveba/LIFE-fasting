@@ -33,25 +33,34 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  # RUVA brand fonts (SIL OFL; licences in assets/fonts/OFL-*.txt)
   fonts:
-    - family: Manrope
+    - family: Lexend
       fonts:
-        - asset: assets/fonts/Manrope-500.ttf
+        - asset: assets/fonts/Lexend-500.ttf
           weight: 500
-        - asset: assets/fonts/Manrope-600.ttf
+        - asset: assets/fonts/Lexend-600.ttf
           weight: 600
-        - asset: assets/fonts/Manrope-700.ttf
+        - asset: assets/fonts/Lexend-700.ttf
           weight: 700
-        - asset: assets/fonts/Manrope-800.ttf
+        - asset: assets/fonts/Lexend-800.ttf
           weight: 800
-    - family: Inter # splash screen wordmark
+    - family: DM Sans
       fonts:
-        - asset: assets/fonts/Inter-400.ttf
+        - asset: assets/fonts/DMSans-400.ttf
           weight: 400
-        - asset: assets/fonts/Inter-500.ttf
+        - asset: assets/fonts/DMSans-500.ttf
           weight: 500
-        - asset: assets/fonts/Inter-800.ttf
-          weight: 800
+        - asset: assets/fonts/DMSans-600.ttf
+          weight: 600
+        - asset: assets/fonts/DMSans-700.ttf
+          weight: 700
+    - family: JetBrains Mono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-500.ttf
+          weight: 500
+        - asset: assets/fonts/JetBrainsMono-600.ttf
+          weight: 600
 
 flutter_launcher_icons:
   android: true

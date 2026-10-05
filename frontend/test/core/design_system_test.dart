@@ -27,6 +27,6 @@ void main() {
     expect(taps, 1);
     final ctx = tester.element(find.text('Cancel'));
     expect(Theme.of(ctx).scaffoldBackgroundColor, AppColors.background);
-    expect(Theme.of(ctx).textTheme.bodyMedium!.fontFamily, 'Manrope');
+    expect(Theme.of(ctx).textTheme.bodyMedium!.fontFamily, 'DM Sans');
   });
 }
