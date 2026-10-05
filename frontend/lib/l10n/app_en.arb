@@ -151,5 +151,8 @@
 
   "notifTargetTitle": "Target time reached",
   "notifTargetBody": "Your planned time has passed. End your session whenever you’re ready.",
+  "splashTagline": "INTERMITTENT FASTING & HEALTH",
+  "splashInitializing": "INITIALIZING TRACKER",
+  "splashLoading": "LIFE Fasting, loading",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

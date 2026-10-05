@@ -8,6 +8,7 @@ import 'data/app_database.dart';
 import 'domain/settings.dart';
 import 'features/onboarding/onboarding.dart';
 import 'features/shell/app_shell.dart';
+import 'features/splash/splash_screen.dart';
 import 'state/providers.dart';
 
 Future<void> main() async {
@@ -42,16 +43,40 @@ class LifeFastingApp extends StatelessWidget {
   }
 }
 
-/// Onboarding → (adult) app, or (under 18) education-only screen.
-class _Gate extends ConsumerWidget {
+/// Splash (until data has loaded and the splash has shown briefly), then
+/// onboarding → (adult) app, or (under 18) education-only screen.
+class _Gate extends ConsumerStatefulWidget {
   const _Gate();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_Gate> createState() => _GateState();
+}
+
+class _GateState extends ConsumerState<_Gate> {
+  static const _minSplash = Duration(milliseconds: 1600);
+  bool _splashDone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future<void>.delayed(_minSplash, () {
+      if (mounted) setState(() => _splashDone = true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider).value;
-    if (settings == null) return const Scaffold();
-    if (!settings.onboardingComplete) return const OnboardingScreen();
-    if (settings.eligibility != AgeEligibility.adult) return const UnderageScreen();
-    return const AppShell();
+    final Widget page = settings == null || !_splashDone
+        ? const SplashScreen()
+        : !settings.onboardingComplete
+        ? const OnboardingScreen()
+        : settings.eligibility != AgeEligibility.adult
+        ? const UnderageScreen()
+        : const AppShell();
+    return AnimatedSwitcher(
+      duration: MediaQuery.disableAnimationsOf(context) ? Duration.zero : const Duration(milliseconds: 500),
+      child: KeyedSubtree(key: ValueKey(page.runtimeType), child: page),
+    );
   }
 }

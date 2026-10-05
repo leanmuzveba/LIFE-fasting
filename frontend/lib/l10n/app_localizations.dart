@@ -799,6 +799,24 @@ abstract class AppLocalizations {
   /// **'Your planned time has passed. End your session whenever you’re ready.'**
   String get notifTargetBody;
 
+  /// No description provided for @splashTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'INTERMITTENT FASTING & HEALTH'**
+  String get splashTagline;
+
+  /// No description provided for @splashInitializing.
+  ///
+  /// In en, this message translates to:
+  /// **'INITIALIZING TRACKER'**
+  String get splashInitializing;
+
+  /// No description provided for @splashLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'LIFE Fasting, loading'**
+  String get splashLoading;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

@@ -422,5 +422,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifTargetBody => 'Your planned time has passed. End your session whenever you’re ready.';
 
   @override
+  String get splashTagline => 'INTERMITTENT FASTING & HEALTH';
+
+  @override
+  String get splashInitializing => 'INITIALIZING TRACKER';
+
+  @override
+  String get splashLoading => 'LIFE Fasting, loading';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }
