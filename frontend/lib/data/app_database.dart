@@ -1,22 +1,48 @@
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
-/// On-device SQLite database. Nothing leaves the phone.
-abstract final class AppDatabase {
-  static const _version = 1;
+typedef Migration = Future<void> Function(DatabaseExecutor db);
 
-  /// Opens (and creates/migrates) the database. Tests pass an FFI [factory]
-  /// and [inMemoryDatabasePath].
-  static Future<Database> open({DatabaseFactory? factory, String? path}) async {
+/// On-device SQLite database. Nothing leaves the phone.
+///
+/// Schema changes are append-only [migrations]: entry `i` upgrades version
+/// `i` to `i + 1`. A fresh install runs them all; an existing install runs
+/// only the ones it has not seen. Never edit or reorder a shipped migration —
+/// add a new one (and extend `test/data/migration_test.dart`).
+abstract final class AppDatabase {
+  /// The file name stays from the original app so existing data is kept.
+  static const fileName = 'life_fasting.db';
+
+  static final List<Migration> migrations = [_v1Initial];
+
+  static int get latestVersion => migrations.length;
+
+  /// Opens (and creates/migrates) the database. Tests pass an FFI [factory],
+  /// a [path], and optionally an older [version] to build a legacy database.
+  static Future<Database> open({DatabaseFactory? factory, String? path, int? version}) async {
     final f = factory ?? databaseFactory;
-    final dbPath = path ?? p.join(await f.getDatabasesPath(), 'life_fasting.db');
+    final dbPath = path ?? p.join(await f.getDatabasesPath(), fileName);
+    final target = version ?? latestVersion;
+    // sqflite runs onCreate/onUpgrade inside one transaction: all or nothing.
+    Future<void> run(Database db, int from) async {
+      for (var v = from; v < target; v++) {
+        await migrations[v](db);
+      }
+    }
+
     return f.openDatabase(
       dbPath,
-      options: OpenDatabaseOptions(version: _version, onCreate: _create),
+      options: OpenDatabaseOptions(
+        version: target,
+        onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),
+        onCreate: (db, _) => run(db, 0),
+        onUpgrade: (db, from, _) => run(db, from),
+      ),
     );
   }
 
-  static Future<void> _create(Database db, int version) async {
+  /// Version 1 — the original fasting tracker (sessions, settings, reminders).
+  static Future<void> _v1Initial(DatabaseExecutor db) async {
     await db.execute('''
       CREATE TABLE sessions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
