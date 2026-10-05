@@ -22,6 +22,7 @@ class SettingsRepository {
       onboardingComplete: kv['onboardingComplete'] == '1',
       eligibility: AgeEligibility.values.asNameMap()[kv['eligibility']] ?? d.eligibility,
       waterUnit: VolumeUnit.values.asNameMap()[kv['waterUnit']] ?? d.waterUnit,
+      waterGoalMl: (int.tryParse(kv['waterGoalMl'] ?? '') ?? d.waterGoalMl).clamp(minWaterGoalMl, maxWaterGoalMl),
     );
   }
 
@@ -35,6 +36,7 @@ class SettingsRepository {
     put('onboardingComplete', s.onboardingComplete ? '1' : '0');
     put('eligibility', s.eligibility.name);
     put('waterUnit', s.waterUnit.name);
+    put('waterGoalMl', '${s.waterGoalMl.clamp(minWaterGoalMl, maxWaterGoalMl)}');
     await batch.commit(noResult: true);
   }
 

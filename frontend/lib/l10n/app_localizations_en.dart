@@ -559,5 +559,127 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsWaterRemindersSub => 'Every 2 hours, 8 AM to 8 PM';
 
   @override
+  String get awTitle => 'Activity & Water';
+
+  @override
+  String get awWaterTab => 'Water';
+
+  @override
+  String get awActivityTab => 'Activity';
+
+  @override
+  String waterOfGoal(String goal) {
+    return 'of $goal goal';
+  }
+
+  @override
+  String get waterCustomAmount => 'Custom amount';
+
+  @override
+  String get waterTodaysEntries => 'Today\'s entries';
+
+  @override
+  String get waterNoneYet => 'No water logged yet today.';
+
+  @override
+  String get waterGoalReached => 'Goal reached — lovely work.';
+
+  @override
+  String get waterKeepGoing => 'Nice pace — every glass counts.';
+
+  @override
+  String get waterEditGoal => 'Daily water goal';
+
+  @override
+  String get waterGoalHint => 'A personal goal you choose. Needs vary from person to person.';
+
+  @override
+  String entryOptions(String entry) {
+    return 'Options for $entry';
+  }
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get activityRecent => 'Recent activity';
+
+  @override
+  String get activityNone => 'No activities logged yet.';
+
+  @override
+  String get activityLogTitle => 'Log an activity';
+
+  @override
+  String get activityEditTitle => 'Edit activity';
+
+  @override
+  String get activityType => 'Type';
+
+  @override
+  String get activityWalk => 'Walk';
+
+  @override
+  String get activityRun => 'Run';
+
+  @override
+  String get activityCycle => 'Cycle';
+
+  @override
+  String get activityStrength => 'Strength';
+
+  @override
+  String get activityYoga => 'Yoga';
+
+  @override
+  String get activityOther => 'Other';
+
+  @override
+  String get activityDuration => 'Duration';
+
+  @override
+  String activityMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get activityIntensity => 'Intensity (optional)';
+
+  @override
+  String get intensityLight => 'Light';
+
+  @override
+  String get intensityModerate => 'Moderate';
+
+  @override
+  String get intensityHeavy => 'Heavy';
+
+  @override
+  String get activityNotes => 'Notes (optional)';
+
+  @override
+  String get activityWhen => 'Date & time';
+
+  @override
+  String get activityLogButton => 'Log activity';
+
+  @override
+  String activityLogged(String type, int minutes) {
+    return '$type logged — $minutes min';
+  }
+
+  @override
+  String get activityFutureError => 'The start time can\'t be in the future.';
+
+  @override
+  String get decreaseMinute => '1 minute less';
+
+  @override
+  String get increaseMinute => '1 minute more';
+
+  @override
+  String get activityToday => 'ACTIVITY TODAY';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

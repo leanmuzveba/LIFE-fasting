@@ -52,6 +52,12 @@ Future<void> loadAppFonts() async {
     }
     await loader.load();
   }
+  // Material icons, so visual checks show real glyphs instead of boxes.
+  final sdk = File(Platform.resolvedExecutable).parent.parent.parent.parent.parent.path;
+  final icons = File('$sdk/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf');
+  if (icons.existsSync()) {
+    await (FontLoader('MaterialIcons')..addFont(Future.value(ByteData.sublistView(icons.readAsBytesSync())))).load();
+  }
   _fontsLoaded = true;
 }
 

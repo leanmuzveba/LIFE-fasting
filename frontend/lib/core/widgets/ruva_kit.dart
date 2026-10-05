@@ -115,7 +115,7 @@ class RuvaChip extends StatelessWidget {
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 48),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -132,9 +132,14 @@ class RuvaChip extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                   ],
-                  Text(
-                    label,
-                    style: AppText.body.copyWith(fontSize: 14, fontWeight: FontWeight.w500, color: fg),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        label,
+                        style: AppText.body.copyWith(fontSize: 14, fontWeight: FontWeight.w500, color: fg),
+                      ),
+                    ),
                   ),
                   if (trailingCheck && selected) ...[const SizedBox(width: 6), Icon(Icons.check, size: 16, color: fg)],
                 ],

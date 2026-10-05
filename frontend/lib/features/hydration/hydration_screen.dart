@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/format.dart';
 import '../../core/icons.dart';
 import '../../core/l10n.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/page_header.dart';
 import '../../core/widgets/pill_button.dart';
 import '../../core/widgets/sheet.dart';
 import '../../domain/hydration.dart';
@@ -124,142 +122,9 @@ class _QuickAdd extends StatelessWidget {
   );
 }
 
-/// Water page: one day at a time — total, entries (tap to edit), add amount.
-class HydrationScreen extends ConsumerStatefulWidget {
-  const HydrationScreen({super.key});
-
-  @override
-  ConsumerState<HydrationScreen> createState() => _HydrationScreenState();
-}
-
-class _HydrationScreenState extends ConsumerState<HydrationScreen> {
-  late DateTime _day = localDay(ref.read(clockProvider)());
-
-  @override
-  Widget build(BuildContext context) {
-    final l = context.l10n;
-    final settings = ref.watch(settingsProvider).value;
-    final unit = settings?.waterUnit ?? VolumeUnit.ml;
-    final use24h = settings?.use24HourTime ?? false;
-    final today = localDay(ref.watch(nowProvider).value ?? DateTime.now());
-    final entries = ref.watch(hydrationDayProvider(_day)).value;
-    final isToday = _day == today;
-
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            PageHeader(l.waterTitle),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  IconButton(
-                    tooltip: l.previousDay,
-                    onPressed: () => setState(() => _day = DateTime(_day.year, _day.month, _day.day - 1)),
-                    icon: const AppIconView(AppIcon.back, color: AppColors.primary),
-                  ),
-                  Expanded(
-                    child: Text(
-                      isToday ? l.today : formatLongDay(_day),
-                      textAlign: TextAlign.center,
-                      style: AppText.cardValue.copyWith(fontSize: 17),
-                    ),
-                  ),
-                  IconButton(
-                    tooltip: l.nextDay,
-                    onPressed: isToday
-                        ? null
-                        : () => setState(() => _day = DateTime(_day.year, _day.month, _day.day + 1)),
-                    icon: AppIconView(AppIcon.chevronRight, color: isToday ? AppColors.track : AppColors.primary),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: entries == null
-                  ? const Center(child: CircularProgressIndicator())
-                  : ListView(
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(24)),
-                          child: Column(
-                            children: [
-                              Text(
-                                l.waterDayTotal.toUpperCase(),
-                                style: AppText.overline.copyWith(color: const Color(0xB3FFFFFF)),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                formatVolume(totalMl(entries), unit),
-                                style: AppText.cardValue.copyWith(fontSize: 34, color: AppColors.white),
-                              ),
-                              Text(
-                                l.waterEntries(entries.length),
-                                style: AppText.cardSub.copyWith(color: const Color(0xB3FFFFFF)),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        if (isToday)
-                          Row(
-                            children: [
-                              for (final q in unit.quickAdds) ...[
-                                Expanded(
-                                  child: PillButton(
-                                    label: l.waterAdd(formatVolume(unit.toMl(q), unit)),
-                                    outlined: true,
-                                    onPressed: () => ref.read(hydrationActionsProvider).add(unit.toMl(q)),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                              ],
-                            ],
-                          ),
-                        const SizedBox(height: 10),
-                        PillButton(
-                          label: l.waterAddCustom,
-                          onPressed: () => _showEntrySheet(context, day: _day),
-                        ),
-                        const SizedBox(height: 20),
-                        if (entries.isEmpty)
-                          Text(l.waterEmpty, textAlign: TextAlign.center, style: AppText.small)
-                        else
-                          for (final e in entries.reversed)
-                            Semantics(
-                              button: true,
-                              label: l.waterEntrySemantics(
-                                formatVolume(e.amountMl, unit),
-                                formatClock(e.loggedAt, use24h: use24h),
-                              ),
-                              excludeSemantics: true,
-                              child: ListTile(
-                                minTileHeight: 56,
-                                onTap: () => _showEntrySheet(context, entry: e, day: _day),
-                                leading: const AppIconView(AppIcon.water, color: AppColors.primary),
-                                title: Text(
-                                  formatVolume(e.amountMl, unit),
-                                  style: AppText.cardValue.copyWith(fontSize: 17),
-                                ),
-                                trailing: Text(formatClock(e.loggedAt, use24h: use24h), style: AppText.small),
-                              ),
-                            ),
-                      ],
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showEntrySheet(BuildContext context, {HydrationEntry? entry, required DateTime day}) =>
-      showAppSheet<void>(context, (_) => _EntrySheet(entry: entry, day: day));
-}
+/// Add a custom amount for [day] or edit/delete [entry].
+Future<void> showWaterEntrySheet(BuildContext context, {HydrationEntry? entry, required DateTime day}) =>
+    showAppSheet<void>(context, (_) => _EntrySheet(entry: entry, day: day));
 
 /// Add a custom amount (optionally at an earlier time) or edit/delete an entry.
 class _EntrySheet extends ConsumerStatefulWidget {

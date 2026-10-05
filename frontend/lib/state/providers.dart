@@ -4,10 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../data/activity_repository.dart';
 import '../data/hydration_repository.dart';
 import '../data/notification_service.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
+import '../domain/activity.dart';
 import '../domain/fasting_session.dart';
 import '../domain/fasting_timer.dart';
 import '../domain/hydration.dart';
@@ -155,11 +157,14 @@ class SessionActions {
   Future<void> deleteEverything() async {
     await _ref.read(sessionRepositoryProvider).deleteAll();
     await _ref.read(hydrationRepositoryProvider).deleteAll();
+    await _ref.read(activityRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
     _ref.invalidate(historyProvider);
     _ref.invalidate(activeSessionProvider);
     _ref.invalidate(hydrationDayProvider);
+    _ref.invalidate(activityDayProvider);
+    _ref.invalidate(recentActivitiesProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
   }
@@ -276,3 +281,50 @@ class HydrationActions {
 }
 
 final hydrationActionsProvider = Provider(HydrationActions.new);
+
+// --- Activity (PRD v1.2 §8) -------------------------------------------------
+
+final activityRepositoryProvider = Provider((ref) => ActivityRepository(ref.watch(databaseProvider)));
+
+/// Activities that started on one local day (key: local midnight), newest first.
+final activityDayProvider = FutureProvider.family<List<ActivityEntry>, DateTime>((ref, day) {
+  final next = DateTime(day.year, day.month, day.day + 1);
+  return ref.watch(activityRepositoryProvider).between(day, next);
+});
+
+/// Latest activities, newest first.
+final recentActivitiesProvider = FutureProvider((ref) => ref.watch(activityRepositoryProvider).recent());
+
+class ActivityActions {
+  ActivityActions(this._ref);
+  final Ref _ref;
+
+  ActivityRepository get _repo => _ref.read(activityRepositoryProvider);
+  DateTime _now() => _ref.read(clockProvider)().toUtc();
+
+  void _refresh() {
+    _ref.invalidate(activityDayProvider);
+    _ref.invalidate(recentActivitiesProvider);
+  }
+
+  /// Returns false (and saves nothing) for an out-of-range duration or a future start.
+  Future<bool> save(ActivityEntry e) async {
+    final now = _now();
+    if (e.minutes < minActivityMinutes || e.minutes > maxActivityMinutes || e.startedAt.isAfter(now)) return false;
+    final notes = e.notes.trim();
+    if (e.id == null) {
+      await _repo.insert(e.copyWith(notes: notes));
+    } else {
+      await _repo.update(e.copyWith(notes: notes, updatedAt: now));
+    }
+    _refresh();
+    return true;
+  }
+
+  Future<void> delete(ActivityEntry e) async {
+    await _repo.delete(e.id!);
+    _refresh();
+  }
+}
+
+final activityActionsProvider = Provider(ActivityActions.new);

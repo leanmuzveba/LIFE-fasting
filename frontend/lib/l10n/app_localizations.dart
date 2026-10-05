@@ -1027,6 +1027,234 @@ abstract class AppLocalizations {
   /// **'Every 2 hours, 8 AM to 8 PM'**
   String get settingsWaterRemindersSub;
 
+  /// No description provided for @awTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity & Water'**
+  String get awTitle;
+
+  /// No description provided for @awWaterTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get awWaterTab;
+
+  /// No description provided for @awActivityTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get awActivityTab;
+
+  /// No description provided for @waterOfGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'of {goal} goal'**
+  String waterOfGoal(String goal);
+
+  /// No description provided for @waterCustomAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom amount'**
+  String get waterCustomAmount;
+
+  /// No description provided for @waterTodaysEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s entries'**
+  String get waterTodaysEntries;
+
+  /// No description provided for @waterNoneYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No water logged yet today.'**
+  String get waterNoneYet;
+
+  /// No description provided for @waterGoalReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached — lovely work.'**
+  String get waterGoalReached;
+
+  /// No description provided for @waterKeepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nice pace — every glass counts.'**
+  String get waterKeepGoing;
+
+  /// No description provided for @waterEditGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily water goal'**
+  String get waterEditGoal;
+
+  /// No description provided for @waterGoalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A personal goal you choose. Needs vary from person to person.'**
+  String get waterGoalHint;
+
+  /// No description provided for @entryOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Options for {entry}'**
+  String entryOptions(String entry);
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @activityRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent activity'**
+  String get activityRecent;
+
+  /// No description provided for @activityNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No activities logged yet.'**
+  String get activityNone;
+
+  /// No description provided for @activityLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log an activity'**
+  String get activityLogTitle;
+
+  /// No description provided for @activityEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit activity'**
+  String get activityEditTitle;
+
+  /// No description provided for @activityType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get activityType;
+
+  /// No description provided for @activityWalk.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk'**
+  String get activityWalk;
+
+  /// No description provided for @activityRun.
+  ///
+  /// In en, this message translates to:
+  /// **'Run'**
+  String get activityRun;
+
+  /// No description provided for @activityCycle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cycle'**
+  String get activityCycle;
+
+  /// No description provided for @activityStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength'**
+  String get activityStrength;
+
+  /// No description provided for @activityYoga.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoga'**
+  String get activityYoga;
+
+  /// No description provided for @activityOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get activityOther;
+
+  /// No description provided for @activityDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get activityDuration;
+
+  /// No description provided for @activityMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String activityMinutes(int minutes);
+
+  /// No description provided for @activityIntensity.
+  ///
+  /// In en, this message translates to:
+  /// **'Intensity (optional)'**
+  String get activityIntensity;
+
+  /// No description provided for @intensityLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get intensityLight;
+
+  /// No description provided for @intensityModerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Moderate'**
+  String get intensityModerate;
+
+  /// No description provided for @intensityHeavy.
+  ///
+  /// In en, this message translates to:
+  /// **'Heavy'**
+  String get intensityHeavy;
+
+  /// No description provided for @activityNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get activityNotes;
+
+  /// No description provided for @activityWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Date & time'**
+  String get activityWhen;
+
+  /// No description provided for @activityLogButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Log activity'**
+  String get activityLogButton;
+
+  /// No description provided for @activityLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} logged — {minutes} min'**
+  String activityLogged(String type, int minutes);
+
+  /// No description provided for @activityFutureError.
+  ///
+  /// In en, this message translates to:
+  /// **'The start time can\'t be in the future.'**
+  String get activityFutureError;
+
+  /// No description provided for @decreaseMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'1 minute less'**
+  String get decreaseMinute;
+
+  /// No description provided for @increaseMinute.
+  ///
+  /// In en, this message translates to:
+  /// **'1 minute more'**
+  String get increaseMinute;
+
+  /// No description provided for @activityToday.
+  ///
+  /// In en, this message translates to:
+  /// **'ACTIVITY TODAY'**
+  String get activityToday;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

@@ -9,6 +9,7 @@ import '../../core/widgets/brand_header.dart';
 import '../../domain/fasting_timer.dart';
 import '../../state/providers.dart';
 import '../home/home_sheets.dart';
+import '../activity_water/activity_water_screen.dart';
 import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
 
@@ -16,9 +17,10 @@ import '../ring/fasting_ring.dart';
 /// (brand guide: one hero card per screen). Tapping the ring opens the full
 /// timer. Water, activity and food tiles join below as those features land.
 class TodayScreen extends ConsumerWidget {
-  const TodayScreen({super.key, required this.onOpenTimer, required this.onOpenWater});
+  const TodayScreen({super.key, required this.onOpenTimer, required this.onOpenWater, required this.onOpenActivity});
   final VoidCallback onOpenTimer;
   final VoidCallback onOpenWater;
+  final VoidCallback onOpenActivity;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,6 +50,8 @@ class TodayScreen extends ConsumerWidget {
         Text(l.milestoneEstimateNote, style: AppText.small, textAlign: TextAlign.center),
         const SizedBox(height: 16),
         WaterTile(onOpen: onOpenWater),
+        const SizedBox(height: 12),
+        ActivityTile(onOpen: onOpenActivity),
       ],
     );
   }

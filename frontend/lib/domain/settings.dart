@@ -10,6 +10,7 @@ class AppSettings {
     this.onboardingComplete = false,
     this.eligibility = AgeEligibility.unknown,
     this.waterUnit = VolumeUnit.ml,
+    this.waterGoalMl = defaultWaterGoalMl,
   });
 
   final bool use24HourTime;
@@ -18,6 +19,9 @@ class AppSettings {
   final bool onboardingComplete;
   final AgeEligibility eligibility;
   final VolumeUnit waterUnit;
+
+  /// Personal daily water goal (user-set; not a medical recommendation).
+  final int waterGoalMl;
 
   /// Under-18s (and anyone not yet confirmed adult) never get fasting controls.
   bool get canFast => eligibility == AgeEligibility.adult;
@@ -29,6 +33,7 @@ class AppSettings {
     bool? onboardingComplete,
     AgeEligibility? eligibility,
     VolumeUnit? waterUnit,
+    int? waterGoalMl,
   }) => AppSettings(
     use24HourTime: use24HourTime ?? this.use24HourTime,
     notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
@@ -36,6 +41,7 @@ class AppSettings {
     onboardingComplete: onboardingComplete ?? this.onboardingComplete,
     eligibility: eligibility ?? this.eligibility,
     waterUnit: waterUnit ?? this.waterUnit,
+    waterGoalMl: waterGoalMl ?? this.waterGoalMl,
   );
 }
 
@@ -63,3 +69,7 @@ class NotificationPreference {
 const targetPresetsHours = [12, 14, 16, 18];
 const minTargetMinutes = 60;
 const maxTargetMinutes = 24 * 60; // The app does not promote extended fasting.
+
+const defaultWaterGoalMl = 2000;
+const minWaterGoalMl = 500;
+const maxWaterGoalMl = 5000;

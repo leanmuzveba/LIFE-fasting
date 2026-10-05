@@ -9,7 +9,7 @@ import '../../domain/milestone.dart';
 import '../../state/providers.dart';
 import '../history/history_screen.dart';
 import '../home/timer_screen.dart';
-import '../hydration/hydration_screen.dart';
+import '../activity_water/activity_water_screen.dart';
 import '../milestones/milestone_detail_screen.dart';
 import '../nutrition/nutrition_screen.dart';
 import '../settings/settings_screen.dart';
@@ -47,7 +47,8 @@ class _AppShellState extends ConsumerState<AppShell> {
           index: _tab,
           children: [
             TodayScreen(
-              onOpenWater: () => _push(const HydrationScreen()),
+              onOpenWater: () => _push(const ActivityWaterScreen()),
+              onOpenActivity: () => _push(const ActivityWaterScreen(initialTab: 1)),
               onOpenTimer: () => _push(
                 TimerScreen(
                   onChangeTarget: () => _push(const TargetSetupScreen()),
