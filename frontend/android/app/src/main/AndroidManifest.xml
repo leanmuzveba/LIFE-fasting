@@ -2,7 +2,7 @@
     <!-- Opt-in reminders: re-schedule after a reboot. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:label="Fasting Companion"
+        android:label="LIFE Fasting"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

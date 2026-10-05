@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'Fasting Companion';
+  String get appName => 'LIFE Fasting';
 
   @override
   String get close => 'Close';

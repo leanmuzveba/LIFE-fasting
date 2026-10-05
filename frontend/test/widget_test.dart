@@ -57,7 +57,7 @@ Future<void> tick(WidgetTester tester, FakeClock clock, Duration d) async {
 void main() {
   testWidgets('idle home matches the mockup copy', (tester) async {
     await pumpApp(tester);
-    expect(find.text('Fasting Companion'), findsOneWidget);
+    expect(find.text('LIFE Fasting'), findsOneWidget);
     expect(find.text('Sunday 4 October'), findsOneWidget);
     expect(find.text('READY WHEN YOU ARE'), findsOneWidget);
     expect(find.text('TARGET'), findsNothing, reason: 'cards live in the pop-up now');

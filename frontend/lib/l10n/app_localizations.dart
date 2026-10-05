@@ -94,7 +94,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Fasting Companion'**
+  /// **'LIFE Fasting'**
   String get appName;
 
   /// No description provided for @close.
