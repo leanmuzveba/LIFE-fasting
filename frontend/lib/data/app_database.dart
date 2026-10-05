@@ -13,7 +13,7 @@ abstract final class AppDatabase {
   /// The file name stays from the original app so existing data is kept.
   static const fileName = 'life_fasting.db';
 
-  static final List<Migration> migrations = [_v1Initial, _v2Hydration, _v3Activity, _v4Kitchen];
+  static final List<Migration> migrations = [_v1Initial, _v2Hydration, _v3Activity, _v4Kitchen, _v5Review];
 
   static int get latestVersion => migrations.length;
 
@@ -39,6 +39,35 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 5 — monthly kitchen reviews and the shopping list (PRD v1.2 §6).
+  static Future<void> _v5Review(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE kitchen_reviews (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        started_at INTEGER NOT NULL,          -- UTC epoch ms
+        completed_at INTEGER
+      )''');
+    await db.execute('''
+      CREATE TABLE kitchen_review_changes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        review_id INTEGER NOT NULL REFERENCES kitchen_reviews (id) ON DELETE CASCADE,
+        ingredient_id INTEGER NOT NULL,       -- no FK: the ingredient may later be removed
+        name TEXT NOT NULL,
+        action TEXT NOT NULL,                 -- kept / usedUp / spoiled
+        old_quantity REAL NOT NULL,
+        new_quantity REAL,
+        unit TEXT NOT NULL
+      )''');
+    await db.execute('''
+      CREATE TABLE shopping_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+        note TEXT NOT NULL DEFAULT '',
+        checked INTEGER NOT NULL DEFAULT 0,
+        created_at INTEGER NOT NULL
+      )''');
   }
 
   /// Version 4 — My Kitchen ingredient inventory (PRD v1.2 §4).

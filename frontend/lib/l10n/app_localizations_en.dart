@@ -1062,5 +1062,127 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get notifReviewBody =>
+      'It\'s a new month — a quick kitchen review keeps your inventory and recipe ideas accurate. Optional, as always.';
+
+  @override
+  String get reviewEyebrow => 'Monthly kitchen review';
+
+  @override
+  String get reviewTitle => 'Review your kitchen';
+
+  @override
+  String reviewProgress(int current, int total, String name) {
+    return 'Item $current of $total · $name';
+  }
+
+  @override
+  String get reviewCardText => 'A few minutes now saves food and money all month.';
+
+  @override
+  String get reviewQuestion => 'Is this still in your kitchen?';
+
+  @override
+  String get reviewKeep => 'Still have it — update quantity';
+
+  @override
+  String get reviewUsedUp => 'We ate it / used it up';
+
+  @override
+  String get reviewSpoiled => 'Spoiled — remove it';
+
+  @override
+  String get reviewNoWrongAnswers =>
+      'No wrong answers — this just keeps your inventory honest. Spoiled food happens to everyone.';
+
+  @override
+  String get reviewAddToList => 'Add to shopping list';
+
+  @override
+  String get reviewAddPurchases => 'Add new purchases this month';
+
+  @override
+  String get reviewAddPurchase => 'Add a purchase';
+
+  @override
+  String reviewAdded(String names) {
+    return 'Added: $names';
+  }
+
+  @override
+  String get reviewContinue => 'Continue review';
+
+  @override
+  String get reviewFinish => 'Finish review';
+
+  @override
+  String reviewPreviewList(int count) {
+    return 'Preview shopping list ($count)';
+  }
+
+  @override
+  String get reviewEmpty => 'Your kitchen is empty — add what you have and review it next month.';
+
+  @override
+  String get reviewDoneTitle => 'Review complete';
+
+  @override
+  String get reviewDoneBody => 'Your inventory is up to date. Thanks for keeping it honest.';
+
+  @override
+  String reviewUpdateQuantity(String name) {
+    return 'Update $name';
+  }
+
+  @override
+  String reviewPurchased(String date) {
+    return 'Purchased $date';
+  }
+
+  @override
+  String get kitchenStartReview => 'Start monthly review';
+
+  @override
+  String get shoppingTitle => 'Shopping list';
+
+  @override
+  String shoppingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items to buy',
+      one: '1 item to buy',
+      zero: 'Nothing to buy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get shoppingAddHint => 'Add an item…';
+
+  @override
+  String get shoppingAdd => 'Add';
+
+  @override
+  String get shoppingClearChecked => 'Clear ticked items';
+
+  @override
+  String shoppingRemove(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String get shoppingEmpty => 'Your shopping list is empty.';
+
+  @override
+  String get settingsMonthlyReview => 'Monthly kitchen review';
+
+  @override
+  String get settingsMonthlyReviewSub => '1st of each month at 10:00';
+
+  @override
+  String get settingsReviewNow => 'Review my kitchen now';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

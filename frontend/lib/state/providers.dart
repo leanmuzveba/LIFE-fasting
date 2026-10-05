@@ -8,6 +8,7 @@ import '../data/activity_repository.dart';
 import '../data/hydration_repository.dart';
 import '../data/kitchen_repository.dart';
 import '../data/notification_service.dart';
+import '../data/review_repository.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
 import '../domain/activity.dart';
@@ -16,6 +17,7 @@ import '../domain/fasting_timer.dart';
 import '../domain/history.dart';
 import '../domain/hydration.dart';
 import '../domain/kitchen.dart';
+import '../domain/kitchen_review.dart';
 import '../domain/settings.dart';
 
 /// Opened in main() and injected with an override.
@@ -170,6 +172,7 @@ class SessionActions {
     await _ref.read(hydrationRepositoryProvider).deleteAll();
     await _ref.read(activityRepositoryProvider).deleteAll();
     await _ref.read(kitchenRepositoryProvider).deleteAll();
+    await _ref.read(reviewRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
     _ref.invalidate(historyProvider);
@@ -178,6 +181,7 @@ class SessionActions {
     _ref.invalidate(activityDayProvider);
     _ref.invalidate(recentActivitiesProvider);
     _ref.invalidate(kitchenProvider);
+    _ref.invalidate(shoppingListProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
   }
@@ -231,6 +235,12 @@ Future<void> syncNotifications(Ref ref) async {
     await svc.scheduleWaterReminders();
   } else {
     await svc.cancelWaterReminders();
+  }
+
+  if (prefs[NotificationType.monthlyReview]?.enabled ?? false) {
+    await svc.scheduleMonthlyReview();
+  } else {
+    await svc.cancel(NotificationService.monthlyReviewId);
   }
 
   final daily = prefs[NotificationType.dailyReminder];
@@ -409,3 +419,74 @@ class KitchenActions {
 }
 
 final kitchenActionsProvider = Provider(KitchenActions.new);
+
+// --- Monthly kitchen review + shopping list (PRD v1.2 §6) -------------------
+
+final reviewRepositoryProvider = Provider((ref) => ReviewRepository(ref.watch(databaseProvider)));
+
+final shoppingListProvider = FutureProvider((ref) => ref.watch(reviewRepositoryProvider).shoppingList());
+
+/// Applies each review decision straight away (nothing is lost if the review
+/// is interrupted) and records it against the review.
+class ReviewActions {
+  ReviewActions(this._ref);
+  final Ref _ref;
+
+  ReviewRepository get _repo => _ref.read(reviewRepositoryProvider);
+  KitchenActions get _kitchen => _ref.read(kitchenActionsProvider);
+  DateTime _now() => _ref.read(clockProvider)().toUtc();
+
+  Future<int> start() => _repo.startReview(_now());
+
+  /// Still have it: quantity updated (or unchanged).
+  Future<void> keep(int reviewId, Ingredient i, double quantity) async {
+    await _kitchen.save(i.copyWith(quantity: quantity));
+    await _repo.addChange(reviewId, _change(i, ReviewAction.kept, quantity));
+  }
+
+  Future<void> usedUp(int reviewId, Ingredient i, {bool addToList = true}) async {
+    await _kitchen.markFinished(i);
+    await _repo.addChange(reviewId, _change(i, ReviewAction.usedUp, null));
+    if (addToList) await addToShoppingList(i.name);
+  }
+
+  Future<void> spoiled(int reviewId, Ingredient i, {bool addToList = true}) async {
+    await _kitchen.discard(i);
+    await _repo.addChange(reviewId, _change(i, ReviewAction.spoiled, null));
+    if (addToList) await addToShoppingList(i.name);
+  }
+
+  Future<void> complete(int reviewId) => _repo.completeReview(reviewId, _now());
+
+  ReviewChange _change(Ingredient i, ReviewAction a, double? newQ) => ReviewChange(
+    ingredientId: i.id!,
+    name: i.name,
+    action: a,
+    oldQuantity: i.quantity,
+    newQuantity: newQ,
+    unit: i.unit,
+  );
+
+  Future<bool> addToShoppingList(String name, {String note = ''}) async {
+    final added = await _repo.addToShoppingList(name, _now(), note: note);
+    _ref.invalidate(shoppingListProvider);
+    return added;
+  }
+
+  Future<void> setChecked(ShoppingItem s, bool checked) async {
+    await _repo.setChecked(s.id!, checked);
+    _ref.invalidate(shoppingListProvider);
+  }
+
+  Future<void> remove(ShoppingItem s) async {
+    await _repo.removeShoppingItem(s.id!);
+    _ref.invalidate(shoppingListProvider);
+  }
+
+  Future<void> clearChecked() async {
+    await _repo.clearChecked();
+    _ref.invalidate(shoppingListProvider);
+  }
+}
+
+final reviewActionsProvider = Provider(ReviewActions.new);

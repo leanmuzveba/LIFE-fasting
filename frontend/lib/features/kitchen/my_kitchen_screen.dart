@@ -10,6 +10,8 @@ import '../../domain/kitchen.dart';
 import '../../state/providers.dart';
 import 'ingredient_form_screen.dart';
 import 'kitchen_labels.dart';
+import 'kitchen_review_screen.dart';
+import 'shopping_list_sheet.dart';
 
 enum _Flag { none, expiring, lowStock }
 
@@ -180,6 +182,32 @@ class _MyKitchenScreenState extends ConsumerState<MyKitchenScreen> {
                                 onTap: () =>
                                     setState(() => _flag = _flag == _Flag.lowStock ? _Flag.none : _Flag.lowStock),
                               ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 4,
+                          children: [
+                            TextButton.icon(
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.accent,
+                                minimumSize: const Size(48, 48),
+                              ),
+                              onPressed: () =>
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute<void>(builder: (_) => const KitchenReviewScreen())),
+                              icon: const Icon(Icons.fact_check_outlined, size: 20),
+                              label: Text(l.kitchenStartReview),
+                            ),
+                            TextButton.icon(
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.accent,
+                                minimumSize: const Size(48, 48),
+                              ),
+                              onPressed: () => showShoppingList(context),
+                              icon: const Icon(Icons.shopping_cart_outlined, size: 20),
+                              label: Text(l.shoppingTitle),
                             ),
                           ],
                         ),

@@ -15,6 +15,7 @@ class NotificationService {
 
   /// Water reminders use ids 100.. (one per slot in [waterReminderHours]).
   static const waterReminderBaseId = 100;
+  static const monthlyReviewId = 200;
 
   final _plugin = FlutterLocalNotificationsPlugin();
 
@@ -118,6 +119,26 @@ class NotificationService {
         body: _l.notifWaterBody,
       );
     }
+  }
+
+  /// Monthly kitchen review: the 1st of each month at 10:00 local time.
+  // ponytail: scheduled as the equivalent UTC time (like the daily reminder),
+  // so it can drift an hour across DST until the app next opens and re-syncs.
+  Future<void> scheduleMonthlyReview() async {
+    await _init();
+    await _plugin.cancel(id: monthlyReviewId);
+    final now = DateTime.now();
+    var next = DateTime(now.year, now.month, 1, 10);
+    if (!next.isAfter(now)) next = DateTime(now.year, now.month + 1, 1, 10);
+    await _plugin.zonedSchedule(
+      id: monthlyReviewId,
+      scheduledDate: tz.TZDateTime.from(next.toUtc(), tz.UTC),
+      notificationDetails: _details,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime,
+      title: _l.appName,
+      body: _l.notifReviewBody,
+    );
   }
 
   Future<void> cancelWaterReminders() async {

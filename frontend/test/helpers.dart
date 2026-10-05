@@ -85,8 +85,13 @@ class FakeNotifications extends NotificationService {
   }
 
   @override
-  Future<void> cancelWaterReminders() async =>
-      scheduled.removeWhere((id, _) => id >= NotificationService.waterReminderBaseId);
+  Future<void> cancelWaterReminders() async => scheduled.removeWhere(
+    (id, _) => id >= NotificationService.waterReminderBaseId && id < NotificationService.monthlyReviewId,
+  );
+
+  @override
+  Future<void> scheduleMonthlyReview() async =>
+      scheduled[NotificationService.monthlyReviewId] = DateTime(2000, 1, 1, 10);
 
   @override
   Future<void> cancel(int id) async => scheduled.remove(id);

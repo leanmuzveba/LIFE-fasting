@@ -1927,6 +1927,204 @@ abstract class AppLocalizations {
   /// **'{name}, {quantity}, {state}'**
   String kitchenItemSemantics(String name, String quantity, String state);
 
+  /// No description provided for @notifReviewBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s a new month — a quick kitchen review keeps your inventory and recipe ideas accurate. Optional, as always.'**
+  String get notifReviewBody;
+
+  /// No description provided for @reviewEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly kitchen review'**
+  String get reviewEyebrow;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your kitchen'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Item {current} of {total} · {name}'**
+  String reviewProgress(int current, int total, String name);
+
+  /// No description provided for @reviewCardText.
+  ///
+  /// In en, this message translates to:
+  /// **'A few minutes now saves food and money all month.'**
+  String get reviewCardText;
+
+  /// No description provided for @reviewQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Is this still in your kitchen?'**
+  String get reviewQuestion;
+
+  /// No description provided for @reviewKeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Still have it — update quantity'**
+  String get reviewKeep;
+
+  /// No description provided for @reviewUsedUp.
+  ///
+  /// In en, this message translates to:
+  /// **'We ate it / used it up'**
+  String get reviewUsedUp;
+
+  /// No description provided for @reviewSpoiled.
+  ///
+  /// In en, this message translates to:
+  /// **'Spoiled — remove it'**
+  String get reviewSpoiled;
+
+  /// No description provided for @reviewNoWrongAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'No wrong answers — this just keeps your inventory honest. Spoiled food happens to everyone.'**
+  String get reviewNoWrongAnswers;
+
+  /// No description provided for @reviewAddToList.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to shopping list'**
+  String get reviewAddToList;
+
+  /// No description provided for @reviewAddPurchases.
+  ///
+  /// In en, this message translates to:
+  /// **'Add new purchases this month'**
+  String get reviewAddPurchases;
+
+  /// No description provided for @reviewAddPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a purchase'**
+  String get reviewAddPurchase;
+
+  /// No description provided for @reviewAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added: {names}'**
+  String reviewAdded(String names);
+
+  /// No description provided for @reviewContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue review'**
+  String get reviewContinue;
+
+  /// No description provided for @reviewFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish review'**
+  String get reviewFinish;
+
+  /// No description provided for @reviewPreviewList.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview shopping list ({count})'**
+  String reviewPreviewList(int count);
+
+  /// No description provided for @reviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your kitchen is empty — add what you have and review it next month.'**
+  String get reviewEmpty;
+
+  /// No description provided for @reviewDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Review complete'**
+  String get reviewDoneTitle;
+
+  /// No description provided for @reviewDoneBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your inventory is up to date. Thanks for keeping it honest.'**
+  String get reviewDoneBody;
+
+  /// No description provided for @reviewUpdateQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Update {name}'**
+  String reviewUpdateQuantity(String name);
+
+  /// No description provided for @reviewPurchased.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchased {date}'**
+  String reviewPurchased(String date);
+
+  /// No description provided for @kitchenStartReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Start monthly review'**
+  String get kitchenStartReview;
+
+  /// No description provided for @shoppingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping list'**
+  String get shoppingTitle;
+
+  /// No description provided for @shoppingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing to buy} =1{1 item to buy} other{{count} items to buy}}'**
+  String shoppingCount(int count);
+
+  /// No description provided for @shoppingAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an item…'**
+  String get shoppingAddHint;
+
+  /// No description provided for @shoppingAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get shoppingAdd;
+
+  /// No description provided for @shoppingClearChecked.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear ticked items'**
+  String get shoppingClearChecked;
+
+  /// No description provided for @shoppingRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String shoppingRemove(String name);
+
+  /// No description provided for @shoppingEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your shopping list is empty.'**
+  String get shoppingEmpty;
+
+  /// No description provided for @settingsMonthlyReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly kitchen review'**
+  String get settingsMonthlyReview;
+
+  /// No description provided for @settingsMonthlyReviewSub.
+  ///
+  /// In en, this message translates to:
+  /// **'1st of each month at 10:00'**
+  String get settingsMonthlyReviewSub;
+
+  /// No description provided for @settingsReviewNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Review my kitchen now'**
+  String get settingsReviewNow;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

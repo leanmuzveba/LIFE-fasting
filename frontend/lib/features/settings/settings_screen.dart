@@ -11,6 +11,7 @@ import '../../core/widgets/ruva_kit.dart';
 import '../../core/widgets/ruva_logo.dart';
 import '../../core/widgets/sheet.dart';
 import '../../domain/settings.dart';
+import '../kitchen/kitchen_review_screen.dart';
 import '../../state/providers.dart';
 
 String unitsLabel(AppLocalizations l, UnitSystem u) => u == UnitSystem.metric ? l.unitsMetric : l.unitsImperial;
@@ -51,6 +52,7 @@ class SettingsScreen extends ConsumerWidget {
     final target = pref(NotificationType.targetReached);
     final daily = pref(NotificationType.dailyReminder);
     final water = pref(NotificationType.waterReminder);
+    final review = pref(NotificationType.monthlyReview);
     final dailyTime = TimeOfDay(hour: daily.hour ?? 20, minute: daily.minute ?? 0);
     void change(AppSettings Function(AppSettings) edit) => ref.read(settingsProvider.notifier).change(edit);
 
@@ -160,6 +162,18 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: l.settingsWaterRemindersSub,
               value: water.enabled,
               onChanged: (v) => setPref(water.copyWith(enabled: v)),
+            ),
+            _ToggleRow(
+              title: l.settingsMonthlyReview,
+              subtitle: l.settingsMonthlyReviewSub,
+              value: review.enabled,
+              onChanged: (v) => setPref(review.copyWith(enabled: v)),
+            ),
+            _NavRow(
+              icon: Icons.fact_check_outlined,
+              title: l.settingsReviewNow,
+              onTap: () =>
+                  Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const KitchenReviewScreen())),
             ),
           ],
         ),

@@ -70,7 +70,7 @@ class AppSettings {
   );
 }
 
-enum NotificationType { targetReached, dailyReminder, waterReminder }
+enum NotificationType { targetReached, dailyReminder, waterReminder, monthlyReview }
 
 class NotificationPreference {
   const NotificationPreference({required this.type, this.enabled = false, this.hour, this.minute});
