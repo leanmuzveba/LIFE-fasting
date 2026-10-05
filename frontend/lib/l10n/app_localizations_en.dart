@@ -479,5 +479,91 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nutritionEmptyBody => 'Your food diary, My Kitchen and recipe ideas will live here.';
 
   @override
+  String get notifWaterBody => 'A gentle reminder to have some water, if you\'d like.';
+
+  @override
+  String get waterTitle => 'Water';
+
+  @override
+  String get waterToday => 'WATER TODAY';
+
+  @override
+  String waterAdd(String amount) {
+    return 'Add $amount';
+  }
+
+  @override
+  String get waterAddCustom => 'Add amount';
+
+  @override
+  String waterEntries(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries',
+      one: '1 entry',
+      zero: 'No entries',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get waterEmpty => 'No water recorded for this day.';
+
+  @override
+  String get waterDayTotal => 'Total for the day';
+
+  @override
+  String waterAmountLabel(String unit) {
+    return 'AMOUNT ($unit)';
+  }
+
+  @override
+  String get waterTimeLabel => 'TIME';
+
+  @override
+  String waterInvalidAmount(String max) {
+    return 'Enter an amount between 1 and $max.';
+  }
+
+  @override
+  String get waterEditTitle => 'Water entry';
+
+  @override
+  String get waterAddTitle => 'Add water';
+
+  @override
+  String waterEntrySemantics(String amount, String time) {
+    return '$amount at $time. Edit';
+  }
+
+  @override
+  String get previousDay => 'Previous day';
+
+  @override
+  String get nextDay => 'Next day';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get settingsUnits => 'UNITS';
+
+  @override
+  String get settingsWaterUnit => 'Water';
+
+  @override
+  String get unitMl => 'ml';
+
+  @override
+  String get unitFlOz => 'fl oz';
+
+  @override
+  String get settingsWaterReminders => 'Water reminders';
+
+  @override
+  String get settingsWaterRemindersSub => 'Every 2 hours, 8 AM to 8 PM';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

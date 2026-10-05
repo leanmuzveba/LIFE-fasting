@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../domain/hydration.dart';
 import '../l10n/app_localizations.dart';
 
 /// Opt-in local notifications (FR-10). Copy is neutral: it never urges the
@@ -11,6 +12,9 @@ import '../l10n/app_localizations.dart';
 class NotificationService {
   static const targetReachedId = 1;
   static const dailyReminderId = 2;
+
+  /// Water reminders use ids 100.. (one per slot in [waterReminderHours]).
+  static const waterReminderBaseId = 100;
 
   final _plugin = FlutterLocalNotificationsPlugin();
 
@@ -95,6 +99,31 @@ class NotificationService {
       title: _l.appName,
       body: _l.notifDailyBody,
     );
+  }
+
+  /// Daily repeating water reminders at [waterReminderHours] (local time).
+  Future<void> scheduleWaterReminders() async {
+    await _init();
+    final now = DateTime.now();
+    for (final (i, hour) in waterReminderHours.indexed) {
+      var next = DateTime(now.year, now.month, now.day, hour);
+      if (!next.isAfter(now)) next = next.add(const Duration(days: 1));
+      await _plugin.zonedSchedule(
+        id: waterReminderBaseId + i,
+        scheduledDate: tz.TZDateTime.from(next.toUtc(), tz.UTC),
+        notificationDetails: _details,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+        title: _l.appName,
+        body: _l.notifWaterBody,
+      );
+    }
+  }
+
+  Future<void> cancelWaterReminders() async {
+    for (var i = 0; i < waterReminderHours.length; i++) {
+      await cancel(waterReminderBaseId + i);
+    }
   }
 
   Future<void> cancel(int id) async {

@@ -901,6 +901,144 @@ abstract class AppLocalizations {
   /// **'Your food diary, My Kitchen and recipe ideas will live here.'**
   String get nutritionEmptyBody;
 
+  /// No description provided for @notifWaterBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A gentle reminder to have some water, if you\'d like.'**
+  String get notifWaterBody;
+
+  /// No description provided for @waterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get waterTitle;
+
+  /// No description provided for @waterToday.
+  ///
+  /// In en, this message translates to:
+  /// **'WATER TODAY'**
+  String get waterToday;
+
+  /// No description provided for @waterAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {amount}'**
+  String waterAdd(String amount);
+
+  /// No description provided for @waterAddCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Add amount'**
+  String get waterAddCustom;
+
+  /// No description provided for @waterEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No entries} =1{1 entry} other{{count} entries}}'**
+  String waterEntries(int count);
+
+  /// No description provided for @waterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No water recorded for this day.'**
+  String get waterEmpty;
+
+  /// No description provided for @waterDayTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total for the day'**
+  String get waterDayTotal;
+
+  /// No description provided for @waterAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'AMOUNT ({unit})'**
+  String waterAmountLabel(String unit);
+
+  /// No description provided for @waterTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'TIME'**
+  String get waterTimeLabel;
+
+  /// No description provided for @waterInvalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount between 1 and {max}.'**
+  String waterInvalidAmount(String max);
+
+  /// No description provided for @waterEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Water entry'**
+  String get waterEditTitle;
+
+  /// No description provided for @waterAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add water'**
+  String get waterAddTitle;
+
+  /// No description provided for @waterEntrySemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} at {time}. Edit'**
+  String waterEntrySemantics(String amount, String time);
+
+  /// No description provided for @previousDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get previousDay;
+
+  /// No description provided for @nextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get nextDay;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @settingsUnits.
+  ///
+  /// In en, this message translates to:
+  /// **'UNITS'**
+  String get settingsUnits;
+
+  /// No description provided for @settingsWaterUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get settingsWaterUnit;
+
+  /// No description provided for @unitMl.
+  ///
+  /// In en, this message translates to:
+  /// **'ml'**
+  String get unitMl;
+
+  /// No description provided for @unitFlOz.
+  ///
+  /// In en, this message translates to:
+  /// **'fl oz'**
+  String get unitFlOz;
+
+  /// No description provided for @settingsWaterReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Water reminders'**
+  String get settingsWaterReminders;
+
+  /// No description provided for @settingsWaterRemindersSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Every 2 hours, 8 AM to 8 PM'**
+  String get settingsWaterRemindersSub;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

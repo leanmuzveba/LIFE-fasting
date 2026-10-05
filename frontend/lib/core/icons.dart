@@ -10,6 +10,7 @@ enum AppIcon {
   nutrition(
     '<path d="M12 8c-1.6-1.3-4.6-1.6-6.1.6S4.6 14 6 17.2 9.6 21.3 12 20.3c2.4 1 4.6-.4 6-3.1s1.5-7.3.1-9.5S13.6 6.7 12 8z"/><path d="M12 8c0-2.2 1-3.7 3-4.5"/>',
   ),
+  water('<path d="M6 4h12l-1.5 15.2a2 2 0 0 1-2 1.8h-5a2 2 0 0 1-2-1.8z"/><path d="M6.7 10h10.6"/>'),
   timer('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 1.5M9.5 2.5h5"/>'),
   calendar('<rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),
   sliders('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>'),

@@ -13,7 +13,7 @@ abstract final class AppDatabase {
   /// The file name stays from the original app so existing data is kept.
   static const fileName = 'life_fasting.db';
 
-  static final List<Migration> migrations = [_v1Initial];
+  static final List<Migration> migrations = [_v1Initial, _v2Hydration];
 
   static int get latestVersion => migrations.length;
 
@@ -39,6 +39,19 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 2 — water intake (PRD v1.2 §9).
+  static Future<void> _v2Hydration(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE hydration_entries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        amount_ml REAL NOT NULL CHECK (amount_ml > 0),
+        logged_at INTEGER NOT NULL,           -- UTC epoch ms
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      )''');
+    await db.execute('CREATE INDEX hydration_logged ON hydration_entries (logged_at)');
   }
 
   /// Version 1 — the original fasting tracker (sessions, settings, reminders).

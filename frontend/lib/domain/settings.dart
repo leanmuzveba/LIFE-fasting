@@ -1,3 +1,5 @@
+import 'hydration.dart';
+
 enum AgeEligibility { unknown, adult, under18 }
 
 class AppSettings {
@@ -7,6 +9,7 @@ class AppSettings {
     this.targetMinutes = 16 * 60,
     this.onboardingComplete = false,
     this.eligibility = AgeEligibility.unknown,
+    this.waterUnit = VolumeUnit.ml,
   });
 
   final bool use24HourTime;
@@ -14,6 +17,7 @@ class AppSettings {
   final int targetMinutes;
   final bool onboardingComplete;
   final AgeEligibility eligibility;
+  final VolumeUnit waterUnit;
 
   /// Under-18s (and anyone not yet confirmed adult) never get fasting controls.
   bool get canFast => eligibility == AgeEligibility.adult;
@@ -24,16 +28,18 @@ class AppSettings {
     int? targetMinutes,
     bool? onboardingComplete,
     AgeEligibility? eligibility,
+    VolumeUnit? waterUnit,
   }) => AppSettings(
     use24HourTime: use24HourTime ?? this.use24HourTime,
     notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     targetMinutes: targetMinutes ?? this.targetMinutes,
     onboardingComplete: onboardingComplete ?? this.onboardingComplete,
     eligibility: eligibility ?? this.eligibility,
+    waterUnit: waterUnit ?? this.waterUnit,
   );
 }
 
-enum NotificationType { targetReached, dailyReminder }
+enum NotificationType { targetReached, dailyReminder, waterReminder }
 
 class NotificationPreference {
   const NotificationPreference({required this.type, this.enabled = false, this.hour, this.minute});

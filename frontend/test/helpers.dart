@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:life_fasting/data/app_database.dart';
 import 'package:life_fasting/data/notification_service.dart';
+import 'package:life_fasting/domain/hydration.dart';
 import 'package:life_fasting/state/providers.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -69,6 +70,17 @@ class FakeNotifications extends NotificationService {
   @override
   Future<void> scheduleDailyReminder(int hour, int minute) async =>
       scheduled[NotificationService.dailyReminderId] = DateTime(2000, 1, 1, hour, minute);
+
+  @override
+  Future<void> scheduleWaterReminders() async {
+    for (final (i, h) in waterReminderHours.indexed) {
+      scheduled[NotificationService.waterReminderBaseId + i] = DateTime(2000, 1, 1, h);
+    }
+  }
+
+  @override
+  Future<void> cancelWaterReminders() async =>
+      scheduled.removeWhere((id, _) => id >= NotificationService.waterReminderBaseId);
 
   @override
   Future<void> cancel(int id) async => scheduled.remove(id);

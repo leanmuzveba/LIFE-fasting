@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 
+import '../domain/hydration.dart';
 import '../domain/settings.dart';
 
 class SettingsRepository {
@@ -20,6 +21,7 @@ class SettingsRepository {
       ),
       onboardingComplete: kv['onboardingComplete'] == '1',
       eligibility: AgeEligibility.values.asNameMap()[kv['eligibility']] ?? d.eligibility,
+      waterUnit: VolumeUnit.values.asNameMap()[kv['waterUnit']] ?? d.waterUnit,
     );
   }
 
@@ -32,6 +34,7 @@ class SettingsRepository {
     put('targetMinutes', '${s.targetMinutes.clamp(minTargetMinutes, maxTargetMinutes)}');
     put('onboardingComplete', s.onboardingComplete ? '1' : '0');
     put('eligibility', s.eligibility.name);
+    put('waterUnit', s.waterUnit.name);
     await batch.commit(noResult: true);
   }
 

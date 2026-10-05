@@ -9,6 +9,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/page_header.dart';
 import '../../core/widgets/pill_button.dart';
 import '../../core/widgets/sheet.dart';
+import '../../domain/hydration.dart';
 import '../../domain/settings.dart';
 import '../../state/providers.dart';
 
@@ -23,6 +24,7 @@ class SettingsScreen extends ConsumerWidget {
     if (settings == null || prefs == null) return const Center(child: CircularProgressIndicator());
     final target = prefs.firstWhere((p) => p.type == NotificationType.targetReached);
     final daily = prefs.firstWhere((p) => p.type == NotificationType.dailyReminder);
+    final water = prefs.firstWhere((p) => p.type == NotificationType.waterReminder);
     final dailyTime = TimeOfDay(hour: daily.hour ?? 20, minute: daily.minute ?? 0);
     final l = context.l10n;
 
@@ -57,6 +59,31 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
+              _Section(l.settingsUnits),
+              _Card(
+                children: [
+                  ListTile(
+                    minTileHeight: 56,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                    title: Text(l.settingsWaterUnit, style: AppText.link.copyWith(color: AppColors.text)),
+                    trailing: SegmentedButton<VolumeUnit>(
+                      showSelectedIcon: false,
+                      segments: [
+                        ButtonSegment(value: VolumeUnit.ml, label: Text(l.unitMl)),
+                        ButtonSegment(value: VolumeUnit.flOz, label: Text(l.unitFlOz)),
+                      ],
+                      selected: {settings.waterUnit},
+                      onSelectionChanged: (v) =>
+                          ref.read(settingsProvider.notifier).change((s) => s.copyWith(waterUnit: v.first)),
+                      style: SegmentedButton.styleFrom(
+                        selectedBackgroundColor: AppColors.soft,
+                        selectedForegroundColor: AppColors.primary,
+                        side: const BorderSide(color: AppColors.track),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               _Section(l.settingsNotifications),
               _Card(
                 children: [
@@ -77,6 +104,12 @@ class SettingsScreen extends ConsumerWidget {
                     value: daily.enabled,
                     onChanged: (v) =>
                         setPref(daily.copyWith(enabled: v, hour: dailyTime.hour, minute: dailyTime.minute)),
+                  ),
+                  _SwitchRow(
+                    title: l.settingsWaterReminders,
+                    subtitle: l.settingsWaterRemindersSub,
+                    value: water.enabled,
+                    onChanged: (v) => setPref(water.copyWith(enabled: v)),
                   ),
                   if (daily.enabled)
                     _Row(

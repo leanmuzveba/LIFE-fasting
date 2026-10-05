@@ -9,14 +9,16 @@ import '../../core/widgets/brand_header.dart';
 import '../../domain/fasting_timer.dart';
 import '../../state/providers.dart';
 import '../home/home_sheets.dart';
+import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
 
 /// First tab: greeting and the forest "hero" card holding today's fast
 /// (brand guide: one hero card per screen). Tapping the ring opens the full
 /// timer. Water, activity and food tiles join below as those features land.
 class TodayScreen extends ConsumerWidget {
-  const TodayScreen({super.key, required this.onOpenTimer});
+  const TodayScreen({super.key, required this.onOpenTimer, required this.onOpenWater});
   final VoidCallback onOpenTimer;
+  final VoidCallback onOpenWater;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,6 +46,8 @@ class TodayScreen extends ConsumerWidget {
         _FastingHeroCard(snapshot: snap, use24h: settings.use24HourTime, now: now, onOpenTimer: onOpenTimer),
         const SizedBox(height: 10),
         Text(l.milestoneEstimateNote, style: AppText.small, textAlign: TextAlign.center),
+        const SizedBox(height: 16),
+        WaterTile(onOpen: onOpenWater),
       ],
     );
   }

@@ -126,44 +126,50 @@ class SessionTile extends ConsumerWidget {
         status,
       ),
       excludeSemantics: true,
-      child: Material(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
-        child: InkWell(
+      // White card + shadow underneath; transparent Material on top so ripples show.
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(18),
-          onTap: () => showSessionSheet(context, s),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), boxShadow: AppShadows.card),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(formatShortDay(s.startedAt).toUpperCase(), style: AppText.overline),
-                      const SizedBox(height: 4),
-                      Text(formatHoursMinutes(s.elapsedAt(now)), style: AppText.cardValue),
-                      Text(l.sessionTileDetail(times, formatTarget(s.target)), style: AppText.cardSub),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: ShapeDecoration(
-                    color: strong ? AppColors.soft : AppColors.background,
-                    shape: StadiumBorder(side: BorderSide(color: strong ? AppColors.primary : AppColors.track)),
-                  ),
-                  child: Text(
-                    status,
-                    style: AppText.cardSub.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: strong ? AppColors.primary : AppColors.textSecondary,
+          boxShadow: AppShadows.card,
+        ),
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: () => showSessionSheet(context, s),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(formatShortDay(s.startedAt).toUpperCase(), style: AppText.overline),
+                        const SizedBox(height: 4),
+                        Text(formatHoursMinutes(s.elapsedAt(now)), style: AppText.cardValue),
+                        Text(l.sessionTileDetail(times, formatTarget(s.target)), style: AppText.cardSub),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: ShapeDecoration(
+                      color: strong ? AppColors.soft : AppColors.background,
+                      shape: StadiumBorder(side: BorderSide(color: strong ? AppColors.primary : AppColors.track)),
+                    ),
+                    child: Text(
+                      status,
+                      style: AppText.cardSub.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: strong ? AppColors.primary : AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

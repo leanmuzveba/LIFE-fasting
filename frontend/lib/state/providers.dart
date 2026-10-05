@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../data/hydration_repository.dart';
 import '../data/notification_service.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
 import '../domain/fasting_session.dart';
 import '../domain/fasting_timer.dart';
+import '../domain/hydration.dart';
 import '../domain/settings.dart';
 
 /// Opened in main() and injected with an override.
@@ -152,10 +154,12 @@ class SessionActions {
   /// "Delete all data": sessions, settings, preferences and scheduled reminders.
   Future<void> deleteEverything() async {
     await _ref.read(sessionRepositoryProvider).deleteAll();
+    await _ref.read(hydrationRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
     _ref.invalidate(historyProvider);
     _ref.invalidate(activeSessionProvider);
+    _ref.invalidate(hydrationDayProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
   }
@@ -204,6 +208,13 @@ Future<void> syncNotifications(Ref ref) async {
     await svc.cancel(NotificationService.targetReachedId);
   }
 
+  // Water reminders are general wellness, not fasting: allowed for everyone who opted in.
+  if (prefs[NotificationType.waterReminder]?.enabled ?? false) {
+    await svc.scheduleWaterReminders();
+  } else {
+    await svc.cancelWaterReminders();
+  }
+
   final daily = prefs[NotificationType.dailyReminder];
   if (allowed && daily != null && daily.enabled && daily.hour != null && daily.minute != null) {
     await svc.scheduleDailyReminder(daily.hour!, daily.minute!);
@@ -219,3 +230,49 @@ final launchSyncProvider = FutureProvider<void>((ref) async {
     debugPrint('Notification sync failed: $e'); // Never block the app on reminders.
   }
 });
+
+// --- Hydration (PRD v1.2 §9) ------------------------------------------------
+
+final hydrationRepositoryProvider = Provider((ref) => HydrationRepository(ref.watch(databaseProvider)));
+
+/// Local calendar day (midnight) containing [t].
+DateTime localDay(DateTime t) {
+  final l = t.toLocal();
+  return DateTime(l.year, l.month, l.day);
+}
+
+/// Water entries for one local day, oldest first. Key: local midnight.
+final hydrationDayProvider = FutureProvider.family<List<HydrationEntry>, DateTime>((ref, day) {
+  final next = DateTime(day.year, day.month, day.day + 1);
+  return ref.watch(hydrationRepositoryProvider).between(day, next);
+});
+
+class HydrationActions {
+  HydrationActions(this._ref);
+  final Ref _ref;
+
+  HydrationRepository get _repo => _ref.read(hydrationRepositoryProvider);
+  DateTime _now() => _ref.read(clockProvider)().toUtc();
+
+  /// Logs [amountMl] at [at] (default: now). Rejects non-positive or future amounts.
+  Future<void> add(double amountMl, {DateTime? at}) async {
+    final now = _now();
+    final when = (at ?? now).toUtc();
+    if (amountMl <= 0 || when.isAfter(now)) return;
+    await _repo.insert(HydrationEntry(amountMl: amountMl, loggedAt: when, createdAt: now, updatedAt: now));
+    _ref.invalidate(hydrationDayProvider);
+  }
+
+  Future<void> update(HydrationEntry e) async {
+    if (e.amountMl <= 0) return;
+    await _repo.update(e.copyWith(updatedAt: _now()));
+    _ref.invalidate(hydrationDayProvider);
+  }
+
+  Future<void> delete(HydrationEntry e) async {
+    await _repo.delete(e.id!);
+    _ref.invalidate(hydrationDayProvider);
+  }
+}
+
+final hydrationActionsProvider = Provider(HydrationActions.new);
