@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/icons.dart';
 import '../../core/theme/tokens.dart';
 import '../../domain/milestone.dart';
@@ -61,10 +62,10 @@ class _BottomNav extends StatelessWidget {
   final int index;
   final ValueChanged<int> onTap;
 
-  static const _items = [('Timer', AppIcon.timer), ('History', AppIcon.calendar), ('Settings', AppIcon.sliders)];
-
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
+    final items = [(l.navTimer, AppIcon.timer), (l.navHistory, AppIcon.calendar), (l.navSettings, AppIcon.sliders)];
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.white,
@@ -76,12 +77,12 @@ class _BottomNav extends StatelessWidget {
           height: 76,
           child: Row(
             children: [
-              for (var i = 0; i < _items.length; i++)
+              for (var i = 0; i < items.length; i++)
                 Expanded(
                   child: Semantics(
                     button: true,
                     selected: i == index,
-                    label: _items[i].$1,
+                    label: items[i].$1,
                     excludeSemantics: true,
                     child: InkWell(
                       onTap: () => onTap(i),
@@ -97,13 +98,13 @@ class _BottomNav extends StatelessWidget {
                               shape: const StadiumBorder(),
                             ),
                             child: AppIconView(
-                              _items[i].$2,
+                              items[i].$2,
                               color: i == index ? AppColors.deep : AppColors.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            _items[i].$1,
+                            items[i].$1,
                             style: TextStyle(
                               fontFamily: 'Manrope',
                               fontSize: 12,

@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart' show basicLocaleListResolution;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
+
+import '../l10n/app_localizations.dart';
 
 /// Opt-in local notifications (FR-10). Copy is neutral: it never urges the
 /// user to extend a session, reach a milestone or ignore how they feel.
@@ -10,6 +13,11 @@ class NotificationService {
   static const dailyReminderId = 2;
 
   final _plugin = FlutterLocalNotificationsPlugin();
+
+  /// Strings in the device language (falls back to English); no BuildContext here.
+  AppLocalizations get _l => lookupAppLocalizations(
+    basicLocaleListResolution(PlatformDispatcher.instance.locales, AppLocalizations.supportedLocales),
+  );
   bool _ready = false;
 
   static const _details = NotificationDetails(
@@ -63,8 +71,8 @@ class NotificationService {
       scheduledDate: tz.TZDateTime.from(at.toUtc(), tz.UTC),
       notificationDetails: _details,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      title: 'Target time reached',
-      body: 'Your planned time has passed. End your session whenever you’re ready.',
+      title: _l.notifTargetTitle,
+      body: _l.notifTargetBody,
     );
   }
 
@@ -84,8 +92,8 @@ class NotificationService {
       notificationDetails: _details,
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
-      title: 'Fasting Companion',
-      body: 'Your daily reminder. Open the app to start or review a session.',
+      title: _l.appName,
+      body: _l.notifDailyBody,
     );
   }
 

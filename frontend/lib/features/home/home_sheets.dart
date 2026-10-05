@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/format.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
@@ -90,14 +91,14 @@ Future<void> showMilestoneSheet(
       const DisclaimerBox(),
       _buttonRow([
         PillButton(
-          label: 'Read more',
+          label: ctx.l10n.readMore,
           outlined: true,
           onPressed: () {
             Navigator.pop(ctx);
             onReadMore();
           },
         ),
-        PillButton(label: 'Close', onPressed: () => Navigator.pop(ctx)),
+        PillButton(label: ctx.l10n.close, onPressed: () => Navigator.pop(ctx)),
       ]),
     ],
   ),
@@ -110,26 +111,27 @@ Future<FastingSession?> showEndSheet(BuildContext context) => showAppSheet<Fasti
     builder: (ctx, ref, _) {
       final s = ref.watch(activeSessionProvider).value;
       final now = ref.watch(nowProvider).value ?? DateTime.now();
+      final l = ctx.l10n;
       return Gap16Column(
         children: [
-          Semantics(header: true, child: const Text('End this session?', style: AppText.title)),
+          Semantics(header: true, child: Text(l.endSessionTitle, style: AppText.title)),
           Text.rich(
             TextSpan(
               style: AppText.body.copyWith(color: AppColors.textSecondary),
               children: [
-                const TextSpan(text: 'Recorded so far: '),
+                TextSpan(text: l.endSessionRecorded),
                 TextSpan(
                   text: s == null ? '0 h 0 m' : formatHoursMinutes(s.elapsedAt(now)),
                   style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.text),
                 ),
-                const TextSpan(text: '. You can end a session whenever you choose. It will be saved to your history.'),
+                TextSpan(text: l.endSessionBody),
               ],
             ),
           ),
           _buttonRow([
-            PillButton(label: 'Cancel', outlined: true, onPressed: () => Navigator.pop(ctx)),
+            PillButton(label: l.cancel, outlined: true, onPressed: () => Navigator.pop(ctx)),
             PillButton(
-              label: 'End session',
+              label: l.endSession,
               onPressed: () async {
                 final ended = await ref.read(activeSessionProvider.notifier).end();
                 if (ctx.mounted) Navigator.pop(ctx, ended);
@@ -155,7 +157,7 @@ class _EditStartSheet extends ConsumerStatefulWidget {
 
 class _EditStartSheetState extends ConsumerState<_EditStartSheet> {
   late TimeOfDay _time = widget.initial;
-  String? _error;
+  SessionTimeError? _error;
 
   DateTime _resolved() =>
       resolveStartFromClockTime(hour: _time.hour, minute: _time.minute, now: ref.read(clockProvider)());
@@ -174,21 +176,22 @@ class _EditStartSheetState extends ConsumerState<_EditStartSheet> {
     final use24h = ref.watch(settingsProvider).value?.use24HourTime ?? false;
     final start = _resolved();
     final display = MaterialLocalizations.of(context).formatTimeOfDay(_time, alwaysUse24HourFormat: use24h);
+    final l = context.l10n;
     return Gap16Column(
       children: [
-        Semantics(header: true, child: const Text('Edit start time', style: AppText.title)),
+        Semantics(header: true, child: Text(l.editStartTime, style: AppText.title)),
         Text(
-          'Forgot to press Start? Set when you actually began. The ring, remaining time and history update after you save.',
+          l.editStartBody,
           style: AppText.body.copyWith(fontSize: 14, height: 21 / 14, color: AppColors.textSecondary),
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('STARTED AT', style: AppText.overline.copyWith(fontSize: 12, letterSpacing: 0.96)),
+            Text(l.startedAtLabel, style: AppText.overline.copyWith(fontSize: 12, letterSpacing: 0.96)),
             const SizedBox(height: 6),
             Semantics(
               button: true,
-              label: 'Started at $display. Change time',
+              label: l.startedAtSemantics(display),
               excludeSemantics: true,
               child: Material(
                 color: AppColors.background,
@@ -211,13 +214,13 @@ class _EditStartSheetState extends ConsumerState<_EditStartSheet> {
           ],
         ),
         Text(
-          _error ?? 'Will start ${formatShortDay(start)} at ${formatClock(start, use24h: use24h)}.',
+          _error?.message(l) ?? l.willStart(formatShortDay(start), formatClock(start, use24h: use24h)),
           style: AppText.small.copyWith(color: _error == null ? AppColors.textSecondary : const Color(0xFFB3261E)),
         ),
         _buttonRow([
-          PillButton(label: 'Cancel', outlined: true, onPressed: () => Navigator.pop(context)),
+          PillButton(label: l.cancel, outlined: true, onPressed: () => Navigator.pop(context)),
           PillButton(
-            label: 'Save',
+            label: l.save,
             onPressed: () async {
               final error = await ref.read(activeSessionProvider.notifier).editStart(_resolved());
               if (!context.mounted) return;

@@ -89,7 +89,7 @@ class ActiveSessionNotifier extends AsyncNotifier<FastingSession?> {
   }
 
   /// Returns a validation error, or null when saved.
-  Future<String?> editStart(DateTime startedAt) async {
+  Future<SessionTimeError?> editStart(DateTime startedAt) async {
     final s = await future;
     if (s == null) return null;
     final now = _now();
@@ -129,7 +129,7 @@ class SessionActions {
   final Ref _ref;
 
   /// Returns a validation error, or null when saved.
-  Future<String?> save(FastingSession edited) async {
+  Future<SessionTimeError?> save(FastingSession edited) async {
     final now = _ref.read(clockProvider)().toUtc();
     final error = validateSessionTimes(start: edited.startedAt, end: edited.endedAt, now: now);
     if (error != null) return error;

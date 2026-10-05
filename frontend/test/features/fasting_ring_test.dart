@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:life_fasting/core/l10n.dart';
 import 'package:life_fasting/core/theme/app_theme.dart';
 import 'package:life_fasting/core/theme/tokens.dart';
 import 'package:life_fasting/domain/fasting_session.dart';
@@ -23,6 +24,8 @@ Future<List<Milestone>> _pump(WidgetTester tester, TimerSnapshot s, {double text
   await tester.pumpWidget(
     MaterialApp(
       theme: buildAppTheme(),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: MediaQuery(
         data: MediaQueryData(textScaler: TextScaler.linear(textScale)),
         child: Scaffold(

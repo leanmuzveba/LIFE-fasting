@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../core/l10n.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
@@ -33,6 +34,7 @@ class _CalendarViewState extends State<CalendarView> {
     final leading = first.weekday - 1; // Monday-first
     final daysInMonth = DateTime(first.year, first.month + 1, 0).day;
     final selected = _day == null ? const <FastingSession>[] : byDay[_day] ?? const [];
+    final l = context.l10n;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -40,7 +42,7 @@ class _CalendarViewState extends State<CalendarView> {
         Row(
           children: [
             IconButton(
-              tooltip: 'Previous month',
+              tooltip: l.previousMonth,
               onPressed: () => setState(() => _month = DateTime(_month.year, _month.month - 1)),
               icon: const AppIconView(AppIcon.back, color: AppColors.deep),
             ),
@@ -52,7 +54,7 @@ class _CalendarViewState extends State<CalendarView> {
               ),
             ),
             IconButton(
-              tooltip: 'Next month',
+              tooltip: l.nextMonth,
               onPressed: () => setState(() => _month = DateTime(_month.year, _month.month + 1)),
               icon: const AppIconView(AppIcon.chevronRight, color: AppColors.deep),
             ),
@@ -61,7 +63,7 @@ class _CalendarViewState extends State<CalendarView> {
         const SizedBox(height: 8),
         Row(
           children: [
-            for (final d in const ['M', 'T', 'W', 'T', 'F', 'S', 'S'])
+            for (final d in l.weekdayInitials.split(','))
               Expanded(
                 child: ExcludeSemantics(
                   child: Text(d, textAlign: TextAlign.center, style: AppText.overline),
@@ -88,7 +90,7 @@ class _CalendarViewState extends State<CalendarView> {
         const SizedBox(height: 12),
         if (_day != null && selected.isEmpty)
           Text(
-            'No sessions on ${DateFormat('EEEE d MMMM').format(_day!)}.',
+            l.noSessionsOn(DateFormat('EEEE d MMMM').format(_day!)),
             textAlign: TextAlign.center,
             style: AppText.small,
           ),
@@ -109,8 +111,7 @@ class _DayCell extends StatelessWidget {
   Widget build(BuildContext context) => Semantics(
     button: true,
     selected: selected,
-    label:
-        '${DateFormat('EEEE d MMMM').format(date)}, ${count == 0 ? 'no sessions' : '$count session${count > 1 ? 's' : ''}'}',
+    label: context.l10n.daySessions(DateFormat('EEEE d MMMM').format(date), count),
     excludeSemantics: true,
     child: InkResponse(
       onTap: onTap,

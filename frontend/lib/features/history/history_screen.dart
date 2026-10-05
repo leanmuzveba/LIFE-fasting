@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/format.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
@@ -25,17 +26,18 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final sessions = ref.watch(historyProvider).value;
+    final l = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const PageHeader('History'),
+        PageHeader(l.navHistory),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
           child: SegmentedButton<bool>(
             showSelectedIcon: false,
-            segments: const [
-              ButtonSegment(value: false, label: Text('List')),
-              ButtonSegment(value: true, label: Text('Calendar')),
+            segments: [
+              ButtonSegment(value: false, label: Text(l.historyList)),
+              ButtonSegment(value: true, label: Text(l.historyCalendar)),
             ],
             selected: {_calendar},
             onSelectionChanged: (v) => setState(() => _calendar = v.first),
@@ -84,13 +86,9 @@ class _EmptyState extends StatelessWidget {
             child: const AppIconView(AppIcon.calendar, size: 30, color: AppColors.deep),
           ),
           const SizedBox(height: 16),
-          const Text('No sessions yet', style: AppText.title),
+          Text(context.l10n.historyEmptyTitle, style: AppText.title),
           const SizedBox(height: 6),
-          const Text(
-            'When you end a session, it’s saved here. You can edit or delete it at any time.',
-            textAlign: TextAlign.center,
-            style: AppText.small,
-          ),
+          Text(context.l10n.historyEmptyBody, textAlign: TextAlign.center, style: AppText.small),
         ],
       ),
     ),
@@ -107,20 +105,26 @@ class SessionTile extends ConsumerWidget {
     final use24h = ref.watch(settingsProvider).value?.use24HourTime ?? false;
     final now = ref.watch(nowProvider).value ?? DateTime.now();
     final s = session;
+    final l = context.l10n;
     final (status, strong) = s.isActive
-        ? ('In progress', true)
+        ? (l.statusInProgress, true)
         : s.targetReachedAt(now)
-        ? ('Target reached', true)
-        : ('Session ended', false);
-    final times =
-        '${formatClock(s.startedAt, use24h: use24h)} → '
-        '${s.endedAt == null ? 'now' : formatClock(s.endedAt!, use24h: use24h)}';
+        ? (l.statusTargetReached, true)
+        : (l.statusEnded, false);
+    final start = formatClock(s.startedAt, use24h: use24h);
+    final times = s.endedAt == null
+        ? l.sessionTimesOngoing(start)
+        : l.sessionTimes(start, formatClock(s.endedAt!, use24h: use24h));
 
     return Semantics(
       button: true,
-      label:
-          '${formatShortDay(s.startedAt)}, $times, ${formatHoursMinutes(s.elapsedAt(now))} '
-          'of ${formatTarget(s.target)} target, $status. Opens options.',
+      label: l.sessionTileSemantics(
+        formatShortDay(s.startedAt),
+        times,
+        formatHoursMinutes(s.elapsedAt(now)),
+        formatTarget(s.target),
+        status,
+      ),
       excludeSemantics: true,
       child: Material(
         color: AppColors.white,
@@ -140,7 +144,7 @@ class SessionTile extends ConsumerWidget {
                       Text(formatShortDay(s.startedAt).toUpperCase(), style: AppText.overline),
                       const SizedBox(height: 4),
                       Text(formatHoursMinutes(s.elapsedAt(now)), style: AppText.cardValue),
-                      Text('$times · ${formatTarget(s.target)} target', style: AppText.cardSub),
+                      Text(l.sessionTileDetail(times, formatTarget(s.target)), style: AppText.cardSub),
                     ],
                   ),
                 ),

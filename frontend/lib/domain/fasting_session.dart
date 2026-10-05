@@ -46,12 +46,14 @@ class FastingSession {
   );
 }
 
-/// Validates an edited session. Returns an error message, or null when valid.
-String? validateSessionTimes({required DateTime start, DateTime? end, required DateTime now}) {
-  if (start.isAfter(now)) return 'Start time can’t be in the future.';
+enum SessionTimeError { startInFuture, endInFuture, endBeforeStart }
+
+/// Validates an edited session. Returns the problem, or null when valid.
+SessionTimeError? validateSessionTimes({required DateTime start, DateTime? end, required DateTime now}) {
+  if (start.isAfter(now)) return SessionTimeError.startInFuture;
   if (end != null) {
-    if (end.isAfter(now)) return 'End time can’t be in the future.';
-    if (!end.isAfter(start)) return 'End time must be after the start time.';
+    if (end.isAfter(now)) return SessionTimeError.endInFuture;
+    if (!end.isAfter(start)) return SessionTimeError.endBeforeStart;
   }
   return null;
 }

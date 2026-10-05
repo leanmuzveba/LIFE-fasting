@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/l10n.dart';
 import 'core/theme/app_theme.dart';
 import 'data/app_database.dart';
 import 'domain/settings.dart';
@@ -20,7 +21,9 @@ class LifeFastingApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fasting Companion',
+      onGenerateTitle: (context) => context.l10n.appName,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
       home: const _Gate(),

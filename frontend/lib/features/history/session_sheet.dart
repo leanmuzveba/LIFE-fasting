@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/format.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
@@ -23,7 +24,7 @@ class _SessionSheet extends ConsumerStatefulWidget {
 class _SessionSheetState extends ConsumerState<_SessionSheet> {
   late DateTime _start = widget.session.startedAt.toLocal();
   late DateTime? _end = widget.session.endedAt?.toLocal();
-  String? _error;
+  SessionTimeError? _error;
   bool _confirmDelete = false;
 
   Future<DateTime?> _pick(DateTime initial) async {
@@ -44,20 +45,18 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
   Widget build(BuildContext context) {
     final use24h = ref.watch(settingsProvider).value?.use24HourTime ?? false;
     String label(DateTime t) => '${formatShortDay(t)}, ${formatClock(t, use24h: use24h)}';
+    final l = context.l10n;
 
     if (_confirmDelete) {
       return Gap16Column(
         children: [
-          Semantics(header: true, child: const Text('Delete this session?', style: AppText.title)),
-          Text(
-            'It will be removed from your history on this phone. This can’t be undone.',
-            style: AppText.body.copyWith(color: AppColors.textSecondary),
-          ),
+          Semantics(header: true, child: Text(l.deleteSessionTitle, style: AppText.title)),
+          Text(l.deleteSessionBody, style: AppText.body.copyWith(color: AppColors.textSecondary)),
           Row(
             children: [
               Expanded(
                 child: PillButton(
-                  label: 'Cancel',
+                  label: l.cancel,
                   outlined: true,
                   onPressed: () => setState(() => _confirmDelete = false),
                 ),
@@ -65,7 +64,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
               const SizedBox(width: 10),
               Expanded(
                 child: PillButton(
-                  label: 'Delete',
+                  label: l.delete,
                   onPressed: () async {
                     await ref.read(sessionActionsProvider).delete(widget.session);
                     if (context.mounted) Navigator.pop(context);
@@ -80,9 +79,9 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
 
     return Gap16Column(
       children: [
-        Semantics(header: true, child: const Text('Session', style: AppText.title)),
+        Semantics(header: true, child: Text(l.sessionTitle, style: AppText.title)),
         _TimeField(
-          label: 'STARTED',
+          label: l.sessionStarted,
           value: label(_start),
           onTap: () async {
             final t = await _pick(_start);
@@ -95,7 +94,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
         ),
         if (_end != null)
           _TimeField(
-            label: 'ENDED',
+            label: l.sessionEnded,
             value: label(_end!),
             onTap: () async {
               final t = await _pick(_end!);
@@ -106,12 +105,12 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
               });
             },
           ),
-        if (_error != null) Text(_error!, style: AppText.small.copyWith(color: const Color(0xFFB3261E))),
+        if (_error != null) Text(_error!.message(l), style: AppText.small.copyWith(color: const Color(0xFFB3261E))),
         Row(
           children: [
             Expanded(
               child: PillButton(
-                label: 'Delete',
+                label: l.delete,
                 outlined: true,
                 onPressed: () => setState(() => _confirmDelete = true),
               ),
@@ -119,7 +118,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
             const SizedBox(width: 10),
             Expanded(
               child: PillButton(
-                label: 'Save',
+                label: l.save,
                 onPressed: () async {
                   final error = await ref
                       .read(sessionActionsProvider)
@@ -154,7 +153,7 @@ class _TimeField extends StatelessWidget {
       const SizedBox(height: 6),
       Semantics(
         button: true,
-        label: '${label.toLowerCase()} $value. Change',
+        label: context.l10n.timeFieldSemantics(label.toLowerCase(), value),
         excludeSemantics: true,
         child: Material(
           color: AppColors.background,

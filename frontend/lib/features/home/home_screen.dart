@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/format.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
@@ -36,6 +37,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return const Center(child: CircularProgressIndicator());
     }
     final running = snap.running && session != null;
+    final l = context.l10n;
 
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,7 +45,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _Header(onOpenSettings: widget.onOpenSettings),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Text('${formatLongDay(now)}${running ? ' · Session in progress' : ''}', style: AppText.dateLine),
+          child: Text(
+            running ? l.homeSessionInProgress(formatLongDay(now)) : formatLongDay(now),
+            style: AppText.dateLine,
+          ),
         ),
         const SizedBox(height: 16),
         Center(
@@ -62,16 +67,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: running
                 ? [
-                    PillButton(label: 'End fast', large: true, onPressed: _askEnd),
+                    PillButton(label: l.endFast, large: true, onPressed: _askEnd),
                     const SizedBox(height: 4),
-                    _LinkRow(
-                      links: {'Edit start time': () => showEditStartSheet(context, startedAt: session.startedAt)},
-                    ),
+                    _LinkRow(links: {l.editStartTime: () => showEditStartSheet(context, startedAt: session.startedAt)}),
                   ]
                 : [
-                    PillButton(label: 'Start fast', large: true, onPressed: _start),
+                    PillButton(label: l.startFast, large: true, onPressed: _start),
                     const SizedBox(height: 4),
-                    _LinkRow(links: {'Change target': widget.onChangeTarget}),
+                    _LinkRow(links: {l.changeTarget: widget.onChangeTarget}),
                   ],
           ),
         ),
@@ -107,10 +110,10 @@ class _Header extends StatelessWidget {
           const AppLogo(),
           const SizedBox(width: 8),
           Expanded(
-            child: Semantics(header: true, child: const Text('Fasting Companion', style: AppText.brand)),
+            child: Semantics(header: true, child: Text(context.l10n.appName, style: AppText.brand)),
           ),
           IconButton(
-            tooltip: 'Settings',
+            tooltip: context.l10n.navSettings,
             onPressed: onOpenSettings,
             constraints: const BoxConstraints.tightFor(width: 48, height: 48),
             icon: const AppIconView(AppIcon.settings, color: AppColors.deep, strokeWidth: 1.8),
@@ -176,6 +179,7 @@ Future<void> showSessionTimesSheet(BuildContext context) => showAppSheet<void>(
       final use24h = settings?.use24HourTime ?? false;
       final target = Duration(minutes: session?.targetMinutes ?? settings?.targetMinutes ?? 16 * 60);
       final plannedEnd = (session?.startedAt ?? now).add(target);
+      final l = ctx.l10n;
       return Gap16Column(
         children: [
           IntrinsicHeight(
@@ -185,16 +189,16 @@ Future<void> showSessionTimesSheet(BuildContext context) => showAppSheet<void>(
                 Expanded(
                   child: session != null
                       ? _InfoCard(
-                          label: 'FAST STARTED',
+                          label: l.cardFastStarted,
                           value: formatClock(session.startedAt, use24h: use24h),
                           sub: formatShortDay(session.startedAt),
                         )
-                      : _InfoCard(label: 'TARGET', value: _targetWords(target), sub: 'Change any time'),
+                      : _InfoCard(label: l.cardTarget, value: _targetWords(l, target), sub: l.cardChangeAnyTime),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: _InfoCard(
-                    label: session != null ? 'PLANNED END' : 'IF STARTED NOW',
+                    label: session != null ? l.cardPlannedEnd : l.cardIfStartedNow,
                     value: formatClock(plannedEnd, use24h: use24h),
                     sub: formatShortDay(plannedEnd),
                   ),
@@ -202,11 +206,12 @@ Future<void> showSessionTimesSheet(BuildContext context) => showAppSheet<void>(
               ],
             ),
           ),
-          PillButton(label: 'Close', onPressed: () => Navigator.pop(ctx)),
+          PillButton(label: l.close, onPressed: () => Navigator.pop(ctx)),
         ],
       );
     },
   ),
 );
 
-String _targetWords(Duration d) => d.inMinutes.remainder(60) == 0 ? '${d.inHours} hours' : formatTarget(d);
+String _targetWords(AppLocalizations l, Duration d) =>
+    d.inMinutes.remainder(60) == 0 ? l.targetHours(d.inHours) : formatTarget(d);

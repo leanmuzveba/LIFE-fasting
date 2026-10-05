@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/format.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
@@ -27,22 +28,19 @@ class _TargetSetupScreenState extends ConsumerState<TargetSetupScreen> {
     final saved = ref.watch(settingsProvider).value?.targetMinutes ?? 16 * 60;
     final minutes = _minutes ?? saved;
     final isPreset = targetPresetsHours.any((h) => h * 60 == minutes);
+    final l = context.l10n;
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const PageHeader('Your target'),
+            PageHeader(l.targetTitle),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
                 children: [
-                  Text(
-                    'Choose how long you’d like to track. No option here is a recommendation, and you can end any '
-                    'session whenever you choose.',
-                    style: AppText.body.copyWith(color: AppColors.textSecondary),
-                  ),
+                  Text(l.targetIntro, style: AppText.body.copyWith(color: AppColors.textSecondary)),
                   const SizedBox(height: 20),
                   GridView.count(
                     crossAxisCount: 2,
@@ -54,14 +52,14 @@ class _TargetSetupScreenState extends ConsumerState<TargetSetupScreen> {
                     children: [
                       for (final h in targetPresetsHours)
                         _Choice(
-                          label: '$h hours',
+                          label: l.targetHours(h),
                           selected: minutes == h * 60,
                           onTap: () => setState(() => _minutes = h * 60),
                         ),
                     ],
                   ),
                   const SizedBox(height: 20),
-                  const Text('CUSTOM', style: AppText.overline),
+                  Text(l.targetCustom, style: AppText.overline),
                   const SizedBox(height: 8),
                   _CustomStepper(
                     minutes: minutes,
@@ -75,7 +73,7 @@ class _TargetSetupScreenState extends ConsumerState<TargetSetupScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
               child: PillButton(
-                label: 'Save target',
+                label: l.saveTarget,
                 large: true,
                 onPressed: () async {
                   await ref.read(settingsProvider.notifier).change((s) => s.copyWith(targetMinutes: minutes));
@@ -148,7 +146,7 @@ class _CustomStepper extends StatelessWidget {
       ),
       child: Row(
         children: [
-          btn('−', 'Decrease by 30 minutes', -step, minutes > minTargetMinutes),
+          btn('−', context.l10n.targetDecrease, -step, minutes > minTargetMinutes),
           Expanded(
             child: Semantics(
               liveRegion: true,
@@ -159,7 +157,7 @@ class _CustomStepper extends StatelessWidget {
               ),
             ),
           ),
-          btn('+', 'Increase by 30 minutes', step, minutes < maxTargetMinutes),
+          btn('+', context.l10n.targetIncrease, step, minutes < maxTargetMinutes),
         ],
       ),
     );

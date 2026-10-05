@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/pill_button.dart';
 import '../../domain/settings.dart';
 import '../../state/providers.dart';
-
-const _safetyNotice =
-    'Speak with a qualified healthcare professional before changing how you eat — especially if you have a '
-    'medical condition, take medication, are pregnant, or have a history of disordered eating.';
 
 /// Scrollable page frame shared by onboarding and the under-18 screen.
 class _Page extends StatelessWidget {
@@ -32,11 +29,11 @@ class _Page extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Row(
+                  Row(
                     children: [
-                      AppLogo(size: 32),
-                      SizedBox(width: 10),
-                      Text('Fasting Companion', style: AppText.brand),
+                      const AppLogo(size: 32),
+                      const SizedBox(width: 10),
+                      Text(context.l10n.appName, style: AppText.brand),
                     ],
                   ),
                   const SizedBox(height: 28),
@@ -107,40 +104,26 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     if (!_askAge) {
       return _Page(
-        title: 'A calm way to record your eating and fasting times',
-        actions: [PillButton(label: 'Continue', large: true, onPressed: () => setState(() => _askAge = true))],
-        children: const [
-          _Note(
-            'This app records time. It is a tracking and educational tool, not a medical device, and it cannot tell '
-            'what is happening in your body.',
-          ),
-          _Note(
-            'Milestones on the timer are general estimates that vary between people. They are never goals.',
-            icon: AppIcon.clock,
-          ),
-          _Note(
-            'Your sessions stay on this phone. Nothing is uploaded, and you can delete everything at any time.',
-            icon: AppIcon.check,
-          ),
-          _Note(_safetyNotice),
+        title: l.onboardingTitle,
+        actions: [PillButton(label: l.continueLabel, large: true, onPressed: () => setState(() => _askAge = true))],
+        children: [
+          _Note(l.onboardingNotMedical),
+          _Note(l.onboardingEstimates, icon: AppIcon.clock),
+          _Note(l.onboardingPrivacy, icon: AppIcon.check),
+          _Note(l.onboardingSafety),
         ],
       );
     }
     return _Page(
-      title: 'Are you 18 or older?',
+      title: l.ageTitle,
       actions: [
-        PillButton(label: 'I’m 18 or older', large: true, onPressed: () => _answer(AgeEligibility.adult)),
-        PillButton(label: 'I’m under 18', outlined: true, onPressed: () => _answer(AgeEligibility.under18)),
+        PillButton(label: l.ageAdult, large: true, onPressed: () => _answer(AgeEligibility.adult)),
+        PillButton(label: l.ageUnder18, outlined: true, onPressed: () => _answer(AgeEligibility.under18)),
       ],
-      children: [
-        Text(
-          'Fasting tools in this app are designed for adults only. If you’re under 18, we’ll show general '
-          'information instead.',
-          style: AppText.body.copyWith(color: AppColors.textSecondary),
-        ),
-      ],
+      children: [Text(l.ageBody, style: AppText.body.copyWith(color: AppColors.textSecondary))],
     );
   }
 }
@@ -151,30 +134,20 @@ class UnderageScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => _Page(
-    title: 'This app is designed for adults',
+    title: context.l10n.underageTitle,
     actions: [
       TextButton(
         onPressed: () async {
           await ref.read(settingsRepositoryProvider).clear();
           ref.invalidate(settingsProvider);
         },
-        child: const Text('I answered by mistake — start again'),
+        child: Text(context.l10n.underageReset),
       ),
     ],
-    children: const [
-      _Note(
-        'Growing bodies need regular, balanced meals. Fasting isn’t recommended for people under 18 unless a '
-        'doctor advises it.',
-      ),
-      _Note(
-        'If you have questions about eating, food or your body, talk with a parent or guardian and a qualified '
-        'healthcare professional such as your doctor or a dietitian.',
-      ),
-      _Note(
-        'If you’re worried about how you feel about food, you deserve support — a trusted adult or your doctor '
-        'can help you find it.',
-        icon: AppIcon.check,
-      ),
+    children: [
+      _Note(context.l10n.underageMeals),
+      _Note(context.l10n.underageTalk),
+      _Note(context.l10n.underageSupport, icon: AppIcon.check),
     ],
   );
 }

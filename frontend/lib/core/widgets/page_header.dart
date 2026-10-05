@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n.dart';
 import '../icons.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
@@ -21,7 +22,7 @@ class PageHeader extends StatelessWidget {
           children: [
             if (canPop)
               IconButton(
-                tooltip: 'Back',
+                tooltip: context.l10n.back,
                 onPressed: () => Navigator.of(context).maybePop(),
                 icon: const AppIconView(AppIcon.back, color: AppColors.deep),
               ),

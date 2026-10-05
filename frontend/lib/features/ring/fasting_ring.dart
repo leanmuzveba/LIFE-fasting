@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/l10n.dart';
 import '../../core/format.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
@@ -54,12 +55,17 @@ class FastingRing extends StatelessWidget {
       return Offset(c + r * math.cos(a), c + r * math.sin(a));
     }
 
+    final l = context.l10n;
     final status = !s.running
-        ? 'Ready when you are'
+        ? l.ringReady
         : s.targetReached
-        ? 'Target reached'
-        : 'Fasting in progress';
-    final targetLine = '${s.running ? 'of ' : ''}${formatTarget(s.target)} target';
+        ? l.ringTargetReached
+        : l.ringInProgress;
+    // Running-but-not-reached shows no visible label: the ring speaks for itself.
+    final visibleStatus = s.running && !s.targetReached ? null : status;
+    final targetLine = s.running
+        ? l.ringOfTargetLine(formatTarget(s.target))
+        : l.ringTargetLine(formatTarget(s.target));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -86,11 +92,16 @@ class FastingRing extends StatelessWidget {
                 child: Semantics(
                   container: true,
                   button: onCenterTap != null,
-                  hint: onCenterTap == null ? null : 'Shows start and planned end times',
+                  hint: onCenterTap == null ? null : l.ringCenterHint,
                   onTap: onCenterTap,
-                  label:
-                      '$status. ${formatHoursMinutes(s.elapsed)} elapsed, $targetLine'
-                      '${s.running && !s.targetReached ? ', ${formatHoursMinutes(s.remaining)} remaining' : ''}.',
+                  label: s.running && !s.targetReached
+                      ? l.ringSemanticsRemaining(
+                          status,
+                          formatHoursMinutes(s.elapsed),
+                          targetLine,
+                          formatHoursMinutes(s.remaining),
+                        )
+                      : l.ringSemantics(status, formatHoursMinutes(s.elapsed), targetLine),
                   child: ExcludeSemantics(
                     child: Center(
                       child: Material(
@@ -108,7 +119,7 @@ class FastingRing extends StatelessWidget {
                                 child: FittedBox(
                                   fit: BoxFit.scaleDown,
                                   child: _Readout(
-                                    status: status,
+                                    status: visibleStatus,
                                     time: formatHms(s.elapsed),
                                     targetLine: targetLine,
                                     timerSize: (size * 0.135).roundToDouble(),
@@ -140,7 +151,7 @@ class FastingRing extends StatelessWidget {
 class _Readout extends StatelessWidget {
   const _Readout({required this.status, required this.time, required this.targetLine, required this.timerSize});
 
-  final String status;
+  final String? status;
   final String time;
   final String targetLine;
   final double timerSize;
@@ -150,9 +161,8 @@ class _Readout extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Running-but-not-reached shows no label: the ring speaks for itself.
-        if (status != 'Fasting in progress') ...[
-          Text(status.toUpperCase(), style: AppText.overline.copyWith(letterSpacing: 1.32, color: AppColors.deep)),
+        if (status != null) ...[
+          Text(status!.toUpperCase(), style: AppText.overline.copyWith(letterSpacing: 1.32, color: AppColors.deep)),
           const SizedBox(height: 4),
         ],
         Text(
@@ -168,7 +178,10 @@ class _Readout extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Text('TIME ELAPSED', style: AppText.overline.copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.32)),
+        Text(
+          context.l10n.ringTimeElapsed,
+          style: AppText.overline.copyWith(fontWeight: FontWeight.w700, letterSpacing: 1.32),
+        ),
         const SizedBox(height: 10),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -192,6 +205,7 @@ class _Marker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final m = placement.milestone;
+    final l = context.l10n;
     final phase = phaseColors(m.kind);
     final accent = phase?.$1 ?? AppColors.sky;
     final (bg, border, fg, shadows, word) = switch (placement.state) {
@@ -200,28 +214,30 @@ class _Marker extends StatelessWidget {
         BorderSide(color: accent, width: 2),
         phase?.$2 ?? AppColors.onSky,
         [BoxShadow(color: accent.withValues(alpha: 0.28), spreadRadius: 6)],
-        'current estimate',
+        l.markerCurrent,
       ),
       MarkerState.passed => (
         AppColors.white,
         BorderSide(color: accent, width: 2),
         phase?.$3 ?? AppColors.deep,
         const [BoxShadow(color: Color(0x24203443), offset: Offset(0, 1), blurRadius: 3)],
-        'passed',
+        l.markerPassed,
       ),
       MarkerState.upcoming => (
         AppColors.background,
         const BorderSide(color: AppColors.inputBorder, width: 1.5),
         phase?.$3 ?? AppColors.muted,
         const <BoxShadow>[],
-        'upcoming',
+        l.markerUpcoming,
       ),
     };
-    final hours = m.offsetMinutes == 0 ? '' : 'around ${formatTarget(m.offset)}, ';
+    final label = m.offsetMinutes == 0
+        ? l.markerSemantics(m.title, word)
+        : l.markerSemanticsAround(m.title, formatTarget(m.offset), word);
 
     return Semantics(
       button: true,
-      label: '${m.title}, $hours$word. Opens details.',
+      label: label,
       child: GestureDetector(
         onTap: onTap,
         behavior: HitTestBehavior.opaque,

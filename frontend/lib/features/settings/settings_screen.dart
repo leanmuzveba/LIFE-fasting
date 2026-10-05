@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/l10n.dart';
 import '../../core/format.dart';
 import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
@@ -23,61 +24,63 @@ class SettingsScreen extends ConsumerWidget {
     final target = prefs.firstWhere((p) => p.type == NotificationType.targetReached);
     final daily = prefs.firstWhere((p) => p.type == NotificationType.dailyReminder);
     final dailyTime = TimeOfDay(hour: daily.hour ?? 20, minute: daily.minute ?? 0);
+    final l = context.l10n;
 
     Future<void> setPref(NotificationPreference p) async {
       final ok = await ref.read(notificationPrefsProvider.notifier).set(p);
       if (!ok && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Notifications are turned off for this app in your phone’s settings.')),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.settingsNotificationsBlocked)));
       }
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const PageHeader('Settings'),
+        PageHeader(l.navSettings),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
             children: [
-              const _Section('TIMER'),
+              _Section(l.settingsTimer),
               _Card(
                 children: [
                   _Row(
-                    title: 'Target',
+                    title: l.settingsTarget,
                     subtitle: formatTarget(Duration(minutes: settings.targetMinutes)),
                     trailing: const AppIconView(AppIcon.chevronRight, color: AppColors.muted),
                     onTap: onChangeTarget,
                   ),
                   _SwitchRow(
-                    title: '24-hour clock',
+                    title: l.settings24h,
                     value: settings.use24HourTime,
                     onChanged: (v) => ref.read(settingsProvider.notifier).change((s) => s.copyWith(use24HourTime: v)),
                   ),
                 ],
               ),
-              const _Section('NOTIFICATIONS'),
+              _Section(l.settingsNotifications),
               _Card(
                 children: [
                   _SwitchRow(
-                    title: 'Target time reached',
-                    subtitle: 'A quiet notice when your planned time passes',
+                    title: l.settingsTargetReached,
+                    subtitle: l.settingsTargetReachedSub,
                     value: target.enabled,
                     onChanged: (v) => setPref(target.copyWith(enabled: v)),
                   ),
                   _SwitchRow(
-                    title: 'Daily reminder',
+                    title: l.settingsDailyReminder,
                     subtitle: daily.enabled
-                        ? 'Every day at ${MaterialLocalizations.of(context).formatTimeOfDay(dailyTime, alwaysUse24HourFormat: settings.use24HourTime)}'
-                        : 'Off',
+                        ? l.settingsEveryDayAt(
+                            MaterialLocalizations.of(context)
+                                .formatTimeOfDay(dailyTime, alwaysUse24HourFormat: settings.use24HourTime),
+                          )
+                        : l.settingsOff,
                     value: daily.enabled,
                     onChanged: (v) =>
                         setPref(daily.copyWith(enabled: v, hour: dailyTime.hour, minute: dailyTime.minute)),
                   ),
                   if (daily.enabled)
                     _Row(
-                      title: 'Reminder time',
+                      title: l.settingsReminderTime,
                       trailing: const AppIconView(AppIcon.clock, color: AppColors.deep),
                       onTap: () async {
                         final t = await showTimePicker(context: context, initialTime: dailyTime);
@@ -86,31 +89,21 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                 ],
               ),
-              const _Section('PRIVACY'),
+              _Section(l.settingsPrivacy),
               _Card(
                 children: [
-                  const _Row(
-                    title: 'Your data stays on this phone',
-                    subtitle: 'Nothing is uploaded or shared. There are no accounts or ads.',
-                  ),
+                  _Row(title: l.settingsDataStays, subtitle: l.settingsDataStaysSub),
                   _Row(
-                    title: 'Delete all data',
-                    subtitle: 'Sessions, settings and reminders',
+                    title: l.settingsDeleteAll,
+                    subtitle: l.settingsDeleteAllSub,
                     danger: true,
                     onTap: () => _confirmDelete(context, ref),
                   ),
                 ],
               ),
-              const _Section('ABOUT'),
-              const _Card(
-                children: [
-                  _Row(
-                    title: 'Not a medical device',
-                    subtitle:
-                        'This app records time only. Milestones are general estimates and can’t tell what is happening '
-                        'in your body. Speak with a qualified healthcare professional before changing how you eat.',
-                  ),
-                ],
+              _Section(l.settingsAbout),
+              _Card(
+                children: [_Row(title: l.settingsNotMedical, subtitle: l.settingsNotMedicalSub)],
               ),
             ],
           ),
@@ -123,20 +116,17 @@ class SettingsScreen extends ConsumerWidget {
     context,
     (ctx) => Gap16Column(
       children: [
-        Semantics(header: true, child: const Text('Delete all data?', style: AppText.title)),
-        Text(
-          'This removes every session, your settings and any reminders from this phone. It can’t be undone.',
-          style: AppText.body.copyWith(color: AppColors.textSecondary),
-        ),
+        Semantics(header: true, child: Text(ctx.l10n.deleteAllTitle, style: AppText.title)),
+        Text(ctx.l10n.deleteAllBody, style: AppText.body.copyWith(color: AppColors.textSecondary)),
         Row(
           children: [
             Expanded(
-              child: PillButton(label: 'Cancel', outlined: true, onPressed: () => Navigator.pop(ctx)),
+              child: PillButton(label: ctx.l10n.cancel, outlined: true, onPressed: () => Navigator.pop(ctx)),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: PillButton(
-                label: 'Delete all',
+                label: ctx.l10n.deleteAll,
                 onPressed: () async {
                   Navigator.pop(ctx);
                   await ref.read(sessionActionsProvider).deleteEverything();
