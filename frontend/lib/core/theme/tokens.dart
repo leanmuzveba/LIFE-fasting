@@ -21,6 +21,7 @@ abstract final class AppColors {
   // Ring phases (user request): fat burning = yellow, ketosis = red.
   static const fatBurning = Color(0xFFF2B705);
   static const onFatBurning = Color(0xFF4A3800);
+  static const fatBurningIcon = Color(0xFF9A6F00); // darker amber: 4.3:1 on light surfaces
   static const ketosis = Color(0xFFE5484D);
   static const onKetosis = Color(0xFFFFFFFF);
 }

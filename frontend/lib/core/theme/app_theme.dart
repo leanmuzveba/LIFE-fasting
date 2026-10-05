@@ -76,7 +76,7 @@ ThemeData buildAppTheme() {
       style: TextButton.styleFrom(
         foregroundColor: AppColors.deep,
         textStyle: AppText.link,
-        minimumSize: const Size(44, 44),
+        minimumSize: const Size(48, 48),
         padding: const EdgeInsets.symmetric(horizontal: 14),
       ),
     ),

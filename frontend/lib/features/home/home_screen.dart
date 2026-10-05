@@ -112,7 +112,7 @@ class _Header extends StatelessWidget {
           IconButton(
             tooltip: 'Settings',
             onPressed: onOpenSettings,
-            constraints: const BoxConstraints.tightFor(width: 44, height: 44),
+            constraints: const BoxConstraints.tightFor(width: 48, height: 48),
             icon: const AppIconView(AppIcon.settings, color: AppColors.deep, strokeWidth: 1.8),
           ),
         ],

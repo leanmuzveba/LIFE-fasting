@@ -19,9 +19,10 @@ AppIcon milestoneIcon(MilestoneKind k, {bool detailed = false}) => switch (k) {
 
 /// Arc / icon colour a milestone starts. Kinds without one keep the previous
 /// phase colour (the later stage stays red).
-(Color, Color)? phaseColors(MilestoneKind k) => switch (k) {
-  MilestoneKind.bolt => (AppColors.fatBurning, AppColors.onFatBurning),
-  MilestoneKind.drop => (AppColors.ketosis, AppColors.onKetosis),
+/// (arc colour, icon colour on the filled marker, icon colour on light surfaces)
+(Color, Color, Color)? phaseColors(MilestoneKind k) => switch (k) {
+  MilestoneKind.bolt => (AppColors.fatBurning, AppColors.onFatBurning, AppColors.fatBurningIcon),
+  MilestoneKind.drop => (AppColors.ketosis, AppColors.onKetosis, AppColors.ketosis),
   _ => null,
 };
 
@@ -40,8 +41,8 @@ class FastingRing extends StatelessWidget {
   static const _stroke = 14.0;
   static double radiusFor(double size) => size / 2 - 26;
 
-  /// Minimum spacing between markers so 44px tap targets never overlap.
-  static double gapFor(double size) => 42 / (2 * math.pi * radiusFor(size));
+  /// Minimum spacing between markers so 48px tap targets never overlap.
+  static double gapFor(double size) => 46 / (2 * math.pi * radiusFor(size));
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,7 @@ class FastingRing extends StatelessWidget {
                     stroke: _stroke,
                     phases: [
                       for (final m in s.markers)
-                        if (phaseColors(m.milestone.kind) case (final c, _)) (m.fraction, c),
+                        if (phaseColors(m.milestone.kind) case (final c, _, _)) (m.fraction, c),
                     ],
                   ),
                 ),
@@ -124,8 +125,8 @@ class FastingRing extends StatelessWidget {
               ),
               for (final m in s.markers)
                 Positioned(
-                  left: pt(m.fraction).dx - 22,
-                  top: pt(m.fraction).dy - 22,
+                  left: pt(m.fraction).dx - 24,
+                  top: pt(m.fraction).dy - 24,
                   child: _Marker(placement: m, onTap: () => onPick(m.milestone)),
                 ),
             ],
@@ -204,14 +205,14 @@ class _Marker extends StatelessWidget {
       MarkerState.passed => (
         AppColors.white,
         BorderSide(color: accent, width: 2),
-        phase?.$1 ?? AppColors.deep,
+        phase?.$3 ?? AppColors.deep,
         const [BoxShadow(color: Color(0x24203443), offset: Offset(0, 1), blurRadius: 3)],
         'passed',
       ),
       MarkerState.upcoming => (
         AppColors.background,
         const BorderSide(color: AppColors.inputBorder, width: 1.5),
-        phase?.$1 ?? AppColors.muted,
+        phase?.$3 ?? AppColors.muted,
         const <BoxShadow>[],
         'upcoming',
       ),
@@ -225,7 +226,7 @@ class _Marker extends StatelessWidget {
         onTap: onTap,
         behavior: HitTestBehavior.opaque,
         child: SizedBox.square(
-          dimension: 44,
+          dimension: 48,
           child: Center(
             child: Stack(
               clipBehavior: Clip.none,

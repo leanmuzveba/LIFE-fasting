@@ -7,6 +7,8 @@ Future<T?> showAppSheet<T>(BuildContext context, WidgetBuilder builder) => showM
   context: context,
   isScrollControlled: true,
   useSafeArea: true,
+  // Respect the system "remove animations" / reduced-motion setting.
+  sheetAnimationStyle: MediaQuery.disableAnimationsOf(context) ? AnimationStyle.noAnimation : null,
   builder: (ctx) => SafeArea(
     top: false,
     child: SingleChildScrollView(
