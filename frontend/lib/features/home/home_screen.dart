@@ -50,17 +50,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             style: AppText.dateLine,
           ),
         ),
-        const SizedBox(height: 16),
-        Center(
-          child: FastingRing(
-            snapshot: snap,
-            size: _ringSize,
-            onPick: (m) => showMilestoneSheet(context, milestone: m, onReadMore: () => widget.onReadMore(m)),
-            onCenterTap: () => showSessionTimesSheet(context),
+        // The ring sits in the middle of the space between the date and the buttons.
+        Expanded(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: FastingRing(
+                snapshot: snap,
+                size: _ringSize,
+                onPick: (m) => showMilestoneSheet(context, milestone: m, onReadMore: () => widget.onReadMore(m)),
+                onCenterTap: () => showSessionTimesSheet(context),
+              ),
+            ),
           ),
         ),
-        const SizedBox(height: 20),
-        const Spacer(),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
           child: Column(
