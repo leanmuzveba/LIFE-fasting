@@ -53,6 +53,9 @@ flutter_launcher_icons:
   adaptive_icon_foreground: assets/icon/foreground.png
   remove_alpha_ios: true
 
+# The app is light-only: android/app/src/main/res has no *-night folders, so
+# the splash and window background stay light in system dark mode. If you
+# re-run flutter_native_splash, delete the generated *-night folders again.
 flutter_native_splash:
   color: "#F5FBFE"
   image: assets/icon/splash.png
