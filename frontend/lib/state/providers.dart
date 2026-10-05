@@ -6,6 +6,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../data/activity_repository.dart';
 import '../data/hydration_repository.dart';
+import '../data/kitchen_repository.dart';
 import '../data/notification_service.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
@@ -14,6 +15,7 @@ import '../domain/fasting_session.dart';
 import '../domain/fasting_timer.dart';
 import '../domain/history.dart';
 import '../domain/hydration.dart';
+import '../domain/kitchen.dart';
 import '../domain/settings.dart';
 
 /// Opened in main() and injected with an override.
@@ -167,6 +169,7 @@ class SessionActions {
     await _ref.read(sessionRepositoryProvider).deleteAll();
     await _ref.read(hydrationRepositoryProvider).deleteAll();
     await _ref.read(activityRepositoryProvider).deleteAll();
+    await _ref.read(kitchenRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
     _ref.invalidate(historyProvider);
@@ -174,6 +177,7 @@ class SessionActions {
     _ref.invalidate(hydrationDayProvider);
     _ref.invalidate(activityDayProvider);
     _ref.invalidate(recentActivitiesProvider);
+    _ref.invalidate(kitchenProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
   }
@@ -357,3 +361,51 @@ final daySummariesProvider = FutureProvider.family<Map<DateTime, DaySummary>, (D
     activities: activities,
   );
 });
+
+// --- My Kitchen (PRD v1.2 §4) ----------------------------------------------
+
+final kitchenRepositoryProvider = Provider((ref) => KitchenRepository(ref.watch(databaseProvider)));
+
+/// Ingredients currently in the kitchen, A–Z.
+final kitchenProvider = FutureProvider((ref) => ref.watch(kitchenRepositoryProvider).active());
+
+class KitchenActions {
+  KitchenActions(this._ref);
+  final Ref _ref;
+
+  KitchenRepository get _repo => _ref.read(kitchenRepositoryProvider);
+  DateTime _now() => _ref.read(clockProvider)().toUtc();
+
+  /// Adds or updates; returns the validation problem, or null when saved.
+  Future<IngredientError?> save(Ingredient i) async {
+    final error = validateIngredient(i);
+    if (error != null) return error;
+    if (i.id == null) {
+      await _repo.insert(i);
+    } else {
+      await _repo.update(i.copyWith(updatedAt: _now()));
+    }
+    _ref.invalidate(kitchenProvider);
+    return null;
+  }
+
+  /// Used up: leaves the kitchen but stays in history.
+  Future<void> markFinished(Ingredient i) => _setStatus(i, IngredientStatus.finished);
+
+  /// Spoiled/removed in a review: leaves the kitchen but stays in history.
+  Future<void> discard(Ingredient i) => _setStatus(i, IngredientStatus.discarded);
+
+  Future<void> _setStatus(Ingredient i, IngredientStatus status) async {
+    final now = _now();
+    await _repo.update(i.copyWith(status: status, statusAt: () => now, updatedAt: now));
+    _ref.invalidate(kitchenProvider);
+  }
+
+  /// Removes the record entirely (user's explicit choice only).
+  Future<void> delete(Ingredient i) async {
+    await _repo.delete(i.id!);
+    _ref.invalidate(kitchenProvider);
+  }
+}
+
+final kitchenActionsProvider = Provider(KitchenActions.new);

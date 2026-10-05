@@ -1543,6 +1543,402 @@ abstract class AppLocalizations {
   /// **'Fasting, last 14 days ({range}): average fast {average}, longest {longest}, {count, plural, =1{1 fast} other{{count} fasts}}.'**
   String trendSemantics(String average, String longest, int count, String range);
 
+  /// No description provided for @kitchenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My Kitchen'**
+  String get kitchenTitle;
+
+  /// No description provided for @kitchenEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition'**
+  String get kitchenEyebrow;
+
+  /// No description provided for @kitchenSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search your kitchen…'**
+  String get kitchenSearch;
+
+  /// No description provided for @kitchenAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get kitchenAll;
+
+  /// No description provided for @catProtein.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein'**
+  String get catProtein;
+
+  /// No description provided for @catCarbs.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs'**
+  String get catCarbs;
+
+  /// No description provided for @catVegetables.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetables'**
+  String get catVegetables;
+
+  /// No description provided for @catFruits.
+  ///
+  /// In en, this message translates to:
+  /// **'Fruits'**
+  String get catFruits;
+
+  /// No description provided for @catFatsNutsSeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Fats, nuts & seeds'**
+  String get catFatsNutsSeeds;
+
+  /// No description provided for @catDairy.
+  ///
+  /// In en, this message translates to:
+  /// **'Dairy & alternatives'**
+  String get catDairy;
+
+  /// No description provided for @catHerbsSpices.
+  ///
+  /// In en, this message translates to:
+  /// **'Herbs & spices'**
+  String get catHerbsSpices;
+
+  /// No description provided for @catPantry.
+  ///
+  /// In en, this message translates to:
+  /// **'Pantry essentials'**
+  String get catPantry;
+
+  /// No description provided for @stateFresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Fresh'**
+  String get stateFresh;
+
+  /// No description provided for @stateFrozen.
+  ///
+  /// In en, this message translates to:
+  /// **'Frozen'**
+  String get stateFrozen;
+
+  /// No description provided for @stateCanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Canned'**
+  String get stateCanned;
+
+  /// No description provided for @stateDried.
+  ///
+  /// In en, this message translates to:
+  /// **'Dried'**
+  String get stateDried;
+
+  /// No description provided for @kitchenOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Kitchen overview'**
+  String get kitchenOverview;
+
+  /// No description provided for @kitchenItems.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item} other{{count} items}}'**
+  String kitchenItems(int count);
+
+  /// No description provided for @kitchenWellStocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Your pantry is well stocked.'**
+  String get kitchenWellStocked;
+
+  /// No description provided for @kitchenShoppingTrip.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for a shopping trip.'**
+  String get kitchenShoppingTrip;
+
+  /// No description provided for @kitchenEmptyOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Add what you have at home to get started.'**
+  String get kitchenEmptyOverview;
+
+  /// No description provided for @kitchenExpiringSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring soon'**
+  String get kitchenExpiringSoon;
+
+  /// No description provided for @kitchenLowStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Low stock'**
+  String get kitchenLowStock;
+
+  /// No description provided for @kitchenInYourKitchen.
+  ///
+  /// In en, this message translates to:
+  /// **'In your kitchen · {count, plural, =1{1 item} other{{count} items}}'**
+  String kitchenInYourKitchen(int count);
+
+  /// No description provided for @kitchenNothingHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here yet.'**
+  String get kitchenNothingHere;
+
+  /// No description provided for @kitchenNoMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'No ingredients match your search.'**
+  String get kitchenNoMatches;
+
+  /// No description provided for @kitchenAddIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Ingredient'**
+  String get kitchenAddIngredient;
+
+  /// No description provided for @kitchenExpiresToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires today'**
+  String get kitchenExpiresToday;
+
+  /// No description provided for @kitchenExpiresIn.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Expires in 1 day} other{Expires in {days} days}}'**
+  String kitchenExpiresIn(int days);
+
+  /// No description provided for @kitchenExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{Expired 1 day ago} other{Expired {days} days ago}}'**
+  String kitchenExpired(int days);
+
+  /// No description provided for @ingredientAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Ingredient'**
+  String get ingredientAddTitle;
+
+  /// No description provided for @ingredientEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Ingredient'**
+  String get ingredientEditTitle;
+
+  /// No description provided for @ingredientStatusEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get ingredientStatusEyebrow;
+
+  /// No description provided for @ingredientNewEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'New Stock Entry'**
+  String get ingredientNewEntry;
+
+  /// No description provided for @ingredientNewEntrySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding to your main inventory'**
+  String get ingredientNewEntrySub;
+
+  /// No description provided for @ingredientUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Stock'**
+  String get ingredientUpdate;
+
+  /// No description provided for @ingredientUpdateSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Editing an item in your inventory'**
+  String get ingredientUpdateSub;
+
+  /// No description provided for @ingredientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get ingredientName;
+
+  /// No description provided for @ingredientNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Baby spinach'**
+  String get ingredientNameHint;
+
+  /// No description provided for @ingredientCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category (one or more)'**
+  String get ingredientCategory;
+
+  /// No description provided for @ingredientQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity & unit'**
+  String get ingredientQuantity;
+
+  /// No description provided for @ingredientState.
+  ///
+  /// In en, this message translates to:
+  /// **'State'**
+  String get ingredientState;
+
+  /// No description provided for @ingredientDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates (optional)'**
+  String get ingredientDates;
+
+  /// No description provided for @ingredientPurchased.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchased'**
+  String get ingredientPurchased;
+
+  /// No description provided for @ingredientExpires.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires'**
+  String get ingredientExpires;
+
+  /// No description provided for @ingredientNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get ingredientNotSet;
+
+  /// No description provided for @ingredientClearDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear {label} date'**
+  String ingredientClearDate(String label);
+
+  /// No description provided for @ingredientLowStockAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Low-stock alert at (optional)'**
+  String get ingredientLowStockAt;
+
+  /// No description provided for @ingredientLowStockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 2'**
+  String get ingredientLowStockHint;
+
+  /// No description provided for @ingredientBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Brand (optional)'**
+  String get ingredientBrand;
+
+  /// No description provided for @ingredientBrandHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Woolworths'**
+  String get ingredientBrandHint;
+
+  /// No description provided for @ingredientNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get ingredientNotes;
+
+  /// No description provided for @ingredientNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Anything to remember'**
+  String get ingredientNotesHint;
+
+  /// No description provided for @ingredientSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save ingredient'**
+  String get ingredientSave;
+
+  /// No description provided for @ingredientSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} saved to My Kitchen'**
+  String ingredientSaved(String name);
+
+  /// No description provided for @ingredientMarkFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as finished'**
+  String get ingredientMarkFinished;
+
+  /// No description provided for @ingredientFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} marked as finished'**
+  String ingredientFinished(String name);
+
+  /// No description provided for @ingredientRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from kitchen'**
+  String get ingredientRemove;
+
+  /// No description provided for @ingredientRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}?'**
+  String ingredientRemoveConfirm(String name);
+
+  /// No description provided for @ingredientRemoveBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes the item and its history. To keep a record, mark it as finished instead.'**
+  String get ingredientRemoveBody;
+
+  /// No description provided for @ingredientRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed'**
+  String ingredientRemoved(String name);
+
+  /// No description provided for @errNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a name.'**
+  String get errNameRequired;
+
+  /// No description provided for @errQuantityInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a quantity of 0 or more.'**
+  String get errQuantityInvalid;
+
+  /// No description provided for @errLowStockInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a low-stock amount of 0 or more, or leave it empty.'**
+  String get errLowStockInvalid;
+
+  /// No description provided for @errExpiryBeforePurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'The expiry date can\'t be before the purchase date.'**
+  String get errExpiryBeforePurchase;
+
+  /// No description provided for @kitchenItemSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {quantity}, {state}'**
+  String kitchenItemSemantics(String name, String quantity, String state);
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

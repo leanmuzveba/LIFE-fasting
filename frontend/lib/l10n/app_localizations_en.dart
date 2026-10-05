@@ -835,5 +835,238 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get kitchenTitle => 'My Kitchen';
+
+  @override
+  String get kitchenEyebrow => 'Nutrition';
+
+  @override
+  String get kitchenSearch => 'Search your kitchen…';
+
+  @override
+  String get kitchenAll => 'All';
+
+  @override
+  String get catProtein => 'Protein';
+
+  @override
+  String get catCarbs => 'Carbs';
+
+  @override
+  String get catVegetables => 'Vegetables';
+
+  @override
+  String get catFruits => 'Fruits';
+
+  @override
+  String get catFatsNutsSeeds => 'Fats, nuts & seeds';
+
+  @override
+  String get catDairy => 'Dairy & alternatives';
+
+  @override
+  String get catHerbsSpices => 'Herbs & spices';
+
+  @override
+  String get catPantry => 'Pantry essentials';
+
+  @override
+  String get stateFresh => 'Fresh';
+
+  @override
+  String get stateFrozen => 'Frozen';
+
+  @override
+  String get stateCanned => 'Canned';
+
+  @override
+  String get stateDried => 'Dried';
+
+  @override
+  String get kitchenOverview => 'Kitchen overview';
+
+  @override
+  String kitchenItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count items', one: '1 item');
+    return '$_temp0';
+  }
+
+  @override
+  String get kitchenWellStocked => 'Your pantry is well stocked.';
+
+  @override
+  String get kitchenShoppingTrip => 'Time for a shopping trip.';
+
+  @override
+  String get kitchenEmptyOverview => 'Add what you have at home to get started.';
+
+  @override
+  String get kitchenExpiringSoon => 'Expiring soon';
+
+  @override
+  String get kitchenLowStock => 'Low stock';
+
+  @override
+  String kitchenInYourKitchen(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count items', one: '1 item');
+    return 'In your kitchen · $_temp0';
+  }
+
+  @override
+  String get kitchenNothingHere => 'Nothing here yet.';
+
+  @override
+  String get kitchenNoMatches => 'No ingredients match your search.';
+
+  @override
+  String get kitchenAddIngredient => 'Add Ingredient';
+
+  @override
+  String get kitchenExpiresToday => 'Expires today';
+
+  @override
+  String kitchenExpiresIn(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expires in $days days',
+      one: 'Expires in 1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String kitchenExpired(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: 'Expired $days days ago',
+      one: 'Expired 1 day ago',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get ingredientAddTitle => 'Add Ingredient';
+
+  @override
+  String get ingredientEditTitle => 'Edit Ingredient';
+
+  @override
+  String get ingredientStatusEyebrow => 'Status';
+
+  @override
+  String get ingredientNewEntry => 'New Stock Entry';
+
+  @override
+  String get ingredientNewEntrySub => 'Adding to your main inventory';
+
+  @override
+  String get ingredientUpdate => 'Update Stock';
+
+  @override
+  String get ingredientUpdateSub => 'Editing an item in your inventory';
+
+  @override
+  String get ingredientName => 'Name';
+
+  @override
+  String get ingredientNameHint => 'e.g. Baby spinach';
+
+  @override
+  String get ingredientCategory => 'Category (one or more)';
+
+  @override
+  String get ingredientQuantity => 'Quantity & unit';
+
+  @override
+  String get ingredientState => 'State';
+
+  @override
+  String get ingredientDates => 'Dates (optional)';
+
+  @override
+  String get ingredientPurchased => 'Purchased';
+
+  @override
+  String get ingredientExpires => 'Expires';
+
+  @override
+  String get ingredientNotSet => 'Not set';
+
+  @override
+  String ingredientClearDate(String label) {
+    return 'Clear $label date';
+  }
+
+  @override
+  String get ingredientLowStockAt => 'Low-stock alert at (optional)';
+
+  @override
+  String get ingredientLowStockHint => 'e.g. 2';
+
+  @override
+  String get ingredientBrand => 'Brand (optional)';
+
+  @override
+  String get ingredientBrandHint => 'e.g. Woolworths';
+
+  @override
+  String get ingredientNotes => 'Notes (optional)';
+
+  @override
+  String get ingredientNotesHint => 'Anything to remember';
+
+  @override
+  String get ingredientSave => 'Save ingredient';
+
+  @override
+  String ingredientSaved(String name) {
+    return '$name saved to My Kitchen';
+  }
+
+  @override
+  String get ingredientMarkFinished => 'Mark as finished';
+
+  @override
+  String ingredientFinished(String name) {
+    return '$name marked as finished';
+  }
+
+  @override
+  String get ingredientRemove => 'Remove from kitchen';
+
+  @override
+  String ingredientRemoveConfirm(String name) {
+    return 'Remove $name?';
+  }
+
+  @override
+  String get ingredientRemoveBody =>
+      'This deletes the item and its history. To keep a record, mark it as finished instead.';
+
+  @override
+  String ingredientRemoved(String name) {
+    return '$name removed';
+  }
+
+  @override
+  String get errNameRequired => 'Please enter a name.';
+
+  @override
+  String get errQuantityInvalid => 'Enter a quantity of 0 or more.';
+
+  @override
+  String get errLowStockInvalid => 'Enter a low-stock amount of 0 or more, or leave it empty.';
+
+  @override
+  String get errExpiryBeforePurchase => 'The expiry date can\'t be before the purchase date.';
+
+  @override
+  String kitchenItemSemantics(String name, String quantity, String state) {
+    return '$name, $quantity, $state';
+  }
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

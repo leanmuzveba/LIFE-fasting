@@ -13,7 +13,7 @@ abstract final class AppDatabase {
   /// The file name stays from the original app so existing data is kept.
   static const fileName = 'life_fasting.db';
 
-  static final List<Migration> migrations = [_v1Initial, _v2Hydration, _v3Activity];
+  static final List<Migration> migrations = [_v1Initial, _v2Hydration, _v3Activity, _v4Kitchen];
 
   static int get latestVersion => migrations.length;
 
@@ -39,6 +39,29 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 4 — My Kitchen ingredient inventory (PRD v1.2 §4).
+  static Future<void> _v4Kitchen(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE ingredients (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+        categories TEXT NOT NULL DEFAULT '',  -- comma-separated IngredientCategory names
+        quantity REAL NOT NULL CHECK (quantity >= 0),
+        unit TEXT NOT NULL,
+        state TEXT NOT NULL,                  -- fresh / frozen / canned / dried
+        purchased_on TEXT,                    -- YYYY-MM-DD
+        expires_on TEXT,                      -- YYYY-MM-DD
+        low_stock_at REAL CHECK (low_stock_at IS NULL OR low_stock_at >= 0),
+        brand TEXT NOT NULL DEFAULT '',
+        notes TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'active',-- active / finished / discarded (kept as history)
+        status_at INTEGER,                    -- UTC epoch ms
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      )''');
+    await db.execute('CREATE INDEX ingredients_status ON ingredients (status, name)');
   }
 
   /// Version 3 — exercise and activity (PRD v1.2 §8).
