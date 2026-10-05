@@ -1,175 +1,126 @@
-import 'dart:ui';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import '../../core/l10n.dart';
-import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
-import '../../core/widgets/ruva_logo.dart';
 
-/// Loading screen: the RUVA logo beats like a heart over soft glows, with
-/// bouncing dots. Shown by the root gate
-/// while data loads. Still when the system asks for reduced motion.
+/// Animated RUVA splash, matched frame-by-frame to the supplied video
+/// (1.5 s, cream background): the lime body is there from the start, the
+/// forest arm draws outward from its middle, U·V·A pop in one by one and the
+/// head dot pulses until the logo completes at ~1.2 s. If loading takes
+/// longer, the head keeps a gentle heartbeat. Static when the system asks for
+/// reduced motion.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  /// Length of the build-up animation.
+  static const intro = Duration(milliseconds: 1200);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
-  late final _beat = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
-  late final _bounce = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+  late final _intro = AnimationController(vsync: this, duration: SplashScreen.intro);
+  late final _beat = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+  bool _started = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
     if (MediaQuery.disableAnimationsOf(context)) {
-      _beat.stop();
-      _bounce.stop();
+      _intro.value = 1;
     } else {
-      if (!_beat.isAnimating) _beat.repeat();
-      if (!_bounce.isAnimating) _bounce.repeat();
+      _intro.forward().whenComplete(() {
+        if (mounted) _beat.repeat();
+      });
     }
   }
 
   @override
   void dispose() {
+    _intro.dispose();
     _beat.dispose();
-    _bounce.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final l = context.l10n;
-    const secondary = TextStyle(fontFamily: AppFonts.mono, fontWeight: FontWeight.w500, color: AppColors.textSecondary);
+    final size = (MediaQuery.sizeOf(context).width * 0.32).clamp(100.0, 160.0);
     return Scaffold(
+      backgroundColor: AppColors.cream,
       body: Semantics(
-        label: l.splashLoading,
+        label: context.l10n.splashLoading,
         excludeSemantics: true,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            const ColoredBox(color: AppColors.background),
-            const Positioned(top: -80, left: -80, child: _Glow(diameter: 256)),
-            const Positioned(bottom: -80, right: -80, child: _Glow(diameter: 320)),
-            SafeArea(
-              child: Stack(
-                children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _Heartbeat(animation: _beat, child: const RuvaLogo(size: 168, semanticLabel: null)),
-                          const SizedBox(height: 28),
-                          Opacity(
-                            opacity: 0.8,
-                            child: Text(
-                              l.splashTagline,
-                              textAlign: TextAlign.center,
-                              style: secondary.copyWith(fontSize: 10, letterSpacing: 0.25),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 48,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _BouncingDots(animation: _bounce),
-                        const SizedBox(height: 16),
-                        Text(l.splashInitializing, style: secondary.copyWith(fontSize: 12, letterSpacing: 1.2)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+        child: Center(
+          child: SizedBox.square(
+            dimension: size,
+            child: AnimatedBuilder(
+              animation: Listenable.merge([_intro, _beat]),
+              builder: (_, _) => AnimatedLogo(t: _intro.value * 1.2, beat: _beat.isAnimating ? _beat.value : null),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Double "lub-dub" beat, then a rest — one cycle per animation period.
-class _Heartbeat extends StatelessWidget {
-  const _Heartbeat({required this.animation, required this.child});
+/// The six logo layers (same 741×741 canvas, so they stack exactly).
+class AnimatedLogo extends StatelessWidget {
+  const AnimatedLogo({super.key, required this.t, this.beat});
 
-  final Animation<double> animation;
-  final Widget child;
+  /// Seconds into the build-up (0 … 1.2).
+  final double t;
 
-  static final _scale = TweenSequence<double>([
-    TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.12).chain(CurveTween(curve: Curves.easeOut)), weight: 12),
-    TweenSequenceItem(tween: Tween(begin: 1.12, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 13),
-    TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.07).chain(CurveTween(curve: Curves.easeOut)), weight: 10),
-    TweenSequenceItem(tween: Tween(begin: 1.07, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 15),
-    TweenSequenceItem(tween: ConstantTween(1.0), weight: 50),
-  ]);
+  /// 0…1 phase of the post-intro heartbeat, or null while building up.
+  final double? beat;
 
-  @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: animation,
-    builder: (_, child) => Transform.scale(scale: _scale.evaluate(animation), child: child),
-    child: child,
-  );
-}
+  static Widget _layer(String name) => Image.asset('assets/brand/splash/$name.png', fit: BoxFit.contain);
 
-class _BouncingDots extends StatelessWidget {
-  const _BouncingDots({required this.animation});
+  // Measured from the video (30 fps): the arm grows linearly from nothing to
+  // full size about its own centre (canvas box x 0…544, y 64…337) from 0.10 s
+  // to 1.17 s, keeping its hooked shape.
+  static const _armStart = 0.10, _armEnd = 1.17;
+  static const _armAlign = Alignment(272 / 741 * 2 - 1, 200.5 / 741 * 2 - 1);
+  // Head dot centre on the canvas, for scaling about its middle.
+  static const _headAlign = Alignment(589.5 / 741 * 2 - 1, 77.5 / 741 * 2 - 1);
 
-  final Animation<double> animation;
-  static const _dot = 6.0;
+  /// Head scale: pops tiny↔full every 0.267 s, settles full at ~1.17 s.
+  double get headScale {
+    if (beat != null) return _heartbeat(beat!);
+    const tiny = 0.15, period = 0.2667;
+    if (t >= 1.167) return 1;
+    if (t >= 1.067) return tiny + (1 - tiny) * ((t - 1.067) / 0.1);
+    return tiny + (1 - tiny) * math.sin(math.pi * t / period).abs();
+  }
 
-  double _offset(double t) {
-    if (t < 0.5) return -0.25 * _dot * (1 - const Cubic(0.8, 0, 1, 1).transform(t / 0.5));
-    return -0.25 * _dot * const Cubic(0, 0, 0.2, 1).transform((t - 0.5) / 0.5);
+  /// Lub-dub, then rest.
+  static double _heartbeat(double p) {
+    double bump(double at, double width, double height) {
+      final d = (p - at).abs() / width;
+      return d >= 1 ? 0 : height * (1 - d * d);
+    }
+
+    return 1 + bump(0.12, 0.10, 0.18) + bump(0.34, 0.09, 0.10);
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-    animation: animation,
-    builder: (_, _) => Row(
-      mainAxisSize: MainAxisSize.min,
+  Widget build(BuildContext context) {
+    final arm = ((t - _armStart) / (_armEnd - _armStart)).clamp(0.0, 1.0);
+    return Stack(
+      fit: StackFit.expand,
       children: [
-        for (var i = 0; i < 3; i++)
-          Padding(
-            padding: EdgeInsets.only(left: i == 0 ? 0 : 4),
-            child: Transform.translate(
-              offset: Offset(0, _offset(animation.value)),
-              child: Container(
-                width: _dot,
-                height: _dot,
-                decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
-              ),
-            ),
-          ),
+        _layer('body'),
+        Transform.scale(scale: arm, alignment: _armAlign, child: _layer('arm')),
+        if (t >= 0.30) _layer('u'),
+        if (t >= 0.60) _layer('v'),
+        if (t >= 0.90) _layer('a'),
+        Transform.scale(scale: headScale, alignment: _headAlign, child: _layer('head')),
       ],
-    ),
-  );
-}
-
-class _Glow extends StatelessWidget {
-  const _Glow({required this.diameter});
-  final double diameter;
-
-  @override
-  Widget build(BuildContext context) => IgnorePointer(
-    child: ImageFiltered(
-      imageFilter: ImageFilter.blur(sigmaX: 64, sigmaY: 64),
-      child: Container(
-        width: diameter,
-        height: diameter,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.soft.withValues(alpha: 0.6)),
-      ),
-    ),
-  );
+    );
+  }
 }

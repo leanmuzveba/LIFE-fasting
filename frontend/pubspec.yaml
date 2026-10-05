@@ -35,6 +35,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/brand/
+    - assets/brand/splash/
   # RUVA brand fonts (SIL OFL; licences in assets/fonts/OFL-*.txt)
   fonts:
     - family: Lexend
@@ -77,8 +78,8 @@ flutter_launcher_icons:
 # re-run flutter_native_splash, delete the generated *-night folders again.
 
 flutter_native_splash:
-  color: "#F6FCEF"
-  image: assets/icon/splash.png
+  # Plain cream so the in-app animated splash (same colour) starts seamlessly.
+  color: "#FAFFDE"
   android_12:
-    color: "#F6FCEF"
-    image: assets/icon/splash_android12.png
+    color: "#FAFFDE"
+    image: assets/icon/blank.png

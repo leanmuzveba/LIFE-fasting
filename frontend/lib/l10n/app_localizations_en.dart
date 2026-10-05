@@ -428,12 +428,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifTargetBody => 'Your planned time has passed. End your session whenever you’re ready.';
 
   @override
-  String get splashTagline => 'FASTING · NUTRITION · WELLNESS';
-
-  @override
-  String get splashInitializing => 'GETTING READY';
-
-  @override
   String get splashLoading => 'RUVA, loading';
 
   @override
