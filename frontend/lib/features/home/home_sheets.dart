@@ -36,7 +36,7 @@ class DisclaimerBox extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(top: 1),
-          child: AppIconView(AppIcon.info, size: 18, color: AppColors.deep),
+          child: AppIconView(AppIcon.info, size: 18, color: AppColors.primary),
         ),
         SizedBox(width: 10),
         Expanded(child: Text(milestoneDisclaimer, style: AppText.small)),
@@ -56,11 +56,11 @@ class MilestoneHeader extends StatelessWidget {
         width: 52,
         height: 52,
         alignment: Alignment.center,
-        decoration: const BoxDecoration(color: AppColors.pale, shape: BoxShape.circle),
+        decoration: const BoxDecoration(color: AppColors.soft, shape: BoxShape.circle),
         child: AppIconView(
           milestoneIcon(milestone.kind, detailed: true),
           size: 26,
-          color: AppColors.deep,
+          color: AppColors.primary,
           strokeWidth: 1.8,
         ),
       ),
@@ -215,7 +215,7 @@ class _EditStartSheetState extends ConsumerState<_EditStartSheet> {
         ),
         Text(
           _error?.message(l) ?? l.willStart(formatShortDay(start), formatClock(start, use24h: use24h)),
-          style: AppText.small.copyWith(color: _error == null ? AppColors.textSecondary : const Color(0xFFB3261E)),
+          style: AppText.small.copyWith(color: _error == null ? AppColors.textSecondary : AppColors.errorText),
         ),
         _buttonRow([
           PillButton(label: l.cancel, outlined: true, onPressed: () => Navigator.pop(context)),

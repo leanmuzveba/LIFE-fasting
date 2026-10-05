@@ -72,13 +72,13 @@ class _Note extends StatelessWidget {
     padding: const EdgeInsets.all(14),
     decoration: BoxDecoration(
       color: AppColors.white,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
       boxShadow: AppShadows.card,
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppIconView(icon, size: 20, color: AppColors.deep),
+        AppIconView(icon, size: 20, color: AppColors.primary),
         const SizedBox(width: 12),
         Expanded(
           child: Text(text, style: AppText.body.copyWith(fontSize: 14, height: 21 / 14)),

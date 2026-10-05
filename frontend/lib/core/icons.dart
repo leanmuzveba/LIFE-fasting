@@ -37,7 +37,7 @@ class AppIconView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = color ?? DefaultTextStyle.of(context).style.color ?? const Color(0xFF203443);
+    final c = color ?? DefaultTextStyle.of(context).style.color ?? const Color(0xFF1A2A20);
     return SvgPicture.string(
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
       'stroke-width="$strokeWidth" stroke-linecap="round" stroke-linejoin="round">${icon.paths}</svg>',

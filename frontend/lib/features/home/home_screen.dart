@@ -118,7 +118,7 @@ class _Header extends StatelessWidget {
             tooltip: context.l10n.navSettings,
             onPressed: onOpenSettings,
             constraints: const BoxConstraints.tightFor(width: 48, height: 48),
-            icon: const AppIconView(AppIcon.settings, color: AppColors.deep, strokeWidth: 1.8),
+            icon: const AppIconView(AppIcon.settings, color: AppColors.primary, strokeWidth: 1.8),
           ),
         ],
       ),
@@ -141,7 +141,7 @@ class _InfoCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         boxShadow: AppShadows.card,
       ),
       child: Column(

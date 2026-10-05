@@ -21,12 +21,14 @@ class PillButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = large ? 54.0 : 48.0;
-    final shape = StadiumBorder(side: outlined ? const BorderSide(color: AppColors.deep, width: 1.5) : BorderSide.none);
+    final shape = StadiumBorder(
+      side: outlined ? const BorderSide(color: AppColors.primary, width: 1.5) : BorderSide.none,
+    );
     final style = TextStyle(
       fontFamily: 'Manrope',
       fontSize: large ? 17 : 15,
       fontWeight: FontWeight.w800,
-      color: outlined ? AppColors.deep : AppColors.white,
+      color: outlined ? AppColors.primary : AppColors.white,
     );
     return Semantics(
       button: true,
@@ -37,7 +39,7 @@ class PillButton extends StatelessWidget {
             ? const ShapeDecoration(shape: StadiumBorder(), shadows: AppShadows.button)
             : null,
         child: Material(
-          color: outlined ? AppColors.white : AppColors.deep,
+          color: outlined ? AppColors.white : AppColors.primary,
           shape: shape,
           clipBehavior: Clip.antiAlias,
           child: InkWell(

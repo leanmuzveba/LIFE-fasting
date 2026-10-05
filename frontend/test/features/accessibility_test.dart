@@ -74,9 +74,11 @@ void main() {
       (AppColors.text, AppColors.background),
       (AppColors.textSecondary, AppColors.white),
       (AppColors.textSecondary, AppColors.background),
-      (AppColors.deep, AppColors.white),
-      (AppColors.deep, AppColors.pale),
-      (AppColors.white, AppColors.deep),
+      (AppColors.primary, AppColors.white),
+      (AppColors.primary, AppColors.soft),
+      (AppColors.white, AppColors.primary),
+      (AppColors.errorText, AppColors.white),
+      (AppColors.primaryDark, AppColors.accent),
     ];
     for (final (fg, bg) in text) {
       expect(ratio(fg, bg), greaterThanOrEqualTo(4.5), reason: '$fg on $bg');
@@ -88,7 +90,9 @@ void main() {
       (AppColors.ketosis, AppColors.background),
       (AppColors.onFatBurning, AppColors.fatBurning),
       (AppColors.onKetosis, AppColors.ketosis),
-      (AppColors.onSky, AppColors.sky),
+      (AppColors.onAccent, AppColors.accent),
+      (AppColors.accent, AppColors.primary), // lime knob/glyphs on forest
+      (AppColors.primary, AppColors.background), // ring arc on mint
     ];
     for (final (fg, bg) in icons) {
       expect(ratio(fg, bg), greaterThanOrEqualTo(3), reason: '$fg on $bg');

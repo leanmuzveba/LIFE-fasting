@@ -11,7 +11,7 @@ abstract final class AppText {
     fontSize: 17,
     fontWeight: FontWeight.w800,
     letterSpacing: -0.17,
-    color: AppColors.deep,
+    color: AppColors.primary,
   );
   static const dateLine = TextStyle(
     fontFamily: _f,
@@ -54,15 +54,16 @@ abstract final class AppText {
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
   );
-  static const link = TextStyle(fontFamily: _f, fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.deep);
+  static const link = TextStyle(fontFamily: _f, fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.primary);
   static const tabular = [FontFeature.tabularFigures()];
 }
 
 ThemeData buildAppTheme() {
   const scheme = ColorScheme.light(
-    primary: AppColors.deep,
+    primary: AppColors.primary,
     onPrimary: AppColors.white,
-    secondary: AppColors.sky,
+    secondary: AppColors.accent,
+    onSecondary: AppColors.primaryDark,
     surface: AppColors.white,
     onSurface: AppColors.text,
   );
@@ -74,7 +75,7 @@ ThemeData buildAppTheme() {
     textTheme: const TextTheme(bodyMedium: AppText.body, titleLarge: AppText.title),
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: AppColors.deep,
+        foregroundColor: AppColors.primary,
         textStyle: AppText.link,
         minimumSize: const Size(48, 48),
         padding: const EdgeInsets.symmetric(horizontal: 14),

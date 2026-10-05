@@ -162,7 +162,7 @@ class _Readout extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (status != null) ...[
-          Text(status!.toUpperCase(), style: AppText.overline.copyWith(letterSpacing: 1.32, color: AppColors.deep)),
+          Text(status!.toUpperCase(), style: AppText.overline.copyWith(letterSpacing: 1.32, color: AppColors.primary)),
           const SizedBox(height: 4),
         ],
         Text(
@@ -185,10 +185,10 @@ class _Readout extends StatelessWidget {
         const SizedBox(height: 10),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: const ShapeDecoration(color: AppColors.pale, shape: StadiumBorder()),
+          decoration: const ShapeDecoration(color: AppColors.soft, shape: StadiumBorder()),
           child: Text(
             targetLine,
-            style: AppText.cardSub.copyWith(fontWeight: FontWeight.w700, color: AppColors.deep),
+            style: AppText.cardSub.copyWith(fontWeight: FontWeight.w700, color: AppColors.primary),
           ),
         ),
       ],
@@ -207,20 +207,20 @@ class _Marker extends StatelessWidget {
     final m = placement.milestone;
     final l = context.l10n;
     final phase = phaseColors(m.kind);
-    final accent = phase?.$1 ?? AppColors.sky;
+    final accent = phase?.$1 ?? AppColors.accent; // lime for non-phase markers
     final (bg, border, fg, shadows, word) = switch (placement.state) {
       MarkerState.current => (
         accent,
-        BorderSide(color: accent, width: 2),
-        phase?.$2 ?? AppColors.onSky,
+        BorderSide(color: phase == null ? AppColors.primary : accent, width: 2),
+        phase?.$2 ?? AppColors.onAccent,
         [BoxShadow(color: accent.withValues(alpha: 0.28), spreadRadius: 6)],
         l.markerCurrent,
       ),
       MarkerState.passed => (
         AppColors.white,
-        BorderSide(color: accent, width: 2),
-        phase?.$3 ?? AppColors.deep,
-        const [BoxShadow(color: Color(0x24203443), offset: Offset(0, 1), blurRadius: 3)],
+        BorderSide(color: phase?.$1 ?? AppColors.primary, width: 2),
+        phase?.$3 ?? AppColors.primary,
+        const [BoxShadow(color: Color(0x24135D44), offset: Offset(0, 1), blurRadius: 3)],
         l.markerPassed,
       ),
       MarkerState.upcoming => (
@@ -268,7 +268,7 @@ class _Marker extends StatelessWidget {
                       height: 15,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: AppColors.deep,
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.white, width: 2),
                       ),
@@ -311,8 +311,8 @@ class _RingPainter extends CustomPainter {
     }
 
     // Segments: sky until the first phase, then each phase colour until the next.
-    final stops = [(0.0, AppColors.sky), ...phases];
-    var endColor = AppColors.sky;
+    final stops = [(0.0, AppColors.primary), ...phases];
+    var endColor = AppColors.primary;
     for (var i = 0; i < stops.length; i++) {
       final from = stops[i].$1;
       if (from >= end) break;
@@ -323,10 +323,10 @@ class _RingPainter extends CustomPainter {
     if (end >= 1) return;
 
     // Round caps at both ends, then the white knob at the tip.
-    final dot = Paint()..color = AppColors.sky;
+    final dot = Paint()..color = AppColors.primary;
     canvas.drawCircle(at(0), stroke / 2, dot);
     canvas.drawCircle(at(end), stroke / 2, dot..color = endColor);
-    canvas.drawCircle(at(end), 3.5, Paint()..color = AppColors.white);
+    canvas.drawCircle(at(end), 3.5, Paint()..color = AppColors.accent);
   }
 
   @override

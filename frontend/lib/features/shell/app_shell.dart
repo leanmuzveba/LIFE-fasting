@@ -94,12 +94,12 @@ class _BottomNav extends StatelessWidget {
                             height: 30,
                             alignment: Alignment.center,
                             decoration: ShapeDecoration(
-                              color: i == index ? AppColors.pale : null,
+                              color: i == index ? AppColors.soft : null,
                               shape: const StadiumBorder(),
                             ),
                             child: AppIconView(
                               items[i].$2,
-                              color: i == index ? AppColors.deep : AppColors.textSecondary,
+                              color: i == index ? AppColors.primary : AppColors.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 3),
@@ -109,7 +109,7 @@ class _BottomNav extends StatelessWidget {
                               fontFamily: 'Manrope',
                               fontSize: 12,
                               fontWeight: i == index ? FontWeight.w800 : FontWeight.w700,
-                              color: i == index ? AppColors.deep : AppColors.textSecondary,
+                              color: i == index ? AppColors.primary : AppColors.textSecondary,
                             ),
                           ),
                         ],

@@ -24,7 +24,7 @@ class PageHeader extends StatelessWidget {
               IconButton(
                 tooltip: context.l10n.back,
                 onPressed: () => Navigator.of(context).maybePop(),
-                icon: const AppIconView(AppIcon.back, color: AppColors.deep),
+                icon: const AppIconView(AppIcon.back, color: AppColors.primary),
               ),
             Expanded(
               child: Semantics(header: true, child: Text(title, style: AppText.title.copyWith(fontSize: 22))),

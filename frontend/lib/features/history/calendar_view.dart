@@ -44,7 +44,7 @@ class _CalendarViewState extends State<CalendarView> {
             IconButton(
               tooltip: l.previousMonth,
               onPressed: () => setState(() => _month = DateTime(_month.year, _month.month - 1)),
-              icon: const AppIconView(AppIcon.back, color: AppColors.deep),
+              icon: const AppIconView(AppIcon.back, color: AppColors.primary),
             ),
             Expanded(
               child: Text(
@@ -56,7 +56,7 @@ class _CalendarViewState extends State<CalendarView> {
             IconButton(
               tooltip: l.nextMonth,
               onPressed: () => setState(() => _month = DateTime(_month.year, _month.month + 1)),
-              icon: const AppIconView(AppIcon.chevronRight, color: AppColors.deep),
+              icon: const AppIconView(AppIcon.chevronRight, color: AppColors.primary),
             ),
           ],
         ),
@@ -120,7 +120,7 @@ class _DayCell extends StatelessWidget {
         margin: const EdgeInsets.all(3),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: selected ? AppColors.deep : (count > 0 ? AppColors.pale : null),
+          color: selected ? AppColors.primary : (count > 0 ? AppColors.soft : null),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +129,7 @@ class _DayCell extends StatelessWidget {
               '${date.day}',
               style: AppText.link.copyWith(
                 fontSize: 14,
-                color: selected ? AppColors.white : (count > 0 ? AppColors.deep : AppColors.text),
+                color: selected ? AppColors.white : (count > 0 ? AppColors.primary : AppColors.text),
               ),
             ),
             // Dot as well as colour, so state isn't shown by colour alone.
@@ -139,7 +139,7 @@ class _DayCell extends StatelessWidget {
               margin: const EdgeInsets.only(top: 2),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: count == 0 ? Colors.transparent : (selected ? AppColors.white : AppColors.sky),
+                color: count == 0 ? Colors.transparent : (selected ? AppColors.accent : AppColors.primary),
               ),
             ),
           ],

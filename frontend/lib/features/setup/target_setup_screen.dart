@@ -100,20 +100,20 @@ class _Choice extends StatelessWidget {
     button: true,
     inMutuallyExclusiveGroup: true,
     child: Material(
-      color: selected ? AppColors.pale : AppColors.white,
+      color: selected ? AppColors.soft : AppColors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: selected ? AppColors.deep : AppColors.track, width: selected ? 2 : 1.5),
+        borderRadius: BorderRadius.circular(18),
+        side: BorderSide(color: selected ? AppColors.primary : AppColors.track, width: selected ? 2 : 1.5),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
               Expanded(child: Text(label, style: AppText.cardValue.copyWith(fontSize: 18))),
-              if (selected) const AppIconView(AppIcon.check, size: 20, color: AppColors.deep, strokeWidth: 2.5),
+              if (selected) const AppIconView(AppIcon.check, size: 20, color: AppColors.primary, strokeWidth: 2.5),
             ],
           ),
         ),
@@ -134,15 +134,15 @@ class _CustomStepper extends StatelessWidget {
     Widget btn(String symbol, String label, int delta, bool enabled) => IconButton.filledTonal(
       tooltip: label,
       onPressed: enabled ? () => onChanged(minutes + delta) : null,
-      style: IconButton.styleFrom(backgroundColor: AppColors.pale, foregroundColor: AppColors.deep),
-      icon: Text(symbol, style: AppText.cardValue.copyWith(color: AppColors.deep)),
+      style: IconButton.styleFrom(backgroundColor: AppColors.soft, foregroundColor: AppColors.primary),
+      icon: Text(symbol, style: AppText.cardValue.copyWith(color: AppColors.primary)),
     );
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: selected ? AppColors.deep : AppColors.track, width: selected ? 2 : 1.5),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: selected ? AppColors.primary : AppColors.track, width: selected ? 2 : 1.5),
       ),
       child: Row(
         children: [

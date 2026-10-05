@@ -105,7 +105,7 @@ class _SessionSheetState extends ConsumerState<_SessionSheet> {
               });
             },
           ),
-        if (_error != null) Text(_error!.message(l), style: AppText.small.copyWith(color: const Color(0xFFB3261E))),
+        if (_error != null) Text(_error!.message(l), style: AppText.small.copyWith(color: AppColors.errorText)),
         Row(
           children: [
             Expanded(

@@ -81,7 +81,7 @@ class SettingsScreen extends ConsumerWidget {
                   if (daily.enabled)
                     _Row(
                       title: l.settingsReminderTime,
-                      trailing: const AppIconView(AppIcon.clock, color: AppColors.deep),
+                      trailing: const AppIconView(AppIcon.clock, color: AppColors.primary),
                       onTap: () async {
                         final t = await showTimePicker(context: context, initialTime: dailyTime);
                         if (t != null) await setPref(daily.copyWith(hour: t.hour, minute: t.minute));
@@ -159,7 +159,7 @@ class _Card extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     decoration: BoxDecoration(
       color: AppColors.white,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
       boxShadow: AppShadows.card,
     ),
     clipBehavior: Clip.antiAlias,
@@ -190,7 +190,7 @@ class _Row extends StatelessWidget {
     onTap: onTap,
     minTileHeight: 56,
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-    title: Text(title, style: AppText.link.copyWith(color: danger ? const Color(0xFFB3261E) : AppColors.text)),
+    title: Text(title, style: AppText.link.copyWith(color: danger ? AppColors.errorText : AppColors.text)),
     subtitle: subtitle == null ? null : Text(subtitle!, style: AppText.small),
     trailing: trailing,
   );
@@ -208,7 +208,7 @@ class _SwitchRow extends StatelessWidget {
     value: value,
     onChanged: onChanged,
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
-    activeTrackColor: AppColors.deep,
+    activeTrackColor: AppColors.primary,
     title: Text(title, style: AppText.link.copyWith(color: AppColors.text)),
     subtitle: subtitle == null ? null : Text(subtitle!, style: AppText.small),
   );

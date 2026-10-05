@@ -173,7 +173,7 @@ class _BouncingDots extends StatelessWidget {
               child: Container(
                 width: _dot,
                 height: _dot,
-                decoration: const BoxDecoration(color: AppColors.sky, shape: BoxShape.circle),
+                decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
               ),
             ),
           ),
@@ -193,7 +193,7 @@ class _Glow extends StatelessWidget {
       child: Container(
         width: diameter,
         height: diameter,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.pale.withValues(alpha: 0.6)),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.soft.withValues(alpha: 0.6)),
       ),
     ),
   );
@@ -234,15 +234,15 @@ class _RingLogoPainter extends CustomPainter {
       -math.pi / 2,
       2 * math.pi * 184 / 264,
       false,
-      stroke(AppColors.sky, 8)..strokeCap = StrokeCap.round,
+      stroke(AppColors.primary, 8)..strokeCap = StrokeCap.round,
     );
-    canvas.drawCircle(c, 32, Paint()..color = AppColors.pale.withValues(alpha: 0.5));
+    canvas.drawCircle(c, 32, Paint()..color = AppColors.soft.withValues(alpha: 0.5));
     canvas.drawPath(
       Path()
         ..moveTo(50, 35)
         ..lineTo(50, 50)
         ..lineTo(60, 60),
-      stroke(AppColors.deep, 4)
+      stroke(AppColors.primary, 4)
         ..strokeCap = StrokeCap.round
         ..strokeJoin = StrokeJoin.round,
     );

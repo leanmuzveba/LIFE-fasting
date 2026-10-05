@@ -42,8 +42,8 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             selected: {_calendar},
             onSelectionChanged: (v) => setState(() => _calendar = v.first),
             style: SegmentedButton.styleFrom(
-              selectedBackgroundColor: AppColors.pale,
-              selectedForegroundColor: AppColors.deep,
+              selectedBackgroundColor: AppColors.soft,
+              selectedForegroundColor: AppColors.primary,
               foregroundColor: AppColors.textSecondary,
               side: const BorderSide(color: AppColors.track),
               textStyle: AppText.link.copyWith(fontSize: 14),
@@ -82,8 +82,8 @@ class _EmptyState extends StatelessWidget {
             width: 64,
             height: 64,
             alignment: Alignment.center,
-            decoration: const BoxDecoration(color: AppColors.pale, shape: BoxShape.circle),
-            child: const AppIconView(AppIcon.calendar, size: 30, color: AppColors.deep),
+            decoration: const BoxDecoration(color: AppColors.soft, shape: BoxShape.circle),
+            child: const AppIconView(AppIcon.calendar, size: 30, color: AppColors.primary),
           ),
           const SizedBox(height: 16),
           Text(context.l10n.historyEmptyTitle, style: AppText.title),
@@ -128,13 +128,13 @@ class SessionTile extends ConsumerWidget {
       excludeSemantics: true,
       child: Material(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
           onTap: () => showSessionSheet(context, s),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), boxShadow: AppShadows.card),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), boxShadow: AppShadows.card),
             child: Row(
               children: [
                 Expanded(
@@ -152,14 +152,14 @@ class SessionTile extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: ShapeDecoration(
-                    color: strong ? AppColors.pale : AppColors.background,
-                    shape: StadiumBorder(side: BorderSide(color: strong ? AppColors.sky : AppColors.track)),
+                    color: strong ? AppColors.soft : AppColors.background,
+                    shape: StadiumBorder(side: BorderSide(color: strong ? AppColors.primary : AppColors.track)),
                   ),
                   child: Text(
                     status,
                     style: AppText.cardSub.copyWith(
                       fontWeight: FontWeight.w700,
-                      color: strong ? AppColors.deep : AppColors.textSecondary,
+                      color: strong ? AppColors.primary : AppColors.textSecondary,
                     ),
                   ),
                 ),
