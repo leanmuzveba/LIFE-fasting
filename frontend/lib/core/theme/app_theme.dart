@@ -102,6 +102,12 @@ ThemeData buildAppTheme() {
         padding: const EdgeInsets.symmetric(horizontal: 14),
       ),
     ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: AppColors.primary,
+      contentTextStyle: AppText.body.copyWith(color: AppColors.white, fontSize: 14),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+    ),
     bottomSheetTheme: const BottomSheetThemeData(
       backgroundColor: AppColors.white,
       modalBarrierColor: AppColors.scrim,

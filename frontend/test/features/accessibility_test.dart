@@ -79,6 +79,8 @@ void main() {
       (AppColors.primary, AppColors.white),
       (AppColors.primary, AppColors.soft),
       (AppColors.white, AppColors.primary),
+      (AppColors.primary, AppColors.lime200), // chips, inputs
+      (AppColors.textSecondary, AppColors.lime200), // hints
       (AppColors.errorText, AppColors.white),
       (AppColors.primaryDark, AppColors.accent),
     ];

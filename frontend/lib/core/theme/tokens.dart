@@ -10,6 +10,7 @@ abstract final class AppColors {
   static const soft = Color(0xFFEEF7EA); // forest-50: chips, selected pills, soft surfaces
   static const accent = Color(0xFFB9F36C); // lime-400: progress highlights (on forest only)
   static const accentSoft = Color(0xFFEEF9DC); // lime-100: input fills
+  static const lime200 = Color(0xFFE3F5D0); // lime-200: chips, inputs, icon bubbles
   static const background = Color(0xFFF6FCEF); // mint
   static const cream = Color(0xFFFAFFDE); // logo background
   static const track = Color(0xFFD9EED0); // forest-100: unfilled ring, handles, outlines
