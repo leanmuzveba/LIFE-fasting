@@ -6,6 +6,7 @@ import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/pill_button.dart';
+import '../../core/widgets/ruva_logo.dart';
 import '../../domain/settings.dart';
 import '../../state/providers.dart';
 
@@ -31,7 +32,7 @@ class _Page extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const AppLogo(size: 32),
+                      const RuvaLogo(size: 44, semanticLabel: null),
                       const SizedBox(width: 10),
                       Text(context.l10n.appName, style: AppText.brand),
                     ],

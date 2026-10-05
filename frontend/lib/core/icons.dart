@@ -47,18 +47,3 @@ class AppIconView extends StatelessWidget {
     );
   }
 }
-
-/// The two-tone ring logo shown next to the app name.
-class AppLogo extends StatelessWidget {
-  const AppLogo({super.key, this.size = 24});
-  final double size;
-
-  @override
-  Widget build(BuildContext context) => SvgPicture.string(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round">'
-    '<circle cx="12" cy="12" r="8.5" stroke="#D8EDF6" stroke-width="3.5"/>'
-    '<path d="M12 3.5A8.5 8.5 0 1 1 4 15" stroke="#65BFE8" stroke-width="3.5"/></svg>',
-    width: size,
-    height: size,
-  );
-}

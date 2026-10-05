@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
 
-  "appName": "LIFE Fasting",
+  "appName": "RUVA",
   "close": "Close",
   "cancel": "Cancel",
   "save": "Save",
@@ -133,7 +133,7 @@
   "deleteAllBody": "This removes every session, your settings and any reminders from this phone. It can’t be undone.",
   "deleteAll": "Delete all",
 
-  "onboardingTitle": "A calm way to record your eating and fasting times",
+  "onboardingTitle": "Welcome to RUVA, your calm place for fasting, food and wellness",
   "onboardingNotMedical": "This app records time. It is a tracking and educational tool, not a medical device, and it cannot tell what is happening in your body.",
   "onboardingEstimates": "Milestones on the timer are general estimates that vary between people. They are never goals.",
   "onboardingPrivacy": "Your sessions stay on this phone. Nothing is uploaded, and you can delete everything at any time.",
@@ -151,8 +151,8 @@
 
   "notifTargetTitle": "Target time reached",
   "notifTargetBody": "Your planned time has passed. End your session whenever you’re ready.",
-  "splashTagline": "INTERMITTENT FASTING & HEALTH",
-  "splashInitializing": "INITIALIZING TRACKER",
-  "splashLoading": "LIFE Fasting, loading",
+  "splashTagline": "FASTING · NUTRITION · WELLNESS",
+  "splashInitializing": "GETTING READY",
+  "splashLoading": "RUVA, loading",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

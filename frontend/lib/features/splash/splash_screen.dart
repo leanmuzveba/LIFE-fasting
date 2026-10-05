@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,9 +5,10 @@ import 'package:flutter/material.dart';
 import '../../core/l10n.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/ruva_logo.dart';
 
-/// Loading screen from the "LIFE Fasting" splash design: a ring logo that
-/// beats like a heart, the wordmark, and bouncing dots. Shown by the root gate
+/// Loading screen: the RUVA logo beats like a heart over soft glows, with
+/// bouncing dots. Shown by the root gate
 /// while data loads. Still when the system asks for reduced motion.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -63,10 +63,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _Heartbeat(animation: _beat, child: const RingLogo(size: 128)),
-                          const SizedBox(height: 32),
-                          const _Wordmark(),
-                          const SizedBox(height: 12),
+                          _Heartbeat(animation: _beat, child: const RuvaLogo(size: 168, semanticLabel: null)),
+                          const SizedBox(height: 28),
                           Opacity(
                             opacity: 0.8,
                             child: Text(
@@ -100,30 +98,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
       ),
     );
   }
-}
-
-/// "LIFE" bold + "Fasting" light, as in the design.
-class _Wordmark extends StatelessWidget {
-  const _Wordmark();
-
-  @override
-  Widget build(BuildContext context) => const Text.rich(
-    TextSpan(
-      children: [
-        TextSpan(
-          text: 'LIFE',
-          style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.text),
-        ),
-        WidgetSpan(child: SizedBox(width: 8)),
-        TextSpan(
-          text: 'Fasting',
-          style: TextStyle(fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-        ),
-      ],
-    ),
-    textAlign: TextAlign.center,
-    style: TextStyle(fontFamily: AppFonts.display, fontSize: 36, height: 40 / 36, letterSpacing: -0.9),
-  );
 }
 
 /// Double "lub-dub" beat, then a rest — one cycle per animation period.
@@ -198,58 +172,4 @@ class _Glow extends StatelessWidget {
       ),
     ),
   );
-}
-
-/// The design's logo: track, ~70% sky arc and a deep-blue clock hand.
-class RingLogo extends StatelessWidget {
-  const RingLogo({super.key, this.size = 128});
-  final double size;
-
-  @override
-  Widget build(BuildContext context) => SizedBox.square(
-    dimension: size,
-    child: CustomPaint(painter: _RingLogoPainter()),
-  );
-}
-
-class _RingLogoPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.save();
-    canvas.scale(size.shortestSide / 100); // drawn on a 100×100 grid
-    const c = Offset(50, 50);
-    const r = 42.0;
-    Paint stroke(Color color, double w) => Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w;
-
-    canvas.drawCircle(
-      c.translate(0, 1),
-      r,
-      stroke(const Color(0x0D000000), 8)..maskFilter = const MaskFilter.blur(BlurStyle.normal, 0.5),
-    );
-    canvas.drawCircle(c, r, stroke(AppColors.track, 8));
-    canvas.drawArc(
-      Rect.fromCircle(center: c, radius: r),
-      -math.pi / 2,
-      2 * math.pi * 184 / 264,
-      false,
-      stroke(AppColors.primary, 8)..strokeCap = StrokeCap.round,
-    );
-    canvas.drawCircle(c, 32, Paint()..color = AppColors.soft.withValues(alpha: 0.5));
-    canvas.drawPath(
-      Path()
-        ..moveTo(50, 35)
-        ..lineTo(50, 50)
-        ..lineTo(60, 60),
-      stroke(AppColors.primary, 4)
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round,
-    );
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(_RingLogoPainter old) => false;
 }

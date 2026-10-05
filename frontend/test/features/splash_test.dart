@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/core/l10n.dart';
 import 'package:life_fasting/core/theme/app_theme.dart';
+import 'package:life_fasting/core/widgets/ruva_logo.dart';
 import 'package:life_fasting/features/splash/splash_screen.dart';
 
 import '../helpers.dart';
@@ -21,16 +22,15 @@ void main() {
   testWidgets('splash shows the wordmark, tagline and loading text', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pump();
-    expect(find.textContaining('LIFE', findRichText: true), findsOneWidget);
-    expect(find.text('INTERMITTENT FASTING & HEALTH'), findsOneWidget);
-    expect(find.text('INITIALIZING TRACKER'), findsOneWidget);
-    expect(find.byType(RingLogo), findsOneWidget);
+    expect(find.byType(RuvaLogo), findsOneWidget);
+    expect(find.text('FASTING · NUTRITION · WELLNESS'), findsOneWidget);
+    expect(find.text('GETTING READY'), findsOneWidget);
   });
 
   testWidgets('the ring beats while loading', (tester) async {
     await tester.pumpWidget(_app());
     double scale() => tester
-        .widget<Transform>(find.ancestor(of: find.byType(RingLogo), matching: find.byType(Transform)).first)
+        .widget<Transform>(find.ancestor(of: find.byType(RuvaLogo), matching: find.byType(Transform)).first)
         .transform
         .getMaxScaleOnAxis();
     final sizes = <double>[];

@@ -7,6 +7,7 @@ import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/pill_button.dart';
+import '../../core/widgets/ruva_logo.dart';
 import '../../core/widgets/sheet.dart';
 import '../../domain/milestone.dart';
 import '../../state/providers.dart';
@@ -109,7 +110,7 @@ class _Header extends StatelessWidget {
       height: 48,
       child: Row(
         children: [
-          const AppLogo(),
+          const RuvaLogo(size: 36, semanticLabel: null),
           const SizedBox(width: 8),
           Expanded(
             child: Semantics(header: true, child: Text(context.l10n.appName, style: AppText.brand)),

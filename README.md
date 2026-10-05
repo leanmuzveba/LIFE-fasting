@@ -1,4 +1,4 @@
-# LIFE Fasting
+# RUVA
 
 A calm, offline-first intermittent fasting tracker for Android and iOS, built with Flutter. Inspired by the discontinued LIFE Fasting app, it centres on a large circular timer with milestone markers and a light-blue interface.
 

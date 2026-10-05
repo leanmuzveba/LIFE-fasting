@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'LIFE Fasting';
+  String get appName => 'RUVA';
 
   @override
   String get close => 'Close';
@@ -363,7 +363,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAll => 'Delete all';
 
   @override
-  String get onboardingTitle => 'A calm way to record your eating and fasting times';
+  String get onboardingTitle => 'Welcome to RUVA, your calm place for fasting, food and wellness';
 
   @override
   String get onboardingNotMedical =>
@@ -422,13 +422,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifTargetBody => 'Your planned time has passed. End your session whenever you’re ready.';
 
   @override
-  String get splashTagline => 'INTERMITTENT FASTING & HEALTH';
+  String get splashTagline => 'FASTING · NUTRITION · WELLNESS';
 
   @override
-  String get splashInitializing => 'INITIALIZING TRACKER';
+  String get splashInitializing => 'GETTING READY';
 
   @override
-  String get splashLoading => 'LIFE Fasting, loading';
+  String get splashLoading => 'RUVA, loading';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

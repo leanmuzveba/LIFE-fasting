@@ -94,7 +94,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'LIFE Fasting'**
+  /// **'RUVA'**
   String get appName;
 
   /// No description provided for @close.
@@ -700,7 +700,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTitle.
   ///
   /// In en, this message translates to:
-  /// **'A calm way to record your eating and fasting times'**
+  /// **'Welcome to RUVA, your calm place for fasting, food and wellness'**
   String get onboardingTitle;
 
   /// No description provided for @onboardingNotMedical.
@@ -802,19 +802,19 @@ abstract class AppLocalizations {
   /// No description provided for @splashTagline.
   ///
   /// In en, this message translates to:
-  /// **'INTERMITTENT FASTING & HEALTH'**
+  /// **'FASTING · NUTRITION · WELLNESS'**
   String get splashTagline;
 
   /// No description provided for @splashInitializing.
   ///
   /// In en, this message translates to:
-  /// **'INITIALIZING TRACKER'**
+  /// **'GETTING READY'**
   String get splashInitializing;
 
   /// No description provided for @splashLoading.
   ///
   /// In en, this message translates to:
-  /// **'LIFE Fasting, loading'**
+  /// **'RUVA, loading'**
   String get splashLoading;
 
   /// No description provided for @notifDailyBody.

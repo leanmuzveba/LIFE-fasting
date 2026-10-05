@@ -1,5 +1,5 @@
 name: life_fasting
-description: "Calm, offline-first intermittent fasting tracker"
+description: "RUVA — personal fasting, nutrition and wellness hub"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
@@ -33,6 +33,8 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+  assets:
+    - assets/brand/
   # RUVA brand fonts (SIL OFL; licences in assets/fonts/OFL-*.txt)
   fonts:
     - family: Lexend
@@ -66,16 +68,17 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: assets/icon/icon.png
-  adaptive_icon_background: "#F5FBFE"
+  adaptive_icon_background: "#135D44"
   adaptive_icon_foreground: assets/icon/foreground.png
   remove_alpha_ios: true
 
 # The app is light-only: android/app/src/main/res has no *-night folders, so
 # the splash and window background stay light in system dark mode. If you
 # re-run flutter_native_splash, delete the generated *-night folders again.
+
 flutter_native_splash:
-  color: "#F5FBFE"
+  color: "#F6FCEF"
   image: assets/icon/splash.png
   android_12:
-    color: "#F5FBFE"
-    image: assets/icon/splash.png
+    color: "#F6FCEF"
+    image: assets/icon/splash_android12.png

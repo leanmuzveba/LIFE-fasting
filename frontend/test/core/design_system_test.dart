@@ -14,7 +14,7 @@ void main() {
         home: Scaffold(
           body: Column(
             children: [
-              Wrap(children: [for (final i in AppIcon.values) AppIconView(i), const AppLogo()]),
+              Wrap(children: [for (final i in AppIcon.values) AppIconView(i)]),
               PillButton(label: 'Start fast', large: true, onPressed: () => taps++),
               PillButton(label: 'Cancel', outlined: true, onPressed: () {}),
             ],
