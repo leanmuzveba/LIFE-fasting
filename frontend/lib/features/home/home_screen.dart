@@ -67,15 +67,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: running
                 ? [
-                    PillButton(label: l.endFast, large: true, onPressed: _askEnd),
+                    _MainButton(label: l.endFast, onPressed: _askEnd),
                     const SizedBox(height: 4),
                     _LinkRow(links: {l.editStartTime: () => showEditStartSheet(context, startedAt: session.startedAt)}),
                   ]
                 : [
-                    PillButton(label: l.startFast, large: true, onPressed: _start),
+                    _MainButton(label: l.startFast, onPressed: _start),
                     const SizedBox(height: 4),
                     _LinkRow(links: {l.changeTarget: widget.onChangeTarget}),
                   ],
@@ -158,6 +157,19 @@ class _InfoCard extends StatelessWidget {
   );
 }
 
+/// Compact primary action: 48px tall (minimum tap height), not full width.
+class _MainButton extends StatelessWidget {
+  const _MainButton({required this.label, required this.onPressed});
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) => ConstrainedBox(
+    constraints: const BoxConstraints(minWidth: 200, maxWidth: 240),
+    child: PillButton(label: label, onPressed: onPressed),
+  );
+}
+
 class _LinkRow extends StatelessWidget {
   const _LinkRow({required this.links});
   final Map<String, VoidCallback> links;
@@ -166,7 +178,14 @@ class _LinkRow extends StatelessWidget {
   Widget build(BuildContext context) => Wrap(
     alignment: WrapAlignment.center,
     spacing: 8,
-    children: [for (final e in links.entries) TextButton(onPressed: e.value, child: Text(e.key))],
+    children: [
+      for (final e in links.entries)
+        TextButton(
+          onPressed: e.value,
+          style: TextButton.styleFrom(textStyle: AppText.link.copyWith(fontSize: 14)),
+          child: Text(e.key),
+        ),
+    ],
   );
 }
 
