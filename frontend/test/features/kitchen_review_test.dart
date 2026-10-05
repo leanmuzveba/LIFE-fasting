@@ -49,6 +49,8 @@ void main() {
     c.invalidate(kitchenProvider);
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
     await tester.pumpAndSettle();
+    await tester.tap(find.text('My Kitchen'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Start monthly review'));
     await tester.pumpAndSettle();
 
@@ -101,6 +103,8 @@ void main() {
     tester.view.physicalSize = const Size(390, 2600);
     final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('My Kitchen'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Shopping list'));
     await tester.pumpAndSettle();

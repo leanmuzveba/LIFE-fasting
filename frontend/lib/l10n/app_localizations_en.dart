@@ -656,7 +656,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsHowItWorksBody =>
-      'RUVA helps you record fasting times, water, activity and — soon — meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.';
+      'RUVA helps you record fasting times, water, activity, meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.';
 
   @override
   String get settingsFooter => 'Made with care. Not medical advice.';
@@ -1182,6 +1182,234 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsReviewNow => 'Review my kitchen now';
+
+  @override
+  String get mealBreakfast => 'Breakfast';
+
+  @override
+  String get mealLunch => 'Lunch';
+
+  @override
+  String get mealDinner => 'Dinner';
+
+  @override
+  String get mealSnacks => 'Snacks';
+
+  @override
+  String get nutrientEnergy => 'Energy';
+
+  @override
+  String get nutrientProtein => 'Protein';
+
+  @override
+  String get nutrientCarbs => 'Carbs';
+
+  @override
+  String get nutrientFat => 'Fat';
+
+  @override
+  String get nutrientFibre => 'Fibre';
+
+  @override
+  String get nutrientCalcium => 'Calcium';
+
+  @override
+  String get nutrientIron => 'Iron';
+
+  @override
+  String get nutrientPotassium => 'Potassium';
+
+  @override
+  String get nutrientSodium => 'Sodium';
+
+  @override
+  String get nutrientVitaminC => 'Vitamin C';
+
+  @override
+  String get nutrientEstimated => 'Estimated';
+
+  @override
+  String get nutrientPartial => 'Partial';
+
+  @override
+  String get nutrientUnavailable => 'Unavailable';
+
+  @override
+  String get diaryTitle => 'Food Diary';
+
+  @override
+  String get diaryPrevDay => 'Previous day';
+
+  @override
+  String get diaryNextDay => 'Next day';
+
+  @override
+  String get diarySummaryToday => 'Today’s summary';
+
+  @override
+  String get diarySummaryDay => 'Day summary';
+
+  @override
+  String get diaryInfoTitle => 'About these numbers';
+
+  @override
+  String get diaryInfoBody =>
+      'Nutrition values are estimates from USDA FoodData Central and the foods you create. “Partial” means some foods you logged have no data for that nutrient; “Unavailable” means none do. RUVA doesn’t set targets or judge what you eat.';
+
+  @override
+  String get diaryMicros => 'Vitamins & minerals';
+
+  @override
+  String get diaryMealEmpty => 'Nothing logged yet — that’s perfectly fine.';
+
+  @override
+  String diaryKcal(String kcal) {
+    return '$kcal kcal';
+  }
+
+  @override
+  String get diaryEst => '(est.)';
+
+  @override
+  String diaryEntryLabel(String name, String time, String amount) {
+    return '$name, $time, $amount';
+  }
+
+  @override
+  String get diaryChangeAmount => 'Change amount';
+
+  @override
+  String get diaryRemove => 'Remove';
+
+  @override
+  String diaryRemoved(String name) {
+    return '$name removed';
+  }
+
+  @override
+  String get diaryAddFood => 'Add food';
+
+  @override
+  String get addFoodTitle => 'Add Food';
+
+  @override
+  String addFoodTo(String meal, String date) {
+    return 'to $meal · $date';
+  }
+
+  @override
+  String get addFoodDatabase => 'Food database';
+
+  @override
+  String addFoodSearch(String count) {
+    return 'Search $count foods…';
+  }
+
+  @override
+  String get addFoodSource => 'USDA FoodData Central · values are estimates';
+
+  @override
+  String get addFoodLoading => 'Loading foods…';
+
+  @override
+  String get addFoodRecent => 'Recent';
+
+  @override
+  String get addFoodSaved => 'Saved';
+
+  @override
+  String get addFoodResults => 'Results';
+
+  @override
+  String addFoodNoMatch(String query) {
+    return 'No foods match “$query”. You can create your own.';
+  }
+
+  @override
+  String addFoodPer100(String kcal, String protein) {
+    return '100 g · $kcal kcal · $protein g protein (est.)';
+  }
+
+  @override
+  String get addFoodNoData => 'Nutrition unavailable';
+
+  @override
+  String get addFoodYours => 'Your food';
+
+  @override
+  String get addFoodSelected => 'Selected item';
+
+  @override
+  String get addFoodClear => 'Clear selection';
+
+  @override
+  String get addFoodLess => 'Less';
+
+  @override
+  String get addFoodMore => 'More';
+
+  @override
+  String addFoodAbout(String kcal) {
+    return '≈ $kcal kcal (est.)';
+  }
+
+  @override
+  String get addFoodMeal => 'Meal';
+
+  @override
+  String get addFoodTime => 'Time';
+
+  @override
+  String addFoodAddTo(String meal) {
+    return 'Add to $meal';
+  }
+
+  @override
+  String addFoodAdded(String name, String meal) {
+    return '$name added to $meal';
+  }
+
+  @override
+  String get addFoodSave => 'Save to favourites';
+
+  @override
+  String get addFoodUnsave => 'Remove from favourites';
+
+  @override
+  String get addFoodCreate => 'Create custom food';
+
+  @override
+  String get customTitle => 'Your own food';
+
+  @override
+  String get customName => 'Name';
+
+  @override
+  String get customServing => 'Serving size (g)';
+
+  @override
+  String get customPerServing => 'Nutrition per serving · optional';
+
+  @override
+  String get customHint => 'Leave blank anything you don’t know — it will show as unavailable, never as zero.';
+
+  @override
+  String get customSave => 'Save and select';
+
+  @override
+  String get customNameRequired => 'Enter a name.';
+
+  @override
+  String get customServingRequired => 'Enter a serving size in grams.';
+
+  @override
+  String get customServingLabel => '1 serving';
+
+  @override
+  String get settingsFoodData => 'Food data';
+
+  @override
+  String get settingsFoodDataSub => 'USDA FoodData Central, SR Legacy (public domain). Values are estimates.';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

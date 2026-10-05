@@ -1228,7 +1228,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsHowItWorksBody.
   ///
   /// In en, this message translates to:
-  /// **'RUVA helps you record fasting times, water, activity and — soon — meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.'**
+  /// **'RUVA helps you record fasting times, water, activity, meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.'**
   String get settingsHowItWorksBody;
 
   /// No description provided for @settingsFooter.
@@ -2124,6 +2124,420 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Review my kitchen now'**
   String get settingsReviewNow;
+
+  /// No description provided for @mealBreakfast.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakfast'**
+  String get mealBreakfast;
+
+  /// No description provided for @mealLunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Lunch'**
+  String get mealLunch;
+
+  /// No description provided for @mealDinner.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner'**
+  String get mealDinner;
+
+  /// No description provided for @mealSnacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Snacks'**
+  String get mealSnacks;
+
+  /// No description provided for @nutrientEnergy.
+  ///
+  /// In en, this message translates to:
+  /// **'Energy'**
+  String get nutrientEnergy;
+
+  /// No description provided for @nutrientProtein.
+  ///
+  /// In en, this message translates to:
+  /// **'Protein'**
+  String get nutrientProtein;
+
+  /// No description provided for @nutrientCarbs.
+  ///
+  /// In en, this message translates to:
+  /// **'Carbs'**
+  String get nutrientCarbs;
+
+  /// No description provided for @nutrientFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat'**
+  String get nutrientFat;
+
+  /// No description provided for @nutrientFibre.
+  ///
+  /// In en, this message translates to:
+  /// **'Fibre'**
+  String get nutrientFibre;
+
+  /// No description provided for @nutrientCalcium.
+  ///
+  /// In en, this message translates to:
+  /// **'Calcium'**
+  String get nutrientCalcium;
+
+  /// No description provided for @nutrientIron.
+  ///
+  /// In en, this message translates to:
+  /// **'Iron'**
+  String get nutrientIron;
+
+  /// No description provided for @nutrientPotassium.
+  ///
+  /// In en, this message translates to:
+  /// **'Potassium'**
+  String get nutrientPotassium;
+
+  /// No description provided for @nutrientSodium.
+  ///
+  /// In en, this message translates to:
+  /// **'Sodium'**
+  String get nutrientSodium;
+
+  /// No description provided for @nutrientVitaminC.
+  ///
+  /// In en, this message translates to:
+  /// **'Vitamin C'**
+  String get nutrientVitaminC;
+
+  /// No description provided for @nutrientEstimated.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated'**
+  String get nutrientEstimated;
+
+  /// No description provided for @nutrientPartial.
+  ///
+  /// In en, this message translates to:
+  /// **'Partial'**
+  String get nutrientPartial;
+
+  /// No description provided for @nutrientUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get nutrientUnavailable;
+
+  /// No description provided for @diaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Food Diary'**
+  String get diaryTitle;
+
+  /// No description provided for @diaryPrevDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get diaryPrevDay;
+
+  /// No description provided for @diaryNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get diaryNextDay;
+
+  /// No description provided for @diarySummaryToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s summary'**
+  String get diarySummaryToday;
+
+  /// No description provided for @diarySummaryDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day summary'**
+  String get diarySummaryDay;
+
+  /// No description provided for @diaryInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'About these numbers'**
+  String get diaryInfoTitle;
+
+  /// No description provided for @diaryInfoBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition values are estimates from USDA FoodData Central and the foods you create. “Partial” means some foods you logged have no data for that nutrient; “Unavailable” means none do. RUVA doesn’t set targets or judge what you eat.'**
+  String get diaryInfoBody;
+
+  /// No description provided for @diaryMicros.
+  ///
+  /// In en, this message translates to:
+  /// **'Vitamins & minerals'**
+  String get diaryMicros;
+
+  /// No description provided for @diaryMealEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing logged yet — that’s perfectly fine.'**
+  String get diaryMealEmpty;
+
+  /// No description provided for @diaryKcal.
+  ///
+  /// In en, this message translates to:
+  /// **'{kcal} kcal'**
+  String diaryKcal(String kcal);
+
+  /// No description provided for @diaryEst.
+  ///
+  /// In en, this message translates to:
+  /// **'(est.)'**
+  String get diaryEst;
+
+  /// No description provided for @diaryEntryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, {time}, {amount}'**
+  String diaryEntryLabel(String name, String time, String amount);
+
+  /// No description provided for @diaryChangeAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Change amount'**
+  String get diaryChangeAmount;
+
+  /// No description provided for @diaryRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get diaryRemove;
+
+  /// No description provided for @diaryRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} removed'**
+  String diaryRemoved(String name);
+
+  /// No description provided for @diaryAddFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Add food'**
+  String get diaryAddFood;
+
+  /// No description provided for @addFoodTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Food'**
+  String get addFoodTitle;
+
+  /// No description provided for @addFoodTo.
+  ///
+  /// In en, this message translates to:
+  /// **'to {meal} · {date}'**
+  String addFoodTo(String meal, String date);
+
+  /// No description provided for @addFoodDatabase.
+  ///
+  /// In en, this message translates to:
+  /// **'Food database'**
+  String get addFoodDatabase;
+
+  /// No description provided for @addFoodSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search {count} foods…'**
+  String addFoodSearch(String count);
+
+  /// No description provided for @addFoodSource.
+  ///
+  /// In en, this message translates to:
+  /// **'USDA FoodData Central · values are estimates'**
+  String get addFoodSource;
+
+  /// No description provided for @addFoodLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading foods…'**
+  String get addFoodLoading;
+
+  /// No description provided for @addFoodRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get addFoodRecent;
+
+  /// No description provided for @addFoodSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get addFoodSaved;
+
+  /// No description provided for @addFoodResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get addFoodResults;
+
+  /// No description provided for @addFoodNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No foods match “{query}”. You can create your own.'**
+  String addFoodNoMatch(String query);
+
+  /// No description provided for @addFoodPer100.
+  ///
+  /// In en, this message translates to:
+  /// **'100 g · {kcal} kcal · {protein} g protein (est.)'**
+  String addFoodPer100(String kcal, String protein);
+
+  /// No description provided for @addFoodNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition unavailable'**
+  String get addFoodNoData;
+
+  /// No description provided for @addFoodYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Your food'**
+  String get addFoodYours;
+
+  /// No description provided for @addFoodSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected item'**
+  String get addFoodSelected;
+
+  /// No description provided for @addFoodClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear selection'**
+  String get addFoodClear;
+
+  /// No description provided for @addFoodLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get addFoodLess;
+
+  /// No description provided for @addFoodMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get addFoodMore;
+
+  /// No description provided for @addFoodAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {kcal} kcal (est.)'**
+  String addFoodAbout(String kcal);
+
+  /// No description provided for @addFoodMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal'**
+  String get addFoodMeal;
+
+  /// No description provided for @addFoodTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get addFoodTime;
+
+  /// No description provided for @addFoodAddTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to {meal}'**
+  String addFoodAddTo(String meal);
+
+  /// No description provided for @addFoodAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} added to {meal}'**
+  String addFoodAdded(String name, String meal);
+
+  /// No description provided for @addFoodSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to favourites'**
+  String get addFoodSave;
+
+  /// No description provided for @addFoodUnsave.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get addFoodUnsave;
+
+  /// No description provided for @addFoodCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom food'**
+  String get addFoodCreate;
+
+  /// No description provided for @customTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own food'**
+  String get customTitle;
+
+  /// No description provided for @customName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get customName;
+
+  /// No description provided for @customServing.
+  ///
+  /// In en, this message translates to:
+  /// **'Serving size (g)'**
+  String get customServing;
+
+  /// No description provided for @customPerServing.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition per serving · optional'**
+  String get customPerServing;
+
+  /// No description provided for @customHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave blank anything you don’t know — it will show as unavailable, never as zero.'**
+  String get customHint;
+
+  /// No description provided for @customSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and select'**
+  String get customSave;
+
+  /// No description provided for @customNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name.'**
+  String get customNameRequired;
+
+  /// No description provided for @customServingRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a serving size in grams.'**
+  String get customServingRequired;
+
+  /// No description provided for @customServingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'1 serving'**
+  String get customServingLabel;
+
+  /// No description provided for @settingsFoodData.
+  ///
+  /// In en, this message translates to:
+  /// **'Food data'**
+  String get settingsFoodData;
+
+  /// No description provided for @settingsFoodDataSub.
+  ///
+  /// In en, this message translates to:
+  /// **'USDA FoodData Central, SR Legacy (public domain). Values are estimates.'**
+  String get settingsFoodDataSub;
 
   /// No description provided for @notifDailyBody.
   ///

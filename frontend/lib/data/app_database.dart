@@ -13,7 +13,7 @@ abstract final class AppDatabase {
   /// The file name stays from the original app so existing data is kept.
   static const fileName = 'life_fasting.db';
 
-  static final List<Migration> migrations = [_v1Initial, _v2Hydration, _v3Activity, _v4Kitchen, _v5Review];
+  static final List<Migration> migrations = [_v1Initial, _v2Hydration, _v3Activity, _v4Kitchen, _v5Review, _v6Food];
 
   static int get latestVersion => migrations.length;
 
@@ -39,6 +39,40 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 6 — food diary, saved foods and your own foods (PRD v1.2 §3).
+  static Future<void> _v6Food(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE food_entries (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        day TEXT NOT NULL,                    -- local date 'YYYY-MM-DD'
+        meal TEXT NOT NULL,
+        logged_at INTEGER NOT NULL,           -- UTC epoch ms
+        name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+        food_key TEXT,                        -- 'usda:<fdcId>' / 'custom:<id>'
+        grams REAL NOT NULL CHECK (grams > 0),
+        portion TEXT NOT NULL DEFAULT '',
+        nutrients TEXT NOT NULL DEFAULT '{}'  -- JSON totals; missing key = unavailable
+      )''');
+    await db.execute('CREATE INDEX food_entries_day ON food_entries (day)');
+    await db.execute('''
+      CREATE TABLE saved_foods (
+        food_key TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        grams REAL NOT NULL,
+        portion TEXT NOT NULL DEFAULT '',
+        created_at INTEGER NOT NULL
+      )''');
+    await db.execute('''
+      CREATE TABLE custom_foods (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+        nutrients TEXT NOT NULL DEFAULT '{}', -- JSON per 100 g
+        serving_grams REAL,
+        serving_label TEXT,
+        created_at INTEGER NOT NULL
+      )''');
   }
 
   /// Version 5 — monthly kitchen reviews and the shopping list (PRD v1.2 §6).

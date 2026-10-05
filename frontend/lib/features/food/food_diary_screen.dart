@@ -1,0 +1,456 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart' show DateFormat;
+
+import '../../core/l10n.dart';
+import '../../core/theme/app_theme.dart';
+import '../../core/theme/tokens.dart';
+import '../../core/widgets/ruva_kit.dart';
+import '../../core/widgets/ruva_logo.dart';
+import '../../core/widgets/sheet.dart';
+import '../../domain/food.dart';
+import '../../state/providers.dart';
+import '../kitchen/my_kitchen_screen.dart';
+import 'add_food_screen.dart';
+import 'food_labels.dart';
+
+/// Nutrition tab root (RUVA design, PRD v1.2 §3): one day's meals with
+/// estimated totals, plus shortcuts to My Kitchen.
+class FoodDiaryScreen extends ConsumerStatefulWidget {
+  const FoodDiaryScreen({super.key});
+
+  @override
+  ConsumerState<FoodDiaryScreen> createState() => _FoodDiaryScreenState();
+}
+
+class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
+  DateTime? _day; // null = today
+  bool _micros = false;
+
+  DateTime get _today {
+    final t = ref.read(clockProvider)().toLocal();
+    return DateTime(t.year, t.month, t.day);
+  }
+
+  void _shift(int days) {
+    final d = (_day ?? _today);
+    final next = DateTime(d.year, d.month, d.day + days);
+    setState(() => _day = next == _today ? null : next);
+  }
+
+  void _add(Meal meal, DateTime day) => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => AddFoodScreen(day: day, meal: meal),
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final today = _today;
+    final day = _day ?? today;
+    final isToday = day == today;
+    final entries = ref.watch(diaryDayProvider(day)).value ?? const <FoodEntry>[];
+    final kitchenCount = ref.watch(kitchenProvider).value?.length ?? 0;
+    final totals = DayTotals(entries);
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'diary-fab',
+        tooltip: l.diaryAddFood,
+        onPressed: () => _add(mealForHour(ref.read(clockProvider)().toLocal().hour), day),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.white,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, size: 30),
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 110),
+          children: [
+            ScreenHeader(
+              eyebrow: l.navNutrition,
+              title: l.diaryTitle,
+              centered: true,
+              trailing: const RuvaLogo(size: 34, semanticLabel: null),
+            ),
+            const SizedBox(height: 8),
+            Center(
+              child: _DatePill(
+                label: isToday ? l.today : DateFormat('EEE, d MMM').format(day),
+                onPrev: () => _shift(-1),
+                onNext: isToday ? null : () => _shift(1),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  RuvaCard(
+                    padding: const EdgeInsets.all(14),
+                    radius: 20,
+                    onTap: () =>
+                        Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const MyKitchenScreen())),
+                    child: Row(
+                      children: [
+                        const IconBubble(icon: Icons.kitchen_outlined, size: 40),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(l.kitchenTitle, style: AppText.cardValue.copyWith(fontSize: 15)),
+                              Text(l.kitchenItems(kitchenCount), style: AppText.small),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _SummaryCard(
+                    title: isToday ? l.diarySummaryToday : l.diarySummaryDay,
+                    totals: totals,
+                    empty: entries.isEmpty,
+                    showMicros: _micros,
+                    onToggleMicros: () => setState(() => _micros = !_micros),
+                  ),
+                  const SizedBox(height: 20),
+                  for (final meal in Meal.values) ...[
+                    _MealCard(
+                      meal: meal,
+                      entries: [
+                        for (final e in entries)
+                          if (e.meal == meal) e,
+                      ],
+                      onAdd: () => _add(meal, day),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DatePill extends StatelessWidget {
+  const _DatePill({required this.label, required this.onPrev, required this.onNext});
+  final String label;
+  final VoidCallback onPrev;
+  final VoidCallback? onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(40),
+        border: Border.all(color: AppColors.track),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            tooltip: l.diaryPrevDay,
+            onPressed: onPrev,
+            icon: const Icon(Icons.chevron_left_rounded, color: AppColors.primary),
+          ),
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 110),
+            child: Text(label, textAlign: TextAlign.center, style: AppText.cardValue.copyWith(fontSize: 16)),
+          ),
+          IconButton(
+            tooltip: l.diaryNextDay,
+            onPressed: onNext,
+            icon: const Icon(Icons.chevron_right_rounded),
+            color: AppColors.primary,
+            disabledColor: AppColors.track,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SummaryCard extends StatelessWidget {
+  const _SummaryCard({
+    required this.title,
+    required this.totals,
+    required this.empty,
+    required this.showMicros,
+    required this.onToggleMicros,
+  });
+
+  final String title;
+  final DayTotals totals;
+  final bool empty;
+  final bool showMicros;
+  final VoidCallback onToggleMicros;
+
+  Widget _grid(BuildContext context, List<Nutrient> ns) => LayoutBuilder(
+    builder: (context, c) {
+      final w = (c.maxWidth - 24) / 3;
+      return Wrap(
+        spacing: 12,
+        runSpacing: 18,
+        children: [
+          for (final n in ns)
+            SizedBox(
+              width: w,
+              child: _Value(n: n, value: empty ? 0 : totals.sum[n], partial: totals.incomplete.contains(n)),
+            ),
+        ],
+      );
+    },
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return ForestCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    title,
+                    style: AppText.title.copyWith(fontSize: 20, color: AppColors.white, fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+              IconButton(
+                tooltip: l.diaryInfoTitle,
+                onPressed: () => showAppSheet<void>(
+                  context,
+                  (_) => Gap16Column(
+                    children: [
+                      Semantics(header: true, child: Text(l.diaryInfoTitle, style: AppText.title)),
+                      Text(l.diaryInfoBody, style: AppText.body),
+                    ],
+                  ),
+                ),
+                icon: const Icon(Icons.info_outline, color: AppColors.accent),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _grid(context, Nutrient.macros),
+          const SizedBox(height: 8),
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              foregroundColor: AppColors.accent,
+              padding: EdgeInsets.zero,
+              minimumSize: const Size(48, 48),
+            ),
+            onPressed: onToggleMicros,
+            icon: Icon(showMicros ? Icons.expand_less : Icons.expand_more),
+            label: Text(l.diaryMicros),
+          ),
+          if (showMicros) _grid(context, Nutrient.micros),
+        ],
+      ),
+    );
+  }
+}
+
+class _Value extends StatelessWidget {
+  const _Value({required this.n, required this.value, required this.partial});
+  final Nutrient n;
+  final double? value;
+  final bool partial;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final name = nutrientLabel(l, n);
+    final status = value == null
+        ? l.nutrientUnavailable
+        : partial
+        ? l.nutrientPartial
+        : l.nutrientEstimated;
+    return Semantics(
+      container: true,
+      label: value == null ? '$name: $status' : '$name: ${formatNutrient(value!)} ${n.unit}, $status',
+      excludeSemantics: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MonoLabel(name, color: AppColors.accent, size: 10),
+          const SizedBox(height: 4),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: value == null ? '—' : formatNutrient(value!),
+                    style: AppText.title.copyWith(fontSize: 24, color: AppColors.white),
+                  ),
+                  if (value != null)
+                    TextSpan(
+                      text: ' ${n.unit}',
+                      style: AppText.body.copyWith(fontSize: 13, color: AppColors.accent),
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          MonoLabel(status, color: onForestMuted, size: 9),
+        ],
+      ),
+    );
+  }
+}
+
+class _MealCard extends ConsumerWidget {
+  const _MealCard({required this.meal, required this.entries, required this.onAdd});
+  final Meal meal;
+  final List<FoodEntry> entries;
+  final VoidCallback onAdd;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final name = mealLabel(l, meal);
+    return RuvaCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Semantics(header: true, child: MonoLabel(name))),
+              RoundIconButton(icon: Icons.add, onTap: onAdd, tooltip: l.addFoodAddTo(name)),
+            ],
+          ),
+          if (entries.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(l.diaryMealEmpty, style: AppText.small.copyWith(fontSize: 14)),
+            ),
+          for (final (i, e) in entries.indexed) ...[
+            if (i > 0) const Divider(color: AppColors.divider, height: 8),
+            _EntryRow(entry: e),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _EntryRow extends ConsumerWidget {
+  const _EntryRow({required this.entry});
+  final FoodEntry entry;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final time = MaterialLocalizations.of(context).formatTimeOfDay(
+      TimeOfDay.fromDateTime(entry.loggedAt.toLocal()),
+      alwaysUse24HourFormat: ref.watch(settingsProvider).value?.use24HourTime ?? false,
+    );
+    final kcal = entry.nutrients[Nutrient.energy];
+    final amount = kcal == null ? l.addFoodNoData : '${l.diaryKcal(formatNutrient(kcal))} ${l.diaryEst}';
+    return Semantics(
+      button: true,
+      label: l.diaryEntryLabel(entry.name, time, '${formatPortion(entry.portion, entry.grams)}, $amount'),
+      excludeSemantics: true,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => showAppSheet<void>(context, (_) => _EntrySheet(entry: entry)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              IconBubble(icon: mealIcon(entry.meal), size: 48),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(entry.name, style: AppText.cardValue.copyWith(fontSize: 15)),
+                    const SizedBox(height: 3),
+                    Text(
+                      '$time · ${formatPortion(entry.portion, entry.grams)} · $amount',
+                      style: AppText.small.copyWith(fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Change the amount of a logged food, or remove it.
+class _EntrySheet extends ConsumerStatefulWidget {
+  const _EntrySheet({required this.entry});
+  final FoodEntry entry;
+
+  @override
+  ConsumerState<_EntrySheet> createState() => _EntrySheetState();
+}
+
+class _EntrySheetState extends ConsumerState<_EntrySheet> {
+  late double _grams = widget.entry.grams;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final e = widget.entry;
+    final changed = _grams != e.grams;
+    final kcal = e.copyWith(grams: _grams).nutrients[Nutrient.energy];
+    return Gap16Column(
+      children: [
+        Semantics(header: true, child: Text(e.name, style: AppText.title)),
+        MonoLabel(l.diaryChangeAmount),
+        ValueStepper(
+          large: true,
+          label: changed ? formatPortion('', _grams) : formatPortion(e.portion, _grams),
+          minusTooltip: l.addFoodLess,
+          plusTooltip: l.addFoodMore,
+          onMinus: _grams > 5 ? () => setState(() => _grams = (_grams - 10).clamp(5, 2000)) : null,
+          onPlus: _grams < 2000 ? () => setState(() => _grams = (_grams + 10).clamp(5, 2000)) : null,
+        ),
+        if (kcal != null) Text(l.addFoodAbout(formatNutrient(kcal)), style: AppText.small),
+        PrimaryButton(
+          label: l.save,
+          onPressed: changed
+              ? () async {
+                  await ref.read(foodActionsProvider).update(e.copyWith(grams: _grams));
+                  if (context.mounted) Navigator.pop(context);
+                }
+              : null,
+        ),
+        TextButton.icon(
+          style: TextButton.styleFrom(foregroundColor: AppColors.errorText, minimumSize: const Size(48, 48)),
+          onPressed: () async {
+            final messenger = ScaffoldMessenger.of(context);
+            await ref.read(foodActionsProvider).delete(e);
+            if (context.mounted) Navigator.pop(context);
+            messenger
+              ..hideCurrentSnackBar()
+              ..showSnackBar(SnackBar(content: Text(l.diaryRemoved(e.name)), duration: const Duration(seconds: 2)));
+          },
+          icon: const Icon(Icons.delete_outline),
+          label: Text(l.diaryRemove),
+        ),
+      ],
+    );
+  }
+}

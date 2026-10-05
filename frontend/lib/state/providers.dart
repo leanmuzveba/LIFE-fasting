@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/activity_repository.dart';
+import '../data/food_repository.dart';
 import '../data/hydration_repository.dart';
 import '../data/kitchen_repository.dart';
 import '../data/notification_service.dart';
@@ -14,6 +17,7 @@ import '../data/settings_repository.dart';
 import '../domain/activity.dart';
 import '../domain/fasting_session.dart';
 import '../domain/fasting_timer.dart';
+import '../domain/food.dart';
 import '../domain/history.dart';
 import '../domain/hydration.dart';
 import '../domain/kitchen.dart';
@@ -173,6 +177,7 @@ class SessionActions {
     await _ref.read(activityRepositoryProvider).deleteAll();
     await _ref.read(kitchenRepositoryProvider).deleteAll();
     await _ref.read(reviewRepositoryProvider).deleteAll();
+    await _ref.read(foodRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
     _ref.invalidate(historyProvider);
@@ -182,6 +187,10 @@ class SessionActions {
     _ref.invalidate(recentActivitiesProvider);
     _ref.invalidate(kitchenProvider);
     _ref.invalidate(shoppingListProvider);
+    _ref.invalidate(diaryDayProvider);
+    _ref.invalidate(customFoodsProvider);
+    _ref.invalidate(recentFoodsProvider);
+    _ref.invalidate(savedFoodsProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
   }
@@ -490,3 +499,99 @@ class ReviewActions {
 }
 
 final reviewActionsProvider = Provider(ReviewActions.new);
+
+// --- Food diary (PRD v1.2 §3) ---------------------------------------------------
+
+final foodRepositoryProvider = Provider((ref) => FoodRepository(ref.watch(databaseProvider)));
+
+/// USDA FoodData Central SR Legacy, bundled (public domain); loaded once.
+final usdaFoodsProvider = FutureProvider<List<Food>>((ref) async {
+  final data = await rootBundle.load('assets/foods/usda_sr_legacy.tsv');
+  final text = utf8.decode(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+  return [
+    for (final line in text.split('\n'))
+      if (line.isNotEmpty) Food.fromUsdaLine(line),
+  ];
+});
+
+final customFoodsProvider = FutureProvider((ref) => ref.watch(foodRepositoryProvider).customFoods());
+
+/// Everything searchable: your own foods first, then USDA.
+final foodCatalogueProvider = FutureProvider<List<Food>>(
+  (ref) async => [...await ref.watch(customFoodsProvider.future), ...await ref.watch(usdaFoodsProvider.future)],
+);
+
+/// Diary entries for one local date (key: local midnight), in time order.
+final diaryDayProvider = FutureProvider.family<List<FoodEntry>, DateTime>(
+  (ref, day) => ref.watch(foodRepositoryProvider).forDay(day),
+);
+
+final recentFoodsProvider = FutureProvider((ref) => ref.watch(foodRepositoryProvider).recent());
+final savedFoodsProvider = FutureProvider((ref) => ref.watch(foodRepositoryProvider).saved());
+
+class FoodActions {
+  FoodActions(this._ref);
+  final Ref _ref;
+
+  FoodRepository get _repo => _ref.read(foodRepositoryProvider);
+  DateTime _now() => _ref.read(clockProvider)().toUtc();
+
+  void _changed() {
+    _ref.invalidate(diaryDayProvider);
+    _ref.invalidate(recentFoodsProvider);
+  }
+
+  /// Logs [grams] of [food] to [meal] on local date [day] at local time [at].
+  Future<FoodEntry?> log(
+    Food food,
+    double grams, {
+    required Meal meal,
+    required DateTime at,
+    String portion = '',
+  }) async {
+    if (grams <= 0) return null;
+    final local = at.toLocal();
+    final e = await _repo.insert(
+      FoodEntry(
+        day: DateTime(local.year, local.month, local.day),
+        meal: meal,
+        loggedAt: at.toUtc(),
+        name: food.name,
+        foodKey: food.key,
+        grams: grams,
+        portion: portion,
+        nutrients: scaleNutrients(food.per100g, grams),
+      ),
+    );
+    _changed();
+    return e;
+  }
+
+  Future<void> update(FoodEntry e) async {
+    if (e.grams <= 0) return;
+    await _repo.update(e);
+    _changed();
+  }
+
+  Future<void> delete(FoodEntry e) async {
+    await _repo.delete(e.id!);
+    _changed();
+  }
+
+  Future<void> setSaved(Food food, bool saved, {double grams = 100, String portion = ''}) async {
+    if (saved) {
+      await _repo.save((key: food.key, name: food.name, grams: grams, portion: portion, at: _now()));
+    } else {
+      await _repo.unsave(food.key);
+    }
+    _ref.invalidate(savedFoodsProvider);
+  }
+
+  Future<Food> createCustom(String name, Nutrients per100g, Portion? serving) async {
+    final f = await _repo.addCustomFood(name, per100g, serving, _now());
+    _ref.invalidate(customFoodsProvider);
+    return f;
+  }
+}
+
+final foodActionsProvider = Provider(FoodActions.new);

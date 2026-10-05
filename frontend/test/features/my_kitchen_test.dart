@@ -17,6 +17,8 @@ Future<void> _openKitchen(WidgetTester tester, List<Ingredient> items) async {
   c.invalidate(kitchenProvider);
   await tester.tap(find.bySemanticsLabel('Nutrition').last);
   await tester.pumpAndSettle();
+  await tester.tap(find.text('My Kitchen'));
+  await tester.pumpAndSettle();
 }
 
 final _t = DateTime.utc(2026, 10, 4);

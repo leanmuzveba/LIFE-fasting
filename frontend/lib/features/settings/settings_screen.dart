@@ -205,6 +205,11 @@ class SettingsScreen extends ConsumerWidget {
               title: l.settingsNotMedical,
               onTap: () => _info(context, l.settingsNotMedical, l.settingsNotMedicalSub),
             ),
+            _NavRow(
+              icon: Icons.restaurant_menu_outlined,
+              title: l.settingsFoodData,
+              onTap: () => _info(context, l.settingsFoodData, l.settingsFoodDataSub),
+            ),
           ],
         ),
         const SizedBox(height: 24),
