@@ -95,11 +95,13 @@ void main() {
     expect(find.text('0 ml'), findsOneWidget);
   });
 
-  testWidgets('fl oz setting changes display and quick-adds', (tester) async {
+  testWidgets('Imperial units show fl oz and fl oz quick-adds', (tester) async {
     await pumpApp(tester);
     await tester.tap(find.bySemanticsLabel('Settings').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('fl oz'));
+    await tester.tap(find.bySemanticsLabel(RegExp(r'^Units, Metric')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Imperial'));
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Today'));
     await tester.pumpAndSettle();
@@ -113,6 +115,8 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Settings').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Water reminders'), 200);
+    await tester.ensureVisible(find.text('Water reminders'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Water reminders'));
     await tester.pumpAndSettle();
     final waterIds = notifications.scheduled.keys.where((id) => id >= NotificationService.waterReminderBaseId);

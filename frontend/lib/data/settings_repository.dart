@@ -21,7 +21,17 @@ class SettingsRepository {
       ),
       onboardingComplete: kv['onboardingComplete'] == '1',
       eligibility: AgeEligibility.values.asNameMap()[kv['eligibility']] ?? d.eligibility,
-      waterUnit: VolumeUnit.values.asNameMap()[kv['waterUnit']] ?? d.waterUnit,
+      // 'waterUnit' (ml/flOz) predates 'units'; read it when 'units' is absent.
+      units:
+          UnitSystem.values.asNameMap()[kv['units']] ??
+          (kv['waterUnit'] == VolumeUnit.flOz.name ? UnitSystem.imperial : d.units),
+      userName: kv['userName'] ?? '',
+      memberSince: DateTime.tryParse(kv['memberSince'] ?? '')?.toUtc(),
+      diet: DietPreference.values.asNameMap()[kv['diet']] ?? d.diet,
+      allergies: {
+        for (final a in (kv['allergies'] ?? '').split(','))
+          ?Allergen.values.asNameMap()[a],
+      },
       waterGoalMl: (int.tryParse(kv['waterGoalMl'] ?? '') ?? d.waterGoalMl).clamp(minWaterGoalMl, maxWaterGoalMl),
     );
   }
@@ -35,7 +45,11 @@ class SettingsRepository {
     put('targetMinutes', '${s.targetMinutes.clamp(minTargetMinutes, maxTargetMinutes)}');
     put('onboardingComplete', s.onboardingComplete ? '1' : '0');
     put('eligibility', s.eligibility.name);
-    put('waterUnit', s.waterUnit.name);
+    put('units', s.units.name);
+    put('userName', s.userName.trim());
+    if (s.memberSince != null) put('memberSince', s.memberSince!.toUtc().toIso8601String());
+    put('diet', s.diet.name);
+    put('allergies', s.allergies.map((a) => a.name).join(','));
     put('waterGoalMl', '${s.waterGoalMl.clamp(minWaterGoalMl, maxWaterGoalMl)}');
     await batch.commit(noResult: true);
   }

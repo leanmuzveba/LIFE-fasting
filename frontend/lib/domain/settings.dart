@@ -1,4 +1,7 @@
 import 'hydration.dart';
+import 'profile.dart';
+
+export 'profile.dart';
 
 enum AgeEligibility { unknown, adult, under18 }
 
@@ -9,8 +12,12 @@ class AppSettings {
     this.targetMinutes = 16 * 60,
     this.onboardingComplete = false,
     this.eligibility = AgeEligibility.unknown,
-    this.waterUnit = VolumeUnit.ml,
+    this.units = UnitSystem.metric,
     this.waterGoalMl = defaultWaterGoalMl,
+    this.userName = '',
+    this.memberSince,
+    this.diet = DietPreference.none,
+    this.allergies = const {},
   });
 
   final bool use24HourTime;
@@ -18,10 +25,20 @@ class AppSettings {
   final int targetMinutes;
   final bool onboardingComplete;
   final AgeEligibility eligibility;
-  final VolumeUnit waterUnit;
+  final UnitSystem units;
 
   /// Personal daily water goal (user-set; not a medical recommendation).
   final int waterGoalMl;
+
+  /// Optional display name ('' = not set).
+  final String userName;
+
+  /// When RUVA was first set up on this phone.
+  final DateTime? memberSince;
+  final DietPreference diet;
+  final Set<Allergen> allergies;
+
+  VolumeUnit get waterUnit => units == UnitSystem.metric ? VolumeUnit.ml : VolumeUnit.flOz;
 
   /// Under-18s (and anyone not yet confirmed adult) never get fasting controls.
   bool get canFast => eligibility == AgeEligibility.adult;
@@ -32,16 +49,24 @@ class AppSettings {
     int? targetMinutes,
     bool? onboardingComplete,
     AgeEligibility? eligibility,
-    VolumeUnit? waterUnit,
+    UnitSystem? units,
     int? waterGoalMl,
+    String? userName,
+    DateTime? memberSince,
+    DietPreference? diet,
+    Set<Allergen>? allergies,
   }) => AppSettings(
     use24HourTime: use24HourTime ?? this.use24HourTime,
     notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
     targetMinutes: targetMinutes ?? this.targetMinutes,
     onboardingComplete: onboardingComplete ?? this.onboardingComplete,
     eligibility: eligibility ?? this.eligibility,
-    waterUnit: waterUnit ?? this.waterUnit,
+    units: units ?? this.units,
     waterGoalMl: waterGoalMl ?? this.waterGoalMl,
+    userName: userName ?? this.userName,
+    memberSince: memberSince ?? this.memberSince,
+    diet: diet ?? this.diet,
+    allergies: allergies ?? this.allergies,
   );
 }
 

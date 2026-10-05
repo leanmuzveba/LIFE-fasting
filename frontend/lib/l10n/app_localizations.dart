@@ -577,12 +577,6 @@ abstract class AppLocalizations {
   /// **'It will be removed from your history on this phone. This can’t be undone.'**
   String get deleteSessionBody;
 
-  /// No description provided for @settingsTimer.
-  ///
-  /// In en, this message translates to:
-  /// **'TIMER'**
-  String get settingsTimer;
-
   /// No description provided for @settingsTarget.
   ///
   /// In en, this message translates to:
@@ -594,12 +588,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'24-hour clock'**
   String get settings24h;
-
-  /// No description provided for @settingsNotifications.
-  ///
-  /// In en, this message translates to:
-  /// **'NOTIFICATIONS'**
-  String get settingsNotifications;
 
   /// No description provided for @settingsTargetReached.
   ///
@@ -646,7 +634,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsPrivacy.
   ///
   /// In en, this message translates to:
-  /// **'PRIVACY'**
+  /// **'Privacy & data'**
   String get settingsPrivacy;
 
   /// No description provided for @settingsDataStays.
@@ -672,12 +660,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sessions, settings and reminders'**
   String get settingsDeleteAllSub;
-
-  /// No description provided for @settingsAbout.
-  ///
-  /// In en, this message translates to:
-  /// **'ABOUT'**
-  String get settingsAbout;
 
   /// No description provided for @settingsNotMedical.
   ///
@@ -994,14 +976,8 @@ abstract class AppLocalizations {
   /// No description provided for @settingsUnits.
   ///
   /// In en, this message translates to:
-  /// **'UNITS'**
+  /// **'Units'**
   String get settingsUnits;
-
-  /// No description provided for @settingsWaterUnit.
-  ///
-  /// In en, this message translates to:
-  /// **'Water'**
-  String get settingsWaterUnit;
 
   /// No description provided for @unitMl.
   ///
@@ -1254,6 +1230,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ACTIVITY TODAY'**
   String get activityToday;
+
+  /// No description provided for @settingsPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get settingsPreferences;
+
+  /// No description provided for @settingsRemindersOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders (all optional)'**
+  String get settingsRemindersOptional;
+
+  /// No description provided for @settingsAboutSafety.
+  ///
+  /// In en, this message translates to:
+  /// **'About & safety'**
+  String get settingsAboutSafety;
+
+  /// No description provided for @settingsDiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Dietary preferences'**
+  String get settingsDiet;
+
+  /// No description provided for @settingsAllergies.
+  ///
+  /// In en, this message translates to:
+  /// **'Allergies'**
+  String get settingsAllergies;
+
+  /// No description provided for @settingsHowItWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'How RUVA works + safety notes'**
+  String get settingsHowItWorks;
+
+  /// No description provided for @settingsHowItWorksBody.
+  ///
+  /// In en, this message translates to:
+  /// **'RUVA helps you record fasting times, water, activity and — soon — meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.'**
+  String get settingsHowItWorksBody;
+
+  /// No description provided for @settingsFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Made with care. Not medical advice.'**
+  String get settingsFooter;
+
+  /// No description provided for @settingsCurrentState.
+  ///
+  /// In en, this message translates to:
+  /// **'Current state: {state}'**
+  String settingsCurrentState(String state);
+
+  /// No description provided for @on.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get on;
+
+  /// No description provided for @off.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get off;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @unitsMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'Metric'**
+  String get unitsMetric;
+
+  /// No description provided for @unitsImperial.
+  ///
+  /// In en, this message translates to:
+  /// **'Imperial'**
+  String get unitsImperial;
+
+  /// No description provided for @dietNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No preference'**
+  String get dietNone;
+
+  /// No description provided for @dietVegetarian.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetarian'**
+  String get dietVegetarian;
+
+  /// No description provided for @dietVegan.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegan'**
+  String get dietVegan;
+
+  /// No description provided for @dietPescatarian.
+  ///
+  /// In en, this message translates to:
+  /// **'Pescatarian'**
+  String get dietPescatarian;
+
+  /// No description provided for @dietHalal.
+  ///
+  /// In en, this message translates to:
+  /// **'Halal'**
+  String get dietHalal;
+
+  /// No description provided for @allergiesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get allergiesNone;
+
+  /// No description provided for @allergiesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipes with these ingredients will never be suggested. Always check labels — a database can\'t guarantee a food is allergen-free.'**
+  String get allergiesHint;
+
+  /// No description provided for @allergenEggs.
+  ///
+  /// In en, this message translates to:
+  /// **'Eggs'**
+  String get allergenEggs;
+
+  /// No description provided for @allergenDairy.
+  ///
+  /// In en, this message translates to:
+  /// **'Dairy'**
+  String get allergenDairy;
+
+  /// No description provided for @allergenPeanuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Peanuts'**
+  String get allergenPeanuts;
+
+  /// No description provided for @allergenTreeNuts.
+  ///
+  /// In en, this message translates to:
+  /// **'Tree nuts'**
+  String get allergenTreeNuts;
+
+  /// No description provided for @allergenGluten.
+  ///
+  /// In en, this message translates to:
+  /// **'Gluten'**
+  String get allergenGluten;
+
+  /// No description provided for @allergenSoy.
+  ///
+  /// In en, this message translates to:
+  /// **'Soy'**
+  String get allergenSoy;
+
+  /// No description provided for @allergenFish.
+  ///
+  /// In en, this message translates to:
+  /// **'Fish'**
+  String get allergenFish;
+
+  /// No description provided for @allergenShellfish.
+  ///
+  /// In en, this message translates to:
+  /// **'Shellfish'**
+  String get allergenShellfish;
+
+  /// No description provided for @allergenSesame.
+  ///
+  /// In en, this message translates to:
+  /// **'Sesame'**
+  String get allergenSesame;
+
+  /// No description provided for @profileAddName.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your name'**
+  String get profileAddName;
+
+  /// No description provided for @profileEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit profile'**
+  String get profileEditHint;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile'**
+  String get profileTitle;
+
+  /// No description provided for @profileOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Your name is only used to greet you and stays on this phone.'**
+  String get profileOptional;
+
+  /// No description provided for @profileNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get profileNameLabel;
+
+  /// No description provided for @profileMemberSince.
+  ///
+  /// In en, this message translates to:
+  /// **'Member since {date}'**
+  String profileMemberSince(String date);
 
   /// No description provided for @notifDailyBody.
   ///

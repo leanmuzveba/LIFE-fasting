@@ -40,7 +40,15 @@ final nowProvider = StreamProvider<DateTime>((ref) {
 
 class SettingsNotifier extends AsyncNotifier<AppSettings> {
   @override
-  Future<AppSettings> build() => ref.watch(settingsRepositoryProvider).load();
+  Future<AppSettings> build() async {
+    final repo = ref.watch(settingsRepositoryProvider);
+    final s = await repo.load();
+    if (s.memberSince != null) return s;
+    // First run (or first run of a version that tracks it): remember the date.
+    final stamped = s.copyWith(memberSince: ref.read(clockProvider)().toUtc());
+    await repo.save(stamped);
+    return stamped;
+  }
 
   Future<void> save(AppSettings next) async {
     await ref.read(settingsRepositoryProvider).save(next);

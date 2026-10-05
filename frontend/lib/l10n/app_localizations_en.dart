@@ -299,16 +299,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteSessionBody => 'It will be removed from your history on this phone. This can’t be undone.';
 
   @override
-  String get settingsTimer => 'TIMER';
-
-  @override
   String get settingsTarget => 'Target';
 
   @override
   String get settings24h => '24-hour clock';
-
-  @override
-  String get settingsNotifications => 'NOTIFICATIONS';
 
   @override
   String get settingsTargetReached => 'Target time reached';
@@ -334,7 +328,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsNotificationsBlocked => 'Notifications are turned off for this app in your phone’s settings.';
 
   @override
-  String get settingsPrivacy => 'PRIVACY';
+  String get settingsPrivacy => 'Privacy & data';
 
   @override
   String get settingsDataStays => 'Your data stays on this phone';
@@ -347,9 +341,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleteAllSub => 'Sessions, settings and reminders';
-
-  @override
-  String get settingsAbout => 'ABOUT';
 
   @override
   String get settingsNotMedical => 'Not a medical device';
@@ -541,10 +532,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get today => 'Today';
 
   @override
-  String get settingsUnits => 'UNITS';
-
-  @override
-  String get settingsWaterUnit => 'Water';
+  String get settingsUnits => 'Units';
 
   @override
   String get unitMl => 'ml';
@@ -679,6 +667,120 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activityToday => 'ACTIVITY TODAY';
+
+  @override
+  String get settingsPreferences => 'Preferences';
+
+  @override
+  String get settingsRemindersOptional => 'Reminders (all optional)';
+
+  @override
+  String get settingsAboutSafety => 'About & safety';
+
+  @override
+  String get settingsDiet => 'Dietary preferences';
+
+  @override
+  String get settingsAllergies => 'Allergies';
+
+  @override
+  String get settingsHowItWorks => 'How RUVA works + safety notes';
+
+  @override
+  String get settingsHowItWorksBody =>
+      'RUVA helps you record fasting times, water, activity and — soon — meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.';
+
+  @override
+  String get settingsFooter => 'Made with care. Not medical advice.';
+
+  @override
+  String settingsCurrentState(String state) {
+    return 'Current state: $state';
+  }
+
+  @override
+  String get on => 'On';
+
+  @override
+  String get off => 'Off';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get unitsMetric => 'Metric';
+
+  @override
+  String get unitsImperial => 'Imperial';
+
+  @override
+  String get dietNone => 'No preference';
+
+  @override
+  String get dietVegetarian => 'Vegetarian';
+
+  @override
+  String get dietVegan => 'Vegan';
+
+  @override
+  String get dietPescatarian => 'Pescatarian';
+
+  @override
+  String get dietHalal => 'Halal';
+
+  @override
+  String get allergiesNone => 'None';
+
+  @override
+  String get allergiesHint =>
+      'Recipes with these ingredients will never be suggested. Always check labels — a database can\'t guarantee a food is allergen-free.';
+
+  @override
+  String get allergenEggs => 'Eggs';
+
+  @override
+  String get allergenDairy => 'Dairy';
+
+  @override
+  String get allergenPeanuts => 'Peanuts';
+
+  @override
+  String get allergenTreeNuts => 'Tree nuts';
+
+  @override
+  String get allergenGluten => 'Gluten';
+
+  @override
+  String get allergenSoy => 'Soy';
+
+  @override
+  String get allergenFish => 'Fish';
+
+  @override
+  String get allergenShellfish => 'Shellfish';
+
+  @override
+  String get allergenSesame => 'Sesame';
+
+  @override
+  String get profileAddName => 'Add your name';
+
+  @override
+  String get profileEditHint => 'Edit profile';
+
+  @override
+  String get profileTitle => 'Your profile';
+
+  @override
+  String get profileOptional => 'Optional. Your name is only used to greet you and stays on this phone.';
+
+  @override
+  String get profileNameLabel => 'Name';
+
+  @override
+  String profileMemberSince(String date) {
+    return 'Member since $date';
+  }
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

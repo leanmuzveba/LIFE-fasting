@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/data/notification_service.dart';
 
@@ -8,12 +9,21 @@ Future<void> _openSettings(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// Scrolls a Settings row on-screen before tapping it.
+Future<void> _tapRow(WidgetTester tester, String text) async {
+  final f = find.text(text);
+  await tester.scrollUntilVisible(f, 200);
+  await tester.ensureVisible(f);
+  await tester.pumpAndSettle();
+  await tester.tap(f);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('24-hour clock changes the home cards', (tester) async {
     await pumpApp(tester);
     await _openSettings(tester);
-    await tester.tap(find.text('24-hour clock'));
-    await tester.pumpAndSettle();
+    await _tapRow(tester, '24-hour clock');
     await tester.tap(find.bySemanticsLabel('Today'));
     await tester.pumpAndSettle();
     expect(find.text('16 h target · ends 23:24 if you start now'), findsOneWidget);
@@ -30,23 +40,20 @@ void main() {
     expect(notifications.scheduled, isEmpty, reason: 'nothing scheduled until opted in');
 
     await _openSettings(tester);
-    await tester.tap(find.text('Target time reached'));
-    await tester.pumpAndSettle();
+    await _tapRow(tester, 'Target time reached');
     expect(
       notifications.scheduled[NotificationService.targetReachedId],
       clock.now.toUtc().add(const Duration(hours: 16)),
     );
 
-    await tester.tap(find.text('Target time reached'));
-    await tester.pumpAndSettle();
+    await _tapRow(tester, 'Target time reached');
     expect(notifications.scheduled, isEmpty, reason: 'opt-out cancels');
   });
 
   testWidgets('ending a session cancels its target notification', (tester) async {
     final clock = await pumpApp(tester);
     await _openSettings(tester);
-    await tester.tap(find.text('Target time reached'));
-    await tester.pumpAndSettle();
+    await _tapRow(tester, 'Target time reached');
     await tester.tap(find.bySemanticsLabel('Today'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Start fast'));
@@ -64,14 +71,12 @@ void main() {
     await pumpApp(tester);
     await _openSettings(tester);
     notifications.permission = false;
-    await tester.tap(find.text('Daily reminder'));
-    await tester.pumpAndSettle();
+    await _tapRow(tester, 'Daily reminder');
     expect(notifications.scheduled, isEmpty);
     expect(find.textContaining('turned off for this app'), findsOneWidget);
 
     notifications.permission = true;
-    await tester.tap(find.text('Daily reminder'));
-    await tester.pumpAndSettle();
+    await _tapRow(tester, 'Daily reminder');
     expect(notifications.scheduled[NotificationService.dailyReminderId]!.hour, 20);
     expect(find.text('Every day at 8:00 PM'), findsOneWidget);
   });
@@ -82,11 +87,49 @@ void main() {
     await tester.pumpAndSettle();
     await tick(tester, clock, const Duration(hours: 1));
     await _openSettings(tester);
+    await tester.scrollUntilVisible(find.text('Delete all data'), 200);
+    await tester.ensureVisible(find.text('Delete all data'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Delete all data'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Delete all'));
     await tester.pumpAndSettle();
     expect(find.text('Continue'), findsOneWidget);
     expect(notifications.scheduled, isEmpty);
+  });
+
+  testWidgets('profile name is optional; member-since date is shown', (tester) async {
+    await pumpApp(tester);
+    await _openSettings(tester);
+    expect(find.text('Add your name'), findsOneWidget);
+    expect(find.text('MEMBER SINCE OCT 2026'), findsOneWidget);
+    await tester.tap(find.text('Add your name'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'Ruvarashe M');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.text('Ruvarashe M'), findsOneWidget);
+    expect(find.text('RM'), findsOneWidget);
+  });
+
+  testWidgets('diet and allergies are recorded', (tester) async {
+    await pumpApp(tester);
+    await _openSettings(tester);
+    await tester.tap(find.bySemanticsLabel(RegExp(r'^Dietary preferences, No preference')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Vegetarian'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp(r'^Dietary preferences, Vegetarian')), findsOneWidget);
+
+    await tester.tap(find.bySemanticsLabel(RegExp(r'^Allergies, None')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('never be suggested'), findsOneWidget);
+    await tester.tap(find.text('Eggs'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Dairy'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Done'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp(r'^Allergies, Eggs, Dairy')), findsOneWidget);
   });
 }
