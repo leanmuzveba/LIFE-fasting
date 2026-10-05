@@ -12,6 +12,7 @@ import '../data/settings_repository.dart';
 import '../domain/activity.dart';
 import '../domain/fasting_session.dart';
 import '../domain/fasting_timer.dart';
+import '../domain/history.dart';
 import '../domain/hydration.dart';
 import '../domain/settings.dart';
 
@@ -274,17 +275,20 @@ class HydrationActions {
     if (amountMl <= 0 || when.isAfter(now)) return;
     await _repo.insert(HydrationEntry(amountMl: amountMl, loggedAt: when, createdAt: now, updatedAt: now));
     _ref.invalidate(hydrationDayProvider);
+    _ref.invalidate(daySummariesProvider);
   }
 
   Future<void> update(HydrationEntry e) async {
     if (e.amountMl <= 0) return;
     await _repo.update(e.copyWith(updatedAt: _now()));
     _ref.invalidate(hydrationDayProvider);
+    _ref.invalidate(daySummariesProvider);
   }
 
   Future<void> delete(HydrationEntry e) async {
     await _repo.delete(e.id!);
     _ref.invalidate(hydrationDayProvider);
+    _ref.invalidate(daySummariesProvider);
   }
 }
 
@@ -313,6 +317,7 @@ class ActivityActions {
   void _refresh() {
     _ref.invalidate(activityDayProvider);
     _ref.invalidate(recentActivitiesProvider);
+    _ref.invalidate(daySummariesProvider);
   }
 
   /// Returns false (and saves nothing) for an out-of-range duration or a future start.
@@ -336,3 +341,19 @@ class ActivityActions {
 }
 
 final activityActionsProvider = Provider(ActivityActions.new);
+
+// --- History (PRD v1.2 §10) -------------------------------------------------
+
+/// Per-day summaries of everything recorded in [range] (local days, end exclusive).
+final daySummariesProvider = FutureProvider.family<Map<DateTime, DaySummary>, (DateTime, DateTime)>((ref, range) async {
+  final (from, to) = range;
+  final sessions = await ref.watch(historyProvider.future);
+  final water = await ref.watch(hydrationRepositoryProvider).between(from, to);
+  final activities = await ref.watch(activityRepositoryProvider).between(from, to);
+  final fromUtc = from.toUtc(), toUtc = to.toUtc();
+  return summariseByDay(
+    sessions: sessions.where((s) => !s.startedAt.isBefore(fromUtc) && s.startedAt.isBefore(toUtc)),
+    water: water,
+    activities: activities,
+  );
+});

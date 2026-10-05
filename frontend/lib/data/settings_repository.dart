@@ -28,10 +28,7 @@ class SettingsRepository {
       userName: kv['userName'] ?? '',
       memberSince: DateTime.tryParse(kv['memberSince'] ?? '')?.toUtc(),
       diet: DietPreference.values.asNameMap()[kv['diet']] ?? d.diet,
-      allergies: {
-        for (final a in (kv['allergies'] ?? '').split(','))
-          ?Allergen.values.asNameMap()[a],
-      },
+      allergies: {for (final a in (kv['allergies'] ?? '').split(',')) ?Allergen.values.asNameMap()[a]},
       waterGoalMl: (int.tryParse(kv['waterGoalMl'] ?? '') ?? d.waterGoalMl).clamp(minWaterGoalMl, maxWaterGoalMl),
     );
   }

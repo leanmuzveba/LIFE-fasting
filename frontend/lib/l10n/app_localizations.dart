@@ -445,18 +445,6 @@ abstract class AppLocalizations {
   /// **'Save target'**
   String get saveTarget;
 
-  /// No description provided for @historyList.
-  ///
-  /// In en, this message translates to:
-  /// **'List'**
-  String get historyList;
-
-  /// No description provided for @historyCalendar.
-  ///
-  /// In en, this message translates to:
-  /// **'Calendar'**
-  String get historyCalendar;
-
   /// No description provided for @historyEmptyTitle.
   ///
   /// In en, this message translates to:
@@ -522,24 +510,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next month'**
   String get nextMonth;
-
-  /// No description provided for @weekdayInitials.
-  ///
-  /// In en, this message translates to:
-  /// **'M,T,W,T,F,S,S'**
-  String get weekdayInitials;
-
-  /// No description provided for @noSessionsOn.
-  ///
-  /// In en, this message translates to:
-  /// **'No sessions on {day}.'**
-  String noSessionsOn(String day);
-
-  /// No description provided for @daySessions.
-  ///
-  /// In en, this message translates to:
-  /// **'{day}, {count, plural, =0{no sessions} =1{1 session} other{{count} sessions}}'**
-  String daySessions(String day, int count);
 
   /// No description provided for @sessionTitle.
   ///
@@ -1446,6 +1416,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Member since {date}'**
   String profileMemberSince(String date);
+
+  /// No description provided for @historyAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get historyAll;
+
+  /// No description provided for @historyFasting.
+  ///
+  /// In en, this message translates to:
+  /// **'Fasting'**
+  String get historyFasting;
+
+  /// No description provided for @historyRecentDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent days'**
+  String get historyRecentDays;
+
+  /// No description provided for @historyNothingRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing recorded in the last two weeks. That\'s completely fine.'**
+  String get historyNothingRecent;
+
+  /// No description provided for @historyNothingLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing logged'**
+  String get historyNothingLogged;
+
+  /// No description provided for @historyDaySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Day summary'**
+  String get historyDaySummary;
+
+  /// No description provided for @historySkipFine.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipping a day is completely fine.'**
+  String get historySkipFine;
+
+  /// No description provided for @historyQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'“Trends are guides, not grades. Skip a day anytime.”'**
+  String get historyQuote;
+
+  /// No description provided for @historyFastInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast in progress'**
+  String get historyFastInProgress;
+
+  /// No description provided for @historyFastDone.
+  ///
+  /// In en, this message translates to:
+  /// **'{duration} fast · {status}'**
+  String historyFastDone(String duration, String status);
+
+  /// No description provided for @historyWater.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} water'**
+  String historyWater(String amount);
+
+  /// No description provided for @historyActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'{duration} activity'**
+  String historyActivity(String duration);
+
+  /// No description provided for @historyWaterEntries.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} of water · {count, plural, =1{1 entry} other{{count} entries}}'**
+  String historyWaterEntries(String amount, int count);
+
+  /// No description provided for @weekdayInitialsSundayFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'S,M,T,W,T,F,S'**
+  String get weekdayInitialsSundayFirst;
+
+  /// No description provided for @trendEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Fasting · last 14 days'**
+  String get trendEyebrow;
+
+  /// No description provided for @trendAverageFast.
+  ///
+  /// In en, this message translates to:
+  /// **'average fast'**
+  String get trendAverageFast;
+
+  /// No description provided for @trendLongest.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest'**
+  String get trendLongest;
+
+  /// No description provided for @trendTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get trendTotal;
+
+  /// No description provided for @trendFastCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 fast} other{{count} fasts}}'**
+  String trendFastCount(int count);
+
+  /// No description provided for @trendEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No completed fasts in the last 14 days.'**
+  String get trendEmpty;
+
+  /// No description provided for @trendSemantics.
+  ///
+  /// In en, this message translates to:
+  /// **'Fasting, last 14 days ({range}): average fast {average}, longest {longest}, {count, plural, =1{1 fast} other{{count} fasts}}.'**
+  String trendSemantics(String average, String longest, int count, String range);
 
   /// No description provided for @notifDailyBody.
   ///

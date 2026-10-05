@@ -212,12 +212,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveTarget => 'Save target';
 
   @override
-  String get historyList => 'List';
-
-  @override
-  String get historyCalendar => 'Calendar';
-
-  @override
   String get historyEmptyTitle => 'No sessions yet';
 
   @override
@@ -257,26 +251,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nextMonth => 'Next month';
-
-  @override
-  String get weekdayInitials => 'M,T,W,T,F,S,S';
-
-  @override
-  String noSessionsOn(String day) {
-    return 'No sessions on $day.';
-  }
-
-  @override
-  String daySessions(String day, int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count sessions',
-      one: '1 session',
-      zero: 'no sessions',
-    );
-    return '$day, $_temp0';
-  }
 
   @override
   String get sessionTitle => 'Session';
@@ -780,6 +754,84 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String profileMemberSince(String date) {
     return 'Member since $date';
+  }
+
+  @override
+  String get historyAll => 'All';
+
+  @override
+  String get historyFasting => 'Fasting';
+
+  @override
+  String get historyRecentDays => 'Recent days';
+
+  @override
+  String get historyNothingRecent => 'Nothing recorded in the last two weeks. That\'s completely fine.';
+
+  @override
+  String get historyNothingLogged => 'Nothing logged';
+
+  @override
+  String get historyDaySummary => 'Day summary';
+
+  @override
+  String get historySkipFine => 'Skipping a day is completely fine.';
+
+  @override
+  String get historyQuote => '“Trends are guides, not grades. Skip a day anytime.”';
+
+  @override
+  String get historyFastInProgress => 'Fast in progress';
+
+  @override
+  String historyFastDone(String duration, String status) {
+    return '$duration fast · $status';
+  }
+
+  @override
+  String historyWater(String amount) {
+    return '$amount water';
+  }
+
+  @override
+  String historyActivity(String duration) {
+    return '$duration activity';
+  }
+
+  @override
+  String historyWaterEntries(String amount, int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count entries', one: '1 entry');
+    return '$amount of water · $_temp0';
+  }
+
+  @override
+  String get weekdayInitialsSundayFirst => 'S,M,T,W,T,F,S';
+
+  @override
+  String get trendEyebrow => 'Fasting · last 14 days';
+
+  @override
+  String get trendAverageFast => 'average fast';
+
+  @override
+  String get trendLongest => 'Longest';
+
+  @override
+  String get trendTotal => 'Total';
+
+  @override
+  String trendFastCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count fasts', one: '1 fast');
+    return '$_temp0';
+  }
+
+  @override
+  String get trendEmpty => 'No completed fasts in the last 14 days.';
+
+  @override
+  String trendSemantics(String average, String longest, int count, String range) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count fasts', one: '1 fast');
+    return 'Fasting, last 14 days ($range): average fast $average, longest $longest, $_temp0.';
   }
 
   @override
