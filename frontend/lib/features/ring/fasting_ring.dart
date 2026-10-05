@@ -77,15 +77,7 @@ class FastingRing extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: _RingPainter(
-                    progress: s.progress,
-                    radius: r,
-                    stroke: _stroke,
-                    phases: [
-                      for (final m in s.markers)
-                        if (phaseColors(m.milestone.kind) case (final c, _, _)) (m.fraction, c),
-                    ],
-                  ),
+                  painter: RingArcPainter(progress: s.progress, radius: r, stroke: _stroke, phases: phaseStops(s)),
                 ),
               ),
               Positioned.fill(
@@ -284,15 +276,28 @@ class _Marker extends StatelessWidget {
   }
 }
 
-class _RingPainter extends CustomPainter {
-  _RingPainter({required this.progress, required this.radius, required this.stroke, required this.phases});
+/// Track + progress arc with phase colours. Shared by the full timer ring and
+/// the compact ring on the Today hero card (which passes dark-card colours).
+class RingArcPainter extends CustomPainter {
+  RingArcPainter({
+    required this.progress,
+    required this.radius,
+    required this.stroke,
+    required this.phases,
+    this.trackColor = AppColors.track,
+    this.baseColor = AppColors.primary,
+    this.knobColor = AppColors.accent,
+  });
 
   final double progress;
   final double radius;
   final double stroke;
 
-  /// (start fraction, colour) for each phase after the initial sky blue.
+  /// (start fraction, colour) for each phase after the base colour.
   final List<(double, Color)> phases;
+  final Color trackColor;
+  final Color baseColor;
+  final Color knobColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -301,7 +306,7 @@ class _RingPainter extends CustomPainter {
     final paint = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = stroke;
-    canvas.drawCircle(center, radius, paint..color = AppColors.track);
+    canvas.drawCircle(center, radius, paint..color = trackColor);
     if (progress <= 0) return;
 
     final end = math.min(progress, 1.0);
@@ -310,9 +315,9 @@ class _RingPainter extends CustomPainter {
       return center + Offset(radius * math.cos(a), radius * math.sin(a));
     }
 
-    // Segments: sky until the first phase, then each phase colour until the next.
-    final stops = [(0.0, AppColors.primary), ...phases];
-    var endColor = AppColors.primary;
+    // Segments: base colour until the first phase, then each phase colour until the next.
+    final stops = [(0.0, baseColor), ...phases];
+    var endColor = baseColor;
     for (var i = 0; i < stops.length; i++) {
       final from = stops[i].$1;
       if (from >= end) break;
@@ -322,14 +327,20 @@ class _RingPainter extends CustomPainter {
     }
     if (end >= 1) return;
 
-    // Round caps at both ends, then the white knob at the tip.
-    final dot = Paint()..color = AppColors.primary;
+    // Round caps at both ends, then the knob at the tip.
+    final dot = Paint()..color = baseColor;
     canvas.drawCircle(at(0), stroke / 2, dot);
     canvas.drawCircle(at(end), stroke / 2, dot..color = endColor);
-    canvas.drawCircle(at(end), 3.5, Paint()..color = AppColors.accent);
+    canvas.drawCircle(at(end), stroke / 4, Paint()..color = knobColor);
   }
 
   @override
-  bool shouldRepaint(_RingPainter old) =>
-      old.progress != progress || old.radius != radius || !listEquals(old.phases, phases);
+  bool shouldRepaint(RingArcPainter old) =>
+      old.progress != progress || old.radius != radius || old.baseColor != baseColor || !listEquals(old.phases, phases);
 }
+
+/// Phase stops for the arc: where fat burning and ketosis begin on the ring.
+List<(double, Color)> phaseStops(TimerSnapshot s) => [
+  for (final m in s.markers)
+    if (phaseColors(m.milestone.kind) case (final c, _, _)) (m.fraction, c),
+];

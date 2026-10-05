@@ -3,29 +3,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/l10n.dart';
 import '../../core/format.dart';
-import '../../core/icons.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
+import '../../core/widgets/page_header.dart';
 import '../../core/widgets/pill_button.dart';
-import '../../core/widgets/ruva_logo.dart';
 import '../../core/widgets/sheet.dart';
 import '../../domain/milestone.dart';
 import '../../state/providers.dart';
 import '../ring/fasting_ring.dart';
 import 'home_sheets.dart';
 
-class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key, required this.onOpenSettings, required this.onChangeTarget, required this.onReadMore});
+/// Full fasting timer, opened from the Today hero card.
+class TimerScreen extends ConsumerStatefulWidget {
+  const TimerScreen({super.key, required this.onChangeTarget, required this.onReadMore});
 
-  final VoidCallback onOpenSettings;
   final VoidCallback onChangeTarget;
   final ValueChanged<Milestone> onReadMore;
 
   @override
-  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<TimerScreen> createState() => _TimerScreenState();
 }
 
-class _HomeScreenState extends ConsumerState<HomeScreen> {
+class _TimerScreenState extends ConsumerState<TimerScreen> {
   static const _ringSize = 300.0;
 
   @override
@@ -35,7 +34,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final session = ref.watch(activeSessionProvider).value;
     final now = ref.watch(nowProvider).value;
     if (snap == null || settings == null || now == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final running = snap.running && session != null;
     final l = context.l10n;
@@ -43,7 +42,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Header(onOpenSettings: widget.onOpenSettings),
+        PageHeader(l.navTimer),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Text(
@@ -84,11 +83,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ],
     );
 
-    return LayoutBuilder(
-      builder: (context, box) => SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: box.maxHeight),
-          child: IntrinsicHeight(child: content),
+    return Scaffold(
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, box) => SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: box.maxHeight),
+              child: IntrinsicHeight(child: content),
+            ),
+          ),
         ),
       ),
     );
@@ -97,34 +100,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _start() => ref.read(activeSessionProvider.notifier).start();
 
   Future<void> _askEnd() => showEndSheet(context);
-}
-
-class _Header extends StatelessWidget {
-  const _Header({required this.onOpenSettings});
-  final VoidCallback onOpenSettings;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(20, 16, 12, 0),
-    child: SizedBox(
-      height: 48,
-      child: Row(
-        children: [
-          const RuvaLogo(size: 36, semanticLabel: null),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Semantics(header: true, child: Text(context.l10n.appName, style: AppText.brand)),
-          ),
-          IconButton(
-            tooltip: context.l10n.navSettings,
-            onPressed: onOpenSettings,
-            constraints: const BoxConstraints.tightFor(width: 48, height: 48),
-            icon: const AppIconView(AppIcon.settings, color: AppColors.primary, strokeWidth: 1.8),
-          ),
-        ],
-      ),
-    ),
-  );
 }
 
 class _InfoCard extends StatelessWidget {

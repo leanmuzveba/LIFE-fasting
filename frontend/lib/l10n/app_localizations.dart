@@ -127,11 +127,23 @@ abstract class AppLocalizations {
   /// **'Back'**
   String get back;
 
+  /// No description provided for @navToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get navToday;
+
   /// No description provided for @navTimer.
   ///
   /// In en, this message translates to:
   /// **'Timer'**
   String get navTimer;
+
+  /// No description provided for @navNutrition.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition'**
+  String get navNutrition;
 
   /// No description provided for @navHistory.
   ///
@@ -816,6 +828,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'RUVA, loading'**
   String get splashLoading;
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get greetingEvening;
+
+  /// No description provided for @heroEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'FASTING'**
+  String get heroEyebrow;
+
+  /// No description provided for @heroReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready when you are'**
+  String get heroReady;
+
+  /// No description provided for @heroFastingFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Fasting for {duration}'**
+  String heroFastingFor(String duration);
+
+  /// No description provided for @heroEndsAt.
+  ///
+  /// In en, this message translates to:
+  /// **'{target} target · ends {time}'**
+  String heroEndsAt(String target, String time);
+
+  /// No description provided for @heroIfStartedNow.
+  ///
+  /// In en, this message translates to:
+  /// **'{target} target · ends {time} if you start now'**
+  String heroIfStartedNow(String target, String time);
+
+  /// No description provided for @openTimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Open timer'**
+  String get openTimer;
+
+  /// No description provided for @milestoneEstimateNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Milestones on the timer are estimates and vary between people.'**
+  String get milestoneEstimateNote;
+
+  /// No description provided for @nutritionEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition is on its way'**
+  String get nutritionEmptyTitle;
+
+  /// No description provided for @nutritionEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your food diary, My Kitchen and recipe ideas will live here.'**
+  String get nutritionEmptyBody;
 
   /// No description provided for @notifDailyBody.
   ///

@@ -8,7 +8,9 @@
   "delete": "Delete",
   "back": "Back",
 
+  "navToday": "Today",
   "navTimer": "Timer",
+  "navNutrition": "Nutrition",
   "navHistory": "History",
   "navSettings": "Settings",
 
@@ -154,5 +156,20 @@
   "splashTagline": "FASTING · NUTRITION · WELLNESS",
   "splashInitializing": "GETTING READY",
   "splashLoading": "RUVA, loading",
+  "greetingMorning": "Good morning",
+  "greetingAfternoon": "Good afternoon",
+  "greetingEvening": "Good evening",
+  "heroEyebrow": "FASTING",
+  "heroReady": "Ready when you are",
+  "heroFastingFor": "Fasting for {duration}",
+  "@heroFastingFor": {"placeholders": {"duration": {"type": "String"}}},
+  "heroEndsAt": "{target} target · ends {time}",
+  "@heroEndsAt": {"placeholders": {"target": {"type": "String"}, "time": {"type": "String"}}},
+  "heroIfStartedNow": "{target} target · ends {time} if you start now",
+  "@heroIfStartedNow": {"placeholders": {"target": {"type": "String"}, "time": {"type": "String"}}},
+  "openTimer": "Open timer",
+  "milestoneEstimateNote": "Milestones on the timer are estimates and vary between people.",
+  "nutritionEmptyTitle": "Nutrition is on its way",
+  "nutritionEmptyBody": "Your food diary, My Kitchen and recipe ideas will live here.",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

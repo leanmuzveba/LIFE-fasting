@@ -28,7 +28,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get back => 'Back';
 
   @override
+  String get navToday => 'Today';
+
+  @override
   String get navTimer => 'Timer';
+
+  @override
+  String get navNutrition => 'Nutrition';
 
   @override
   String get navHistory => 'History';
@@ -429,6 +435,48 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get splashLoading => 'RUVA, loading';
+
+  @override
+  String get greetingMorning => 'Good morning';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon';
+
+  @override
+  String get greetingEvening => 'Good evening';
+
+  @override
+  String get heroEyebrow => 'FASTING';
+
+  @override
+  String get heroReady => 'Ready when you are';
+
+  @override
+  String heroFastingFor(String duration) {
+    return 'Fasting for $duration';
+  }
+
+  @override
+  String heroEndsAt(String target, String time) {
+    return '$target target · ends $time';
+  }
+
+  @override
+  String heroIfStartedNow(String target, String time) {
+    return '$target target · ends $time if you start now';
+  }
+
+  @override
+  String get openTimer => 'Open timer';
+
+  @override
+  String get milestoneEstimateNote => 'Milestones on the timer are estimates and vary between people.';
+
+  @override
+  String get nutritionEmptyTitle => 'Nutrition is on its way';
+
+  @override
+  String get nutritionEmptyBody => 'Your food diary, My Kitchen and recipe ideas will live here.';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

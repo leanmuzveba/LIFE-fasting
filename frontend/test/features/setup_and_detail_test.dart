@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../widget_test.dart' show pumpApp;
+import '../widget_test.dart' show openTimer, pumpApp;
 
 void main() {
-  testWidgets('choose a preset target; home reflects it', (tester) async {
+  testWidgets('choose a preset target; the timer reflects it', (tester) async {
     await pumpApp(tester);
+    await openTimer(tester);
     await tester.tap(find.text('Change target'));
     await tester.pumpAndSettle();
     expect(find.text('Your target'), findsOneWidget);
@@ -18,6 +19,7 @@ void main() {
 
   testWidgets('custom target steps in 30 minutes and is capped at 24 h', (tester) async {
     await pumpApp(tester);
+    await openTimer(tester);
     await tester.tap(find.text('Change target'));
     await tester.pumpAndSettle();
     await tester.tap(find.byTooltip('Decrease by 30 minutes'));
@@ -37,6 +39,7 @@ void main() {
 
   testWidgets('Read more opens the milestone page with disclaimer', (tester) async {
     await pumpApp(tester);
+    await openTimer(tester);
     await tester.tap(find.bySemanticsLabel(RegExp(r'^Ketosis may begin')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Read more'));

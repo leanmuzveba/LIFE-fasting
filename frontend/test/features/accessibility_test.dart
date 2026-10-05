@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/core/theme/tokens.dart';
 import 'package:life_fasting/domain/settings.dart';
 
-import '../widget_test.dart' show pumpApp, tick;
+import '../widget_test.dart' show openTimer, pumpApp, tick;
 
 /// Pixel-sampled textContrastGuideline misfires on nodes mixing icons, text and
 /// shadows, so colour pairs are checked exactly in the contrast test below.
@@ -22,6 +22,8 @@ void main() {
     await tester.tap(find.text('Start fast'));
     await tester.pumpAndSettle();
     await tick(tester, clock, const Duration(hours: 15));
+    await _guidelines(tester);
+    await openTimer(tester);
     await _guidelines(tester);
     handle.dispose();
   });
@@ -54,7 +56,7 @@ void main() {
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       await pumpApp(tester);
       expect(tester.takeException(), isNull);
-      for (final tab in ['History', 'Settings', 'Timer']) {
+      for (final tab in ['History', 'Nutrition', 'Settings', 'Today']) {
         await tester.tap(find.bySemanticsLabel(tab).last);
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull, reason: tab);

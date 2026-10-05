@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/data/notification_service.dart';
 
-import '../widget_test.dart' show notifications, pumpApp, tick;
+import '../widget_test.dart' show notifications, openTimer, pumpApp, tick;
 
 Future<void> _openSettings(WidgetTester tester) async {
   await tester.tap(find.bySemanticsLabel('Settings').last);
@@ -14,8 +14,10 @@ void main() {
     await _openSettings(tester);
     await tester.tap(find.text('24-hour clock'));
     await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Timer'));
+    await tester.tap(find.bySemanticsLabel('Today'));
     await tester.pumpAndSettle();
+    expect(find.text('16 h target · ends 23:24 if you start now'), findsOneWidget);
+    await openTimer(tester);
     await tester.tap(find.text('00:00:00'));
     await tester.pumpAndSettle();
     expect(find.text('23:24'), findsOneWidget); // IF STARTED NOW
@@ -45,7 +47,7 @@ void main() {
     await _openSettings(tester);
     await tester.tap(find.text('Target time reached'));
     await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Timer'));
+    await tester.tap(find.bySemanticsLabel('Today'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Start fast'));
     await tester.pumpAndSettle();
