@@ -12,6 +12,9 @@ import 'helpers.dart';
 late StreamController<DateTime> _ticks;
 late FakeNotifications notifications;
 
+/// Canned TheMealDB responses; tests never use the network.
+late FakeRecipeApi recipeApi;
+
 /// Boots the real app on an in-memory database with a fake clock.
 
 Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = AgeEligibility.adult}) async {
@@ -20,11 +23,13 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   final db = await openTestDb();
   _ticks = StreamController<DateTime>.broadcast();
   notifications = FakeNotifications();
+  recipeApi = FakeRecipeApi();
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
       clockProvider.overrideWithValue(clock.call),
       notificationServiceProvider.overrideWithValue(notifications),
+      recipeApiProvider.overrideWithValue(recipeApi),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {
         yield clock();

@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Opt-in reminders: re-schedule after a reboot. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- Recipe search (TheMealDB) only. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="RUVA"
         android:name="${applicationName}"

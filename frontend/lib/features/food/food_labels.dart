@@ -48,8 +48,9 @@ String formatNutrient(double v) {
   return s.endsWith('.0') ? s.substring(0, s.length - 2) : s;
 }
 
-/// "1 cup (245 g)" or "150 g".
-String formatPortion(String portion, double grams) {
+/// "1 cup (245 g)", "150 g", or just the portion when the weight is unknown.
+String formatPortion(String portion, double? grams) {
+  if (grams == null) return portion;
   final g = '${formatNutrient(grams)} g';
   return portion.isEmpty ? g : '$portion ($g)';
 }

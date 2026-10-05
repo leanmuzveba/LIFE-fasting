@@ -616,7 +616,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDataStaysSub.
   ///
   /// In en, this message translates to:
-  /// **'Nothing is uploaded or shared. There are no accounts or ads.'**
+  /// **'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB.'**
   String get settingsDataStaysSub;
 
   /// No description provided for @settingsDeleteAll.
@@ -2538,6 +2538,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'USDA FoodData Central, SR Legacy (public domain). Values are estimates.'**
   String get settingsFoodDataSub;
+
+  /// No description provided for @diaryRecipes.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipes'**
+  String get diaryRecipes;
+
+  /// No description provided for @diaryRecipesSub.
+  ///
+  /// In en, this message translates to:
+  /// **'What you can make'**
+  String get diaryRecipesSub;
+
+  /// No description provided for @recipesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipes'**
+  String get recipesTitle;
+
+  /// No description provided for @recipesEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart recipe planner'**
+  String get recipesEyebrow;
+
+  /// No description provided for @recipesHero.
+  ///
+  /// In en, this message translates to:
+  /// **'What you can make'**
+  String get recipesHero;
+
+  /// No description provided for @recipesHeroSub.
+  ///
+  /// In en, this message translates to:
+  /// **'{items} in your kitchen · {found}'**
+  String recipesHeroSub(String items, String found);
+
+  /// No description provided for @recipesFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{no matches yet} =1{1 recipe found} other{{count} recipes found}}'**
+  String recipesFound(int count);
+
+  /// No description provided for @recipesTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Built from what you already have — less waste, less stress.'**
+  String get recipesTagline;
+
+  /// No description provided for @recipesSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search recipes by name…'**
+  String get recipesSearch;
+
+  /// No description provided for @recipesShow.
+  ///
+  /// In en, this message translates to:
+  /// **'Show'**
+  String get recipesShow;
+
+  /// No description provided for @recipesShowAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get recipesShowAll;
+
+  /// No description provided for @recipesShowReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to cook'**
+  String get recipesShowReady;
+
+  /// No description provided for @recipesShowExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Uses expiring items'**
+  String get recipesShowExpiring;
+
+  /// No description provided for @recipesShowSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Favourites'**
+  String get recipesShowSaved;
+
+  /// No description provided for @recipesDiet.
+  ///
+  /// In en, this message translates to:
+  /// **'Diet'**
+  String get recipesDiet;
+
+  /// No description provided for @recipesDietAny.
+  ///
+  /// In en, this message translates to:
+  /// **'Any'**
+  String get recipesDietAny;
+
+  /// No description provided for @recipesAllergyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Hiding recipes with: {list}. Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.'**
+  String recipesAllergyNote(String list);
+
+  /// No description provided for @recipesAllergyGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.'**
+  String get recipesAllergyGeneric;
+
+  /// No description provided for @recipesPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipes come from TheMealDB online. Only ingredient names and search words are sent.'**
+  String get recipesPrivacy;
+
+  /// No description provided for @recipesEmptyKitchen.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ingredients to My Kitchen and RUVA will suggest what you can make. You can still search by name.'**
+  String get recipesEmptyKitchen;
+
+  /// No description provided for @recipesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No recipes match these filters.'**
+  String get recipesNone;
+
+  /// No description provided for @recipesOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t reach the recipe catalogue. Check your connection and try again.'**
+  String get recipesOffline;
+
+  /// No description provided for @recipesRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get recipesRetry;
+
+  /// No description provided for @recipesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{have} of {total} ingredients available'**
+  String recipesAvailable(int have, int total);
+
+  /// No description provided for @recipesMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing: {list}'**
+  String recipesMissing(String list);
+
+  /// No description provided for @recipesUsesExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Uses 1 item expiring soon} other{Uses {count} items expiring soon}}'**
+  String recipesUsesExpiring(int count);
+
+  /// No description provided for @recipesSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to favourites'**
+  String get recipesSave;
+
+  /// No description provided for @recipesUnsave.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from favourites'**
+  String get recipesUnsave;
+
+  /// No description provided for @recipesCookedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Cooked {date}'**
+  String recipesCookedOn(String date);
+
+  /// No description provided for @recipeIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get recipeIngredients;
+
+  /// No description provided for @recipeTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} total'**
+  String recipeTotal(int count);
+
+  /// No description provided for @recipeAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get recipeAvailable;
+
+  /// No description provided for @recipeMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing'**
+  String get recipeMissing;
+
+  /// No description provided for @recipeSubstitute.
+  ///
+  /// In en, this message translates to:
+  /// **'Substitute: {missing} → {have} (you have it)'**
+  String recipeSubstitute(String missing, String have);
+
+  /// No description provided for @recipeBatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch size'**
+  String get recipeBatch;
+
+  /// No description provided for @recipeBatchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Amounts are scaled from the original recipe. The catalogue doesn’t list servings or cooking times.'**
+  String get recipeBatchHint;
+
+  /// No description provided for @recipeSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps'**
+  String get recipeSteps;
+
+  /// No description provided for @recipeNutrition.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated nutrition'**
+  String get recipeNutrition;
+
+  /// No description provided for @recipeNutritionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition isn’t available for this recipe, so diary entries show it as unavailable.'**
+  String get recipeNutritionNone;
+
+  /// No description provided for @recipeMarkCooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as cooked'**
+  String get recipeMarkCooked;
+
+  /// No description provided for @recipeCooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Marked as cooked. Update quantities in My Kitchen if you used things up.'**
+  String get recipeCooked;
+
+  /// No description provided for @recipeLog.
+  ///
+  /// In en, this message translates to:
+  /// **'Log to Food Diary'**
+  String get recipeLog;
+
+  /// No description provided for @recipeLogWhich.
+  ///
+  /// In en, this message translates to:
+  /// **'Which meal?'**
+  String get recipeLogWhich;
+
+  /// No description provided for @recipeLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged to {meal}'**
+  String recipeLogged(String meal);
+
+  /// No description provided for @recipeAlreadyLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Already in today’s {meal}'**
+  String recipeAlreadyLogged(String meal);
+
+  /// No description provided for @recipeServing.
+  ///
+  /// In en, this message translates to:
+  /// **'1 serving'**
+  String get recipeServing;
+
+  /// No description provided for @recipeAddMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Add missing to shopping list'**
+  String get recipeAddMissing;
+
+  /// No description provided for @recipeAddedMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Already on your shopping list} =1{1 item added to your shopping list} other{{count} items added to your shopping list}}'**
+  String recipeAddedMissing(int count);
+
+  /// No description provided for @recipeSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe from TheMealDB'**
+  String get recipeSource;
+
+  /// No description provided for @recipeNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This recipe couldn’t be loaded. Check your connection and try again.'**
+  String get recipeNotFound;
 
   /// No description provided for @notifDailyBody.
   ///

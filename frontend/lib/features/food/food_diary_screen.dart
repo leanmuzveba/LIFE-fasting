@@ -11,6 +11,7 @@ import '../../core/widgets/sheet.dart';
 import '../../domain/food.dart';
 import '../../state/providers.dart';
 import '../kitchen/my_kitchen_screen.dart';
+import '../recipes/recipes_screen.dart';
 import 'add_food_screen.dart';
 import 'food_labels.dart';
 
@@ -87,27 +88,26 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  RuvaCard(
-                    padding: const EdgeInsets.all(14),
-                    radius: 20,
-                    onTap: () =>
-                        Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const MyKitchenScreen())),
-                    child: Row(
-                      children: [
-                        const IconBubble(icon: Icons.kitchen_outlined, size: 40),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(l.kitchenTitle, style: AppText.cardValue.copyWith(fontSize: 15)),
-                              Text(l.kitchenItems(kitchenCount), style: AppText.small),
-                            ],
-                          ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _Shortcut(
+                          icon: Icons.kitchen_outlined,
+                          title: l.kitchenTitle,
+                          subtitle: l.kitchenItems(kitchenCount),
+                          page: const MyKitchenScreen(),
                         ),
-                        const Icon(Icons.chevron_right_rounded, color: AppColors.textSecondary),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _Shortcut(
+                          icon: Icons.menu_book_outlined,
+                          title: l.diaryRecipes,
+                          subtitle: l.diaryRecipesSub,
+                          page: const RecipesScreen(),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   _SummaryCard(
@@ -137,6 +137,41 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
       ),
     );
   }
+}
+
+class _Shortcut extends StatelessWidget {
+  const _Shortcut({required this.icon, required this.title, required this.subtitle, required this.page});
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final Widget page;
+
+  @override
+  Widget build(BuildContext context) => RuvaCard(
+    padding: const EdgeInsets.all(14),
+    radius: 20,
+    onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => page)),
+    child: Row(
+      children: [
+        IconBubble(icon: icon, size: 38),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.cardValue.copyWith(fontSize: 14),
+              ),
+              Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.small.copyWith(fontSize: 12)),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _DatePill extends StatelessWidget {
@@ -407,7 +442,7 @@ class _EntrySheet extends ConsumerStatefulWidget {
 }
 
 class _EntrySheetState extends ConsumerState<_EntrySheet> {
-  late double _grams = widget.entry.grams;
+  late double _grams = widget.entry.grams ?? 0;
 
   @override
   Widget build(BuildContext context) {
@@ -418,25 +453,27 @@ class _EntrySheetState extends ConsumerState<_EntrySheet> {
     return Gap16Column(
       children: [
         Semantics(header: true, child: Text(e.name, style: AppText.title)),
-        MonoLabel(l.diaryChangeAmount),
-        ValueStepper(
-          large: true,
-          label: changed ? formatPortion('', _grams) : formatPortion(e.portion, _grams),
-          minusTooltip: l.addFoodLess,
-          plusTooltip: l.addFoodMore,
-          onMinus: _grams > 5 ? () => setState(() => _grams = (_grams - 10).clamp(5, 2000)) : null,
-          onPlus: _grams < 2000 ? () => setState(() => _grams = (_grams + 10).clamp(5, 2000)) : null,
-        ),
-        if (kcal != null) Text(l.addFoodAbout(formatNutrient(kcal)), style: AppText.small),
-        PrimaryButton(
-          label: l.save,
-          onPressed: changed
-              ? () async {
-                  await ref.read(foodActionsProvider).update(e.copyWith(grams: _grams));
-                  if (context.mounted) Navigator.pop(context);
-                }
-              : null,
-        ),
+        if (e.grams != null) ...[
+          MonoLabel(l.diaryChangeAmount),
+          ValueStepper(
+            large: true,
+            label: changed ? formatPortion('', _grams) : formatPortion(e.portion, _grams),
+            minusTooltip: l.addFoodLess,
+            plusTooltip: l.addFoodMore,
+            onMinus: _grams > 5 ? () => setState(() => _grams = (_grams - 10).clamp(5, 2000)) : null,
+            onPlus: _grams < 2000 ? () => setState(() => _grams = (_grams + 10).clamp(5, 2000)) : null,
+          ),
+          if (kcal != null) Text(l.addFoodAbout(formatNutrient(kcal)), style: AppText.small),
+          PrimaryButton(
+            label: l.save,
+            onPressed: changed
+                ? () async {
+                    await ref.read(foodActionsProvider).update(e.copyWith(grams: _grams));
+                    if (context.mounted) Navigator.pop(context);
+                  }
+                : null,
+          ),
+        ],
         TextButton.icon(
           style: TextButton.styleFrom(foregroundColor: AppColors.errorText, minimumSize: const Size(48, 48)),
           onPressed: () async {

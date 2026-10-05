@@ -11,6 +11,7 @@ import '../data/food_repository.dart';
 import '../data/hydration_repository.dart';
 import '../data/kitchen_repository.dart';
 import '../data/notification_service.dart';
+import '../data/recipe_repository.dart';
 import '../data/review_repository.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
@@ -22,6 +23,7 @@ import '../domain/history.dart';
 import '../domain/hydration.dart';
 import '../domain/kitchen.dart';
 import '../domain/kitchen_review.dart';
+import '../domain/recipe.dart';
 import '../domain/settings.dart';
 
 /// Opened in main() and injected with an override.
@@ -178,6 +180,7 @@ class SessionActions {
     await _ref.read(kitchenRepositoryProvider).deleteAll();
     await _ref.read(reviewRepositoryProvider).deleteAll();
     await _ref.read(foodRepositoryProvider).deleteAll();
+    await _ref.read(recipeRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
     _ref.invalidate(historyProvider);
@@ -191,6 +194,9 @@ class SessionActions {
     _ref.invalidate(customFoodsProvider);
     _ref.invalidate(recentFoodsProvider);
     _ref.invalidate(savedFoodsProvider);
+    _ref.invalidate(savedRecipesProvider);
+    _ref.invalidate(lastCookedProvider);
+    _ref.invalidate(recipeSuggestionsProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
   }
@@ -568,7 +574,7 @@ class FoodActions {
   }
 
   Future<void> update(FoodEntry e) async {
-    if (e.grams <= 0) return;
+    if ((e.grams ?? 1) <= 0) return;
     await _repo.update(e);
     _changed();
   }
@@ -595,3 +601,110 @@ class FoodActions {
 }
 
 final foodActionsProvider = Provider(FoodActions.new);
+
+// --- Smart Recipe Planner (PRD v1.2 §5) -------------------------------------------
+
+final recipeApiProvider = Provider((ref) => RecipeApi());
+final recipeRepositoryProvider = Provider(
+  (ref) => RecipeRepository(ref.watch(databaseProvider), ref.watch(recipeApiProvider), ref.watch(clockProvider)),
+);
+
+final recipeProvider = FutureProvider.family<Recipe?, String>(
+  (ref, id) => ref.watch(recipeRepositoryProvider).byId(id),
+);
+final savedRecipesProvider = FutureProvider((ref) => ref.watch(recipeRepositoryProvider).savedIds());
+final lastCookedProvider = FutureProvider((ref) => ref.watch(recipeRepositoryProvider).lastCooked());
+
+/// How many kitchen items are looked up, and how many recipes are opened.
+const _maxQueries = 8, _maxCandidates = 16;
+
+/// What you can make: recipes that use your kitchen items (expiring first),
+/// minus anything with a recorded allergen; ranked by fewest missing.
+/// Diet filtering is left to the screen so it can be switched.
+final recipeSuggestionsProvider = FutureProvider<List<RecipeMatch>>((ref) async {
+  final repo = ref.watch(recipeRepositoryProvider);
+  final kitchen = await ref.watch(kitchenProvider.future);
+  final allergies = (await ref.watch(settingsProvider.future)).allergies;
+  final t = ref.read(clockProvider)().toLocal();
+  final today = DateTime(t.year, t.month, t.day);
+
+  final usable = kitchen.where((i) => !i.isExpired(today)).toList()
+    ..sort((a, b) => (a.daysToExpiry(today) ?? 9999).compareTo(b.daysToExpiry(today) ?? 9999));
+  final hits = <String, int>{};
+  for (final item in usable.take(_maxQueries)) {
+    var ids = await repo.idsWith(item.name);
+    final words = item.name.trim().split(RegExp(r'\s+'));
+    if (ids.isEmpty && words.length > 1) ids = await repo.idsWith(words.last);
+    for (final id in ids) {
+      hits[id] = (hits[id] ?? 0) + 1;
+    }
+  }
+  final ids = (hits.keys.toList()..sort((a, b) => hits[b]!.compareTo(hits[a]!))).take(_maxCandidates);
+  final recipes = await Future.wait(ids.map(repo.byId));
+  return rankMatches([
+    for (final r in recipes)
+      if (r != null && allergensIn(r).intersection(allergies).isEmpty) RecipeMatch(r, kitchen, today),
+  ]);
+});
+
+/// Recipes by name, matched against the kitchen; recorded allergens excluded.
+final recipeSearchProvider = FutureProvider.family<List<RecipeMatch>, String>((ref, query) async {
+  final recipes = await ref.watch(recipeRepositoryProvider).search(query);
+  final kitchen = await ref.watch(kitchenProvider.future);
+  final allergies = (await ref.watch(settingsProvider.future)).allergies;
+  final t = ref.read(clockProvider)().toLocal();
+  return rankMatches([
+    for (final r in recipes)
+      if (allergensIn(r).intersection(allergies).isEmpty) RecipeMatch(r, kitchen, DateTime(t.year, t.month, t.day)),
+  ]);
+});
+
+class RecipeActions {
+  RecipeActions(this._ref);
+  final Ref _ref;
+
+  RecipeRepository get _repo => _ref.read(recipeRepositoryProvider);
+
+  Future<void> setSaved(Recipe r, bool saved) async {
+    await _repo.setSaved(r, saved);
+    _ref.invalidate(savedRecipesProvider);
+  }
+
+  Future<void> markCooked(Recipe r, double batch) async {
+    await _repo.markCooked(r, batch);
+    _ref.invalidate(lastCookedProvider);
+  }
+
+  /// Logs one serving to the diary. Returns false when this recipe is
+  /// already logged for that meal and day (no duplicates).
+  Future<bool> logToDiary(Recipe r, Meal meal, DateTime at, {required String servingLabel}) async {
+    final food = _ref.read(foodRepositoryProvider);
+    final local = at.toLocal();
+    final day = DateTime(local.year, local.month, local.day);
+    if (await food.isLogged('recipe:${r.id}', day, meal)) return false;
+    await food.insert(
+      FoodEntry(
+        day: day,
+        meal: meal,
+        loggedAt: at.toUtc(),
+        name: r.name,
+        foodKey: 'recipe:${r.id}',
+        portion: servingLabel,
+        nutrients: const {}, // TheMealDB has no nutrition: shown as unavailable
+      ),
+    );
+    _ref.invalidate(diaryDayProvider);
+    return true;
+  }
+
+  /// Adds missing ingredients to the shopping list; returns how many were new.
+  Future<int> addToShoppingList(Iterable<RecipeIngredient> items) async {
+    var added = 0;
+    for (final i in items) {
+      if (await _ref.read(reviewActionsProvider).addToShoppingList(i.name)) added++;
+    }
+    return added;
+  }
+}
+
+final recipeActionsProvider = Provider(RecipeActions.new);

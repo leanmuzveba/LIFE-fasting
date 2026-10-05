@@ -13,7 +13,15 @@ abstract final class AppDatabase {
   /// The file name stays from the original app so existing data is kept.
   static const fileName = 'life_fasting.db';
 
-  static final List<Migration> migrations = [_v1Initial, _v2Hydration, _v3Activity, _v4Kitchen, _v5Review, _v6Food];
+  static final List<Migration> migrations = [
+    _v1Initial,
+    _v2Hydration,
+    _v3Activity,
+    _v4Kitchen,
+    _v5Review,
+    _v6Food,
+    _v7Recipes,
+  ];
 
   static int get latestVersion => migrations.length;
 
@@ -41,6 +49,30 @@ abstract final class AppDatabase {
     );
   }
 
+  /// Version 7 — recipe cache, favourite recipes and what you cooked (PRD v1.2 §5).
+  static Future<void> _v7Recipes(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE api_cache (
+        key TEXT PRIMARY KEY,                 -- request path
+        json TEXT NOT NULL,
+        fetched_at INTEGER NOT NULL
+      )''');
+    await db.execute('''
+      CREATE TABLE saved_recipes (
+        recipe_id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        saved_at INTEGER NOT NULL
+      )''');
+    await db.execute('''
+      CREATE TABLE recipe_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        recipe_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        batch REAL NOT NULL DEFAULT 1,
+        cooked_at INTEGER NOT NULL
+      )''');
+  }
+
   /// Version 6 — food diary, saved foods and your own foods (PRD v1.2 §3).
   static Future<void> _v6Food(DatabaseExecutor db) async {
     await db.execute('''
@@ -51,7 +83,7 @@ abstract final class AppDatabase {
         logged_at INTEGER NOT NULL,           -- UTC epoch ms
         name TEXT NOT NULL CHECK (length(trim(name)) > 0),
         food_key TEXT,                        -- 'usda:<fdcId>' / 'custom:<id>'
-        grams REAL NOT NULL CHECK (grams > 0),
+        grams REAL CHECK (grams IS NULL OR grams > 0), -- NULL for a recipe serving
         portion TEXT NOT NULL DEFAULT '',
         nutrients TEXT NOT NULL DEFAULT '{}'  -- JSON totals; missing key = unavailable
       )''');

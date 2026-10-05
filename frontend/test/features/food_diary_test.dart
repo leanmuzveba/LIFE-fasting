@@ -24,7 +24,9 @@ Future<void> _openDiary(WidgetTester tester) async {
 
 void main() {
   test('parses a USDA line; blank nutrients stay unavailable', () {
-    final f = Food.fromUsdaLine('170903\tYogurt, Greek, plain, lowfat\t73\t9.95\t3.94\t1.92\t\t115\t\t\t\t\t1 cup=245|bad|1 tbsp=15');
+    final f = Food.fromUsdaLine(
+      '170903\tYogurt, Greek, plain, lowfat\t73\t9.95\t3.94\t1.92\t\t115\t\t\t\t\t1 cup=245|bad|1 tbsp=15',
+    );
     expect(f.key, 'usda:170903');
     expect(f.per100g[Nutrient.energy], 73);
     expect(f.per100g.containsKey(Nutrient.fibre), isFalse);

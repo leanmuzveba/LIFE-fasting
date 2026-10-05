@@ -308,7 +308,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsDataStays => 'Your data stays on this phone';
 
   @override
-  String get settingsDataStaysSub => 'Nothing is uploaded or shared. There are no accounts or ads.';
+  String get settingsDataStaysSub =>
+      'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB.';
 
   @override
   String get settingsDeleteAll => 'Delete all data';
@@ -1410,6 +1411,204 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsFoodDataSub => 'USDA FoodData Central, SR Legacy (public domain). Values are estimates.';
+
+  @override
+  String get diaryRecipes => 'Recipes';
+
+  @override
+  String get diaryRecipesSub => 'What you can make';
+
+  @override
+  String get recipesTitle => 'Recipes';
+
+  @override
+  String get recipesEyebrow => 'Smart recipe planner';
+
+  @override
+  String get recipesHero => 'What you can make';
+
+  @override
+  String recipesHeroSub(String items, String found) {
+    return '$items in your kitchen · $found';
+  }
+
+  @override
+  String recipesFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count recipes found',
+      one: '1 recipe found',
+      zero: 'no matches yet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recipesTagline => 'Built from what you already have — less waste, less stress.';
+
+  @override
+  String get recipesSearch => 'Search recipes by name…';
+
+  @override
+  String get recipesShow => 'Show';
+
+  @override
+  String get recipesShowAll => 'All';
+
+  @override
+  String get recipesShowReady => 'Ready to cook';
+
+  @override
+  String get recipesShowExpiring => 'Uses expiring items';
+
+  @override
+  String get recipesShowSaved => 'Favourites';
+
+  @override
+  String get recipesDiet => 'Diet';
+
+  @override
+  String get recipesDietAny => 'Any';
+
+  @override
+  String recipesAllergyNote(String list) {
+    return 'Hiding recipes with: $list. Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.';
+  }
+
+  @override
+  String get recipesAllergyGeneric =>
+      'Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.';
+
+  @override
+  String get recipesPrivacy => 'Recipes come from TheMealDB online. Only ingredient names and search words are sent.';
+
+  @override
+  String get recipesEmptyKitchen =>
+      'Add ingredients to My Kitchen and RUVA will suggest what you can make. You can still search by name.';
+
+  @override
+  String get recipesNone => 'No recipes match these filters.';
+
+  @override
+  String get recipesOffline => 'Couldn’t reach the recipe catalogue. Check your connection and try again.';
+
+  @override
+  String get recipesRetry => 'Try again';
+
+  @override
+  String recipesAvailable(int have, int total) {
+    return '$have of $total ingredients available';
+  }
+
+  @override
+  String recipesMissing(String list) {
+    return 'Missing: $list';
+  }
+
+  @override
+  String recipesUsesExpiring(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Uses $count items expiring soon',
+      one: 'Uses 1 item expiring soon',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recipesSave => 'Save to favourites';
+
+  @override
+  String get recipesUnsave => 'Remove from favourites';
+
+  @override
+  String recipesCookedOn(String date) {
+    return 'Cooked $date';
+  }
+
+  @override
+  String get recipeIngredients => 'Ingredients';
+
+  @override
+  String recipeTotal(int count) {
+    return '$count total';
+  }
+
+  @override
+  String get recipeAvailable => 'Available';
+
+  @override
+  String get recipeMissing => 'Missing';
+
+  @override
+  String recipeSubstitute(String missing, String have) {
+    return 'Substitute: $missing → $have (you have it)';
+  }
+
+  @override
+  String get recipeBatch => 'Batch size';
+
+  @override
+  String get recipeBatchHint =>
+      'Amounts are scaled from the original recipe. The catalogue doesn’t list servings or cooking times.';
+
+  @override
+  String get recipeSteps => 'Steps';
+
+  @override
+  String get recipeNutrition => 'Estimated nutrition';
+
+  @override
+  String get recipeNutritionNone =>
+      'Nutrition isn’t available for this recipe, so diary entries show it as unavailable.';
+
+  @override
+  String get recipeMarkCooked => 'Mark as cooked';
+
+  @override
+  String get recipeCooked => 'Marked as cooked. Update quantities in My Kitchen if you used things up.';
+
+  @override
+  String get recipeLog => 'Log to Food Diary';
+
+  @override
+  String get recipeLogWhich => 'Which meal?';
+
+  @override
+  String recipeLogged(String meal) {
+    return 'Logged to $meal';
+  }
+
+  @override
+  String recipeAlreadyLogged(String meal) {
+    return 'Already in today’s $meal';
+  }
+
+  @override
+  String get recipeServing => '1 serving';
+
+  @override
+  String get recipeAddMissing => 'Add missing to shopping list';
+
+  @override
+  String recipeAddedMissing(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items added to your shopping list',
+      one: '1 item added to your shopping list',
+      zero: 'Already on your shopping list',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get recipeSource => 'Recipe from TheMealDB';
+
+  @override
+  String get recipeNotFound => 'This recipe couldn’t be loaded. Check your connection and try again.';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

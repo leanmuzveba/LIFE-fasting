@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:life_fasting/data/app_database.dart';
 import 'package:life_fasting/data/notification_service.dart';
+import 'package:life_fasting/data/recipe_repository.dart';
 import 'package:life_fasting/domain/hydration.dart';
 import 'package:life_fasting/state/providers.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -27,6 +28,7 @@ Future<ProviderContainer> testContainer(Database db, FakeClock clock) async {
       databaseProvider.overrideWithValue(db),
       clockProvider.overrideWithValue(clock.call),
       notificationServiceProvider.overrideWithValue(FakeNotifications()),
+      recipeApiProvider.overrideWithValue(FakeRecipeApi()),
     ],
   );
   await c.read(settingsProvider.future);
@@ -98,4 +100,18 @@ class FakeNotifications extends NotificationService {
 
   @override
   Future<void> cancelAll() async => scheduled.clear();
+}
+
+/// Serves canned TheMealDB JSON by request path; records requests.
+class FakeRecipeApi extends RecipeApi {
+  final responses = <String, Map<String, dynamic>>{};
+  final requests = <String>[];
+  bool offline = false;
+
+  @override
+  Future<Map<String, dynamic>> get(String path) async {
+    requests.add(path);
+    if (offline) throw const SocketException('offline');
+    return responses[path] ?? {'meals': null};
+  }
 }

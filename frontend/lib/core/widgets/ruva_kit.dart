@@ -393,15 +393,18 @@ class RuvaTextField extends StatelessWidget {
 
 /// Pill search field.
 class SearchField extends StatelessWidget {
-  const SearchField({super.key, required this.hint, this.onChanged, this.controller});
+  const SearchField({super.key, required this.hint, this.onChanged, this.controller, this.onSubmitted});
   final String hint;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) => TextField(
     controller: controller,
     onChanged: onChanged,
+    onSubmitted: onSubmitted,
+    textInputAction: onSubmitted == null ? null : TextInputAction.search,
     style: AppText.body,
     decoration: InputDecoration(
       hintText: hint,

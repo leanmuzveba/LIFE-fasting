@@ -42,7 +42,7 @@ class FoodRepository {
       loggedAt: _dt(r['logged_at']! as int),
       name: r['name']! as String,
       foodKey: r['food_key'] as String?,
-      grams: (r['grams']! as num).toDouble(),
+      grams: (r['grams'] as num?)?.toDouble(),
       portion: (r['portion'] as String?) ?? '',
       nutrients: _decode(r['nutrients']),
     );
@@ -63,6 +63,14 @@ class FoodRepository {
     orderBy: 'logged_at',
   )).map(_fromRow).toList();
 
+  /// Whether [foodKey] is already logged for [meal] on [day].
+  Future<bool> isLogged(String foodKey, DateTime day, Meal meal) async => (await _db.query(
+    'food_entries',
+    where: 'food_key = ? AND day = ? AND meal = ?',
+    whereArgs: [foodKey, _day(day), meal.name],
+    limit: 1,
+  )).isNotEmpty;
+
   /// Entries for local dates from [from] to [to] inclusive (for History).
   Future<List<FoodEntry>> between(DateTime from, DateTime to) async => (await _db.query(
     'food_entries',
@@ -76,7 +84,7 @@ class FoodRepository {
     final rows = await _db.rawQuery(
       '''
       SELECT food_key, name, grams, portion, logged_at FROM food_entries e
-      WHERE food_key IS NOT NULL AND logged_at = (
+      WHERE food_key IS NOT NULL AND grams IS NOT NULL AND logged_at = (
         SELECT MAX(logged_at) FROM food_entries WHERE food_key = e.food_key)
       GROUP BY food_key ORDER BY logged_at DESC LIMIT ?''',
       [limit],

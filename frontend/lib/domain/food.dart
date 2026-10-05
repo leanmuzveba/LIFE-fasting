@@ -72,7 +72,7 @@ class FoodEntry {
     required this.loggedAt,
     required this.name,
     this.foodKey,
-    required this.grams,
+    this.grams,
     this.portion = '',
     required this.nutrients,
   });
@@ -83,12 +83,13 @@ class FoodEntry {
   final DateTime loggedAt; // UTC; the time shown for the meal
   final String name;
   final String? foodKey;
-  final double grams;
+  final double? grams; // null for a recipe serving (weight unknown)
   final String portion; // e.g. "1 cup", empty when entered in grams
   final Nutrients nutrients; // totals for this entry
 
   FoodEntry copyWith({int? id, double? grams, DateTime? loggedAt, Meal? meal}) {
     final g = grams ?? this.grams;
+    final old = this.grams;
     return FoodEntry(
       id: id ?? this.id,
       day: day,
@@ -98,7 +99,7 @@ class FoodEntry {
       foodKey: foodKey,
       grams: g,
       portion: grams == null ? portion : '',
-      nutrients: this.grams > 0 ? scaleNutrients(nutrients, g * 100 / this.grams) : nutrients,
+      nutrients: g != null && old != null && old > 0 ? scaleNutrients(nutrients, g * 100 / old) : nutrients,
     );
   }
 }
