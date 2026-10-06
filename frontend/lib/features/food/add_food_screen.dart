@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart' show DateFormat, NumberFormat;
+import 'package:intl/intl.dart' show DateFormat;
 
 import '../../core/l10n.dart';
 import '../../core/theme/app_theme.dart';
@@ -113,9 +113,7 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
                     child: Column(
                       children: [
                         SearchField(
-                          hint: count == null
-                              ? l.addFoodLoading
-                              : l.addFoodSearch(NumberFormat.decimalPattern().format(count)),
+                          hint: count == null ? l.addFoodLoading : l.addFoodSearch,
                           controller: _search,
                           onChanged: (v) => setState(() => _query = v),
                         ),

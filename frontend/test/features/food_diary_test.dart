@@ -64,7 +64,7 @@ void main() {
     // USDA food with a household portion.
     await tester.tap(find.byTooltip('Add to Breakfast'));
     await tester.pumpAndSettle();
-    expect(find.text('Search 7,793 foods…'), findsOneWidget);
+    expect(find.text('Search foods…'), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'greek yogurt plain');
     await tester.pumpAndSettle();
     await tester.tap(find.text('Yogurt, Greek, plain, lowfat'));

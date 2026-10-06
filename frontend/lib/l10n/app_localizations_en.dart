@@ -1302,9 +1302,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addFoodDatabase => 'Food database';
 
   @override
-  String addFoodSearch(String count) {
-    return 'Search $count foods…';
-  }
+  String get addFoodSearch => 'Search foods…';
 
   @override
   String get addFoodSource => 'USDA FoodData Central · values are estimates';

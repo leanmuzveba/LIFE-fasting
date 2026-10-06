@@ -2344,8 +2344,8 @@ abstract class AppLocalizations {
   /// No description provided for @addFoodSearch.
   ///
   /// In en, this message translates to:
-  /// **'Search {count} foods…'**
-  String addFoodSearch(String count);
+  /// **'Search foods…'**
+  String get addFoodSearch;
 
   /// No description provided for @addFoodSource.
   ///
