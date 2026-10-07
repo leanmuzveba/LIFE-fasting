@@ -309,7 +309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDataStaysSub =>
-      'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts.';
+      'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts; meal photos are sent to Google Gemini.';
 
   @override
   String get settingsDeleteAll => 'Delete all data';
@@ -1677,6 +1677,109 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logScanSub => 'Packaged foods and drinks';
+
+  @override
+  String get logPhotoSub => 'AI estimate from a photo — you check it first';
+
+  @override
+  String get photoTitle => 'Snap a meal photo';
+
+  @override
+  String get photoYourPhoto => 'Your meal photo';
+
+  @override
+  String get photoEstimating => 'Estimating what’s on the plate…';
+
+  @override
+  String get photoCheck =>
+      'AI estimate — check every item before adding. Rename anything it got wrong and adjust the amounts. Photo estimates are often 20–40% off, especially for oil, sauces and hidden ingredients.';
+
+  @override
+  String photoItems(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count items found', one: '1 item found');
+    return '$_temp0';
+  }
+
+  @override
+  String photoRename(String name) {
+    return 'Rename $name';
+  }
+
+  @override
+  String photoRemove(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String photoAdd(int count, String meal) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count items to $meal',
+      one: 'Add 1 item to $meal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String photoLogged(int count, String meal) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items added to $meal',
+      one: '1 item added to $meal',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get photoLabel => 'photo estimate';
+
+  @override
+  String get photoRetake => 'Retake';
+
+  @override
+  String get photoGallery => 'Choose from gallery';
+
+  @override
+  String get photoPrivacy => 'The photo is sent to Google Gemini to estimate the meal. Nothing else about you is sent.';
+
+  @override
+  String get photoNotFood => 'No food was recognised in that photo. Try again with the whole plate in view.';
+
+  @override
+  String get photoNoKey => 'Meal photos need a Gemini API key. Add one in Settings → Meal photo estimates.';
+
+  @override
+  String get photoKeyError => 'Gemini didn’t accept the API key. Check it in Settings → Meal photo estimates.';
+
+  @override
+  String get photoOffline => 'Couldn’t reach Gemini. Check your connection and try again.';
+
+  @override
+  String get photoCameraError => 'The camera isn’t available. Try choosing a photo from the gallery.';
+
+  @override
+  String get settingsPhotoKey => 'Meal photo estimates';
+
+  @override
+  String get settingsPhotoKeyNone => 'No key';
+
+  @override
+  String get settingsPhotoKeyOwn => 'Your key';
+
+  @override
+  String get settingsPhotoKeyBuiltIn => 'Built-in key';
+
+  @override
+  String get settingsPhotoKeyBody =>
+      'Meal photos are estimated by Google Gemini using an API key. Paste your own key to use it instead of the built-in one; it’s stored only on this phone.';
+
+  @override
+  String get settingsPhotoKeyField => 'Gemini API key';
+
+  @override
+  String get settingsPhotoKeyClear => 'Remove my key';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

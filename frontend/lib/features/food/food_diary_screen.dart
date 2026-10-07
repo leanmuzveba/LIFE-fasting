@@ -13,6 +13,7 @@ import '../../state/providers.dart';
 import '../kitchen/my_kitchen_screen.dart';
 import '../recipes/recipes_screen.dart';
 import 'add_food_screen.dart';
+import 'meal_photo_screen.dart';
 import 'food_labels.dart';
 
 /// Nutrition tab root (RUVA design, PRD v1.2 §3): one day's meals with
@@ -39,10 +40,10 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
     setState(() => _day = next == _today ? null : next);
   }
 
-  /// The + buttons: choose how to log (search, scan a barcode).
+  /// The + buttons: choose how to log (search, scan a barcode, meal photo).
   Future<void> _add(Meal meal, DateTime day) async {
     final l = context.l10n;
-    final scan = await showAppSheet<bool>(
+    final how = await showAppSheet<String>(
       context,
       (ctx) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -52,8 +53,9 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
           Semantics(header: true, child: Text(l.logHow, style: AppText.title)),
           const SizedBox(height: 8),
           for (final (icon, title, sub, value) in [
-            (Icons.search_rounded, l.logSearch, l.logSearchSub, false),
-            (Icons.qr_code_scanner_rounded, l.scanTitle, l.logScanSub, true),
+            (Icons.search_rounded, l.logSearch, l.logSearchSub, 'search'),
+            (Icons.qr_code_scanner_rounded, l.scanTitle, l.logScanSub, 'scan'),
+            (Icons.photo_camera_outlined, l.photoTitle, l.logPhotoSub, 'photo'),
           ])
             ListTile(
               contentPadding: EdgeInsets.zero,
@@ -66,10 +68,12 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
         ],
       ),
     );
-    if (scan == null || !mounted) return;
+    if (how == null || !mounted) return;
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => AddFoodScreen(day: day, meal: meal, scan: scan),
+        builder: (_) => how == 'photo'
+            ? MealPhotoScreen(day: day, meal: meal)
+            : AddFoodScreen(day: day, meal: meal, scan: how == 'scan'),
       ),
     );
   }

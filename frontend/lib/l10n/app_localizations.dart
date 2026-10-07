@@ -616,7 +616,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDataStaysSub.
   ///
   /// In en, this message translates to:
-  /// **'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts.'**
+  /// **'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts; meal photos are sent to Google Gemini.'**
   String get settingsDataStaysSub;
 
   /// No description provided for @settingsDeleteAll.
@@ -2964,6 +2964,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Packaged foods and drinks'**
   String get logScanSub;
+
+  /// No description provided for @logPhotoSub.
+  ///
+  /// In en, this message translates to:
+  /// **'AI estimate from a photo — you check it first'**
+  String get logPhotoSub;
+
+  /// No description provided for @photoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap a meal photo'**
+  String get photoTitle;
+
+  /// No description provided for @photoYourPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Your meal photo'**
+  String get photoYourPhoto;
+
+  /// No description provided for @photoEstimating.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimating what’s on the plate…'**
+  String get photoEstimating;
+
+  /// No description provided for @photoCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'AI estimate — check every item before adding. Rename anything it got wrong and adjust the amounts. Photo estimates are often 20–40% off, especially for oil, sauces and hidden ingredients.'**
+  String get photoCheck;
+
+  /// No description provided for @photoItems.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item found} other{{count} items found}}'**
+  String photoItems(int count);
+
+  /// No description provided for @photoRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename {name}'**
+  String photoRename(String name);
+
+  /// No description provided for @photoRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String photoRemove(String name);
+
+  /// No description provided for @photoAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Add 1 item to {meal}} other{Add {count} items to {meal}}}'**
+  String photoAdd(int count, String meal);
+
+  /// No description provided for @photoLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 item added to {meal}} other{{count} items added to {meal}}}'**
+  String photoLogged(int count, String meal);
+
+  /// No description provided for @photoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'photo estimate'**
+  String get photoLabel;
+
+  /// No description provided for @photoRetake.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get photoRetake;
+
+  /// No description provided for @photoGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from gallery'**
+  String get photoGallery;
+
+  /// No description provided for @photoPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'The photo is sent to Google Gemini to estimate the meal. Nothing else about you is sent.'**
+  String get photoPrivacy;
+
+  /// No description provided for @photoNotFood.
+  ///
+  /// In en, this message translates to:
+  /// **'No food was recognised in that photo. Try again with the whole plate in view.'**
+  String get photoNotFood;
+
+  /// No description provided for @photoNoKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal photos need a Gemini API key. Add one in Settings → Meal photo estimates.'**
+  String get photoNoKey;
+
+  /// No description provided for @photoKeyError.
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini didn’t accept the API key. Check it in Settings → Meal photo estimates.'**
+  String get photoKeyError;
+
+  /// No description provided for @photoOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t reach Gemini. Check your connection and try again.'**
+  String get photoOffline;
+
+  /// No description provided for @photoCameraError.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera isn’t available. Try choosing a photo from the gallery.'**
+  String get photoCameraError;
+
+  /// No description provided for @settingsPhotoKey.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal photo estimates'**
+  String get settingsPhotoKey;
+
+  /// No description provided for @settingsPhotoKeyNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No key'**
+  String get settingsPhotoKeyNone;
+
+  /// No description provided for @settingsPhotoKeyOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your key'**
+  String get settingsPhotoKeyOwn;
+
+  /// No description provided for @settingsPhotoKeyBuiltIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Built-in key'**
+  String get settingsPhotoKeyBuiltIn;
+
+  /// No description provided for @settingsPhotoKeyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal photos are estimated by Google Gemini using an API key. Paste your own key to use it instead of the built-in one; it’s stored only on this phone.'**
+  String get settingsPhotoKeyBody;
+
+  /// No description provided for @settingsPhotoKeyField.
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini API key'**
+  String get settingsPhotoKeyField;
+
+  /// No description provided for @settingsPhotoKeyClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove my key'**
+  String get settingsPhotoKeyClear;
 
   /// No description provided for @notifDailyBody.
   ///

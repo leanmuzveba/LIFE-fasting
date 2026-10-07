@@ -206,6 +206,16 @@ class SettingsScreen extends ConsumerWidget {
               onTap: () => _info(context, l.settingsNotMedical, l.settingsNotMedicalSub),
             ),
             _NavRow(
+              icon: Icons.photo_camera_outlined,
+              title: l.settingsPhotoKey,
+              value: switch (ref.watch(geminiKeyProvider).value) {
+                null => l.settingsPhotoKeyNone,
+                (own: true, key: _) => l.settingsPhotoKeyOwn,
+                _ => l.settingsPhotoKeyBuiltIn,
+              },
+              onTap: () => showAppSheet<void>(context, (_) => const _PhotoKeySheet()),
+            ),
+            _NavRow(
               icon: Icons.restaurant_menu_outlined,
               title: l.settingsFoodData,
               onTap: () => _info(context, l.settingsFoodData, l.settingsFoodDataSub),
@@ -381,6 +391,57 @@ class _NameSheetState extends ConsumerState<_NameSheet> {
             if (context.mounted) Navigator.pop(context);
           },
         ),
+      ],
+    );
+  }
+}
+
+/// Paste your own Gemini key (stored only in this phone's app data), or
+/// clear it to use the one built into the app.
+class _PhotoKeySheet extends ConsumerStatefulWidget {
+  const _PhotoKeySheet();
+
+  @override
+  ConsumerState<_PhotoKeySheet> createState() => _PhotoKeySheetState();
+}
+
+class _PhotoKeySheetState extends ConsumerState<_PhotoKeySheet> {
+  final _key = TextEditingController();
+
+  @override
+  void dispose() {
+    _key.dispose();
+    super.dispose();
+  }
+
+  Future<void> _set(String? value) async {
+    await ref.read(settingsRepositoryProvider).setApiKey('gemini', value);
+    ref.invalidate(geminiKeyProvider);
+    if (mounted) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final own = ref.watch(geminiKeyProvider).value?.own ?? false;
+    return Gap16Column(
+      children: [
+        Semantics(header: true, child: Text(l.settingsPhotoKey, style: AppText.title)),
+        Text(l.settingsPhotoKeyBody, style: AppText.body),
+        TextField(
+          controller: _key,
+          obscureText: true,
+          autocorrect: false,
+          enableSuggestions: false,
+          decoration: InputDecoration(
+            labelText: l.settingsPhotoKeyField,
+            filled: true,
+            fillColor: AppColors.lime200,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
+          ),
+        ),
+        PrimaryButton(label: l.save, onPressed: () => _set(_key.text)),
+        if (own) TextButton(onPressed: () => _set(null), child: Text(l.settingsPhotoKeyClear)),
       ],
     );
   }

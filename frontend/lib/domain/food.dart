@@ -204,7 +204,8 @@ Food? foodFromOpenFoodFacts(
   final ml = RegExp(r'\d\s*(ml|cl|l)\b', caseSensitive: false).hasMatch(s('quantity'));
   // "1 bar (40 g)" -> "1 bar"; a bare amount like "330 ml" -> "1 serving".
   var serving = s('serving_size').replaceAll(RegExp(r'\s*\(.*?\)'), '').trim();
-  if (serving.isEmpty || RegExp(r'^[\d.,\s]+(g|kg|mg|ml|cl|l|oz|fl\.? ?oz)?$', caseSensitive: false).hasMatch(serving)) serving = servingLabel;
+  final bareAmount = RegExp(r'^[\d.,\s]+(g|kg|mg|ml|cl|l|oz|fl\.? ?oz)?$', caseSensitive: false);
+  if (serving.isEmpty || bareAmount.hasMatch(serving)) serving = servingLabel;
   final servingAmount = amount('serving_quantity');
   final packAmount = amount('product_quantity');
   return Food(

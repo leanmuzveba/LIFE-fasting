@@ -33,6 +33,17 @@ class SettingsRepository {
     );
   }
 
+  /// An API key you entered (stored only in this phone's app database).
+  Future<String?> apiKey(String name) async =>
+      (await _db.query('settings', where: 'key = ?', whereArgs: ['apiKey.$name'])).firstOrNull?['value'] as String?;
+
+  Future<void> setApiKey(String name, String? value) => value == null || value.trim().isEmpty
+      ? _db.delete('settings', where: 'key = ?', whereArgs: ['apiKey.$name'])
+      : _db.insert('settings', {
+          'key': 'apiKey.$name',
+          'value': value.trim(),
+        }, conflictAlgorithm: ConflictAlgorithm.replace);
+
   Future<void> save(AppSettings s) async {
     final batch = _db.batch();
     void put(String k, String v) =>

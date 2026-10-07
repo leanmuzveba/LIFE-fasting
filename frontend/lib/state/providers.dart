@@ -10,6 +10,7 @@ import '../data/activity_repository.dart';
 import '../data/food_facts_api.dart';
 import '../data/food_repository.dart';
 import '../data/hydration_repository.dart';
+import '../data/meal_photo_api.dart';
 import '../data/kitchen_repository.dart';
 import '../data/notification_service.dart';
 import '../data/recipe_repository.dart';
@@ -24,6 +25,7 @@ import '../domain/history.dart';
 import '../domain/hydration.dart';
 import '../domain/kitchen.dart';
 import '../domain/kitchen_review.dart';
+import '../domain/meal_estimate.dart';
 import '../domain/recipe.dart';
 import '../domain/settings.dart';
 
@@ -602,6 +604,32 @@ class FoodActions {
     return f;
   }
 
+  /// Logs the reviewed items from a meal photo as separate entries, marked
+  /// with [label] so they read as estimates in the diary.
+  Future<void> logEstimate(
+    Iterable<EstimatedItem> items, {
+    required Meal meal,
+    required DateTime at,
+    required String label,
+  }) async {
+    final local = at.toLocal();
+    for (final i in items) {
+      if (i.grams <= 0 || i.name.trim().isEmpty) continue;
+      await _repo.insert(
+        FoodEntry(
+          day: DateTime(local.year, local.month, local.day),
+          meal: meal,
+          loggedAt: at.toUtc(),
+          name: i.name.trim(),
+          grams: i.grams,
+          portion: label,
+          nutrients: i.nutrients,
+        ),
+      );
+    }
+    _changed();
+  }
+
   /// Finds a packaged food: first among foods you scanned or created, then
   /// Open Food Facts (saved locally so it works offline next time). Null when
   /// unknown; throws when offline and not saved.
@@ -724,3 +752,22 @@ class RecipeActions {
 }
 
 final recipeActionsProvider = Provider(RecipeActions.new);
+
+// --- Meal photo estimates (PRD v1.2 §3, optional; reviewed before saving) ------
+
+/// Built into the app at build time (--dart-define-from-file=secrets.json);
+/// never committed.
+const _builtInGeminiKey = String.fromEnvironment('GEMINI_API_KEY');
+
+/// Which Gemini key is used: yours from Settings, else the built-in one.
+final geminiKeyProvider = FutureProvider<({String key, bool own})?>((ref) async {
+  final own = await ref.watch(settingsRepositoryProvider).apiKey('gemini');
+  if (own != null && own.isNotEmpty) return (key: own, own: true);
+  return _builtInGeminiKey.isEmpty ? null : (key: _builtInGeminiKey, own: false);
+});
+
+/// Null when no key is available.
+final mealPhotoApiProvider = FutureProvider<MealPhotoApi?>((ref) async {
+  final k = await ref.watch(geminiKeyProvider.future);
+  return k == null ? null : MealPhotoApi(k.key);
+});

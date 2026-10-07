@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/domain/settings.dart';
 import 'package:life_fasting/features/food/barcode_scanner_screen.dart';
+import 'package:life_fasting/features/food/meal_photo_screen.dart';
 import 'package:life_fasting/main.dart';
 import 'package:life_fasting/state/providers.dart';
 
@@ -20,6 +21,9 @@ late FakeRecipeApi recipeApi;
 late FakeFoodFactsApi foodFacts;
 String? scannedBarcode;
 
+/// Fake Gemini replies; null = no API key configured.
+FakeMealPhotoApi? mealPhoto;
+
 /// Boots the real app on an in-memory database with a fake clock.
 
 Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = AgeEligibility.adult}) async {
@@ -31,6 +35,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   recipeApi = FakeRecipeApi();
   foodFacts = FakeFoodFactsApi();
   scannedBarcode = null;
+  mealPhoto = FakeMealPhotoApi();
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
@@ -39,6 +44,8 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
       recipeApiProvider.overrideWithValue(recipeApi),
       foodFactsApiProvider.overrideWithValue(foodFacts),
       barcodeScannerProvider.overrideWithValue((_) async => scannedBarcode),
+      mealPhotoApiProvider.overrideWith((ref) async => mealPhoto),
+      mealPhotoPickerProvider.overrideWithValue((_) async => onePixelPng),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {
         yield clock();
