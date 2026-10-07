@@ -39,11 +39,40 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
     setState(() => _day = next == _today ? null : next);
   }
 
-  void _add(Meal meal, DateTime day) => Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => AddFoodScreen(day: day, meal: meal),
-    ),
-  );
+  /// The + buttons: choose how to log (search, scan a barcode).
+  Future<void> _add(Meal meal, DateTime day) async {
+    final l = context.l10n;
+    final scan = await showAppSheet<bool>(
+      context,
+      (ctx) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          MonoLabel(l.addFoodTo(mealLabel(l, meal), DateFormat('EEE, d MMM').format(day))),
+          const SizedBox(height: 6),
+          Semantics(header: true, child: Text(l.logHow, style: AppText.title)),
+          const SizedBox(height: 8),
+          for (final (icon, title, sub, value) in [
+            (Icons.search_rounded, l.logSearch, l.logSearchSub, false),
+            (Icons.qr_code_scanner_rounded, l.scanTitle, l.logScanSub, true),
+          ])
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: IconBubble(icon: icon, size: 44),
+              title: Text(title, style: AppText.cardValue.copyWith(fontSize: 16)),
+              subtitle: Text(sub, style: AppText.small.copyWith(fontSize: 13)),
+              trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+              onTap: () => Navigator.pop(ctx, value),
+            ),
+        ],
+      ),
+    );
+    if (scan == null || !mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => AddFoodScreen(day: day, meal: meal, scan: scan),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +429,7 @@ class _EntryRow extends ConsumerWidget {
     final amount = kcal == null ? l.addFoodNoData : '${l.diaryKcal(formatNutrient(kcal))} ${l.diaryEst}';
     return Semantics(
       button: true,
-      label: l.diaryEntryLabel(entry.name, time, '${formatPortion(entry.portion, entry.grams)}, $amount'),
+      label: l.diaryEntryLabel(entry.name, time, '${formatPortion(entry.portion, entry.grams, entry.unit)}, $amount'),
       excludeSemantics: true,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
@@ -418,7 +447,7 @@ class _EntryRow extends ConsumerWidget {
                     Text(entry.name, style: AppText.cardValue.copyWith(fontSize: 15)),
                     const SizedBox(height: 3),
                     Text(
-                      '$time · ${formatPortion(entry.portion, entry.grams)} · $amount',
+                      '$time · ${formatPortion(entry.portion, entry.grams, entry.unit)} · $amount',
                       style: AppText.small.copyWith(fontSize: 13),
                     ),
                   ],
@@ -457,7 +486,7 @@ class _EntrySheetState extends ConsumerState<_EntrySheet> {
           MonoLabel(l.diaryChangeAmount),
           ValueStepper(
             large: true,
-            label: changed ? formatPortion('', _grams) : formatPortion(e.portion, _grams),
+            label: changed ? formatPortion('', _grams, e.unit) : formatPortion(e.portion, _grams, e.unit),
             minusTooltip: l.addFoodLess,
             plusTooltip: l.addFoodMore,
             onMinus: _grams > 5 ? () => setState(() => _grams = (_grams - 10).clamp(5, 2000)) : null,

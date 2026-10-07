@@ -21,6 +21,7 @@ abstract final class AppDatabase {
     _v5Review,
     _v6Food,
     _v7Recipes,
+    _v8Packaged,
   ];
 
   static int get latestVersion => migrations.length;
@@ -47,6 +48,16 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 8 — scanned packaged foods (barcode, brand, ml) and entry units.
+  static Future<void> _v8Packaged(DatabaseExecutor db) async {
+    await db.execute('ALTER TABLE custom_foods ADD COLUMN barcode TEXT');
+    await db.execute("ALTER TABLE custom_foods ADD COLUMN brand TEXT NOT NULL DEFAULT ''");
+    await db.execute("ALTER TABLE custom_foods ADD COLUMN unit TEXT NOT NULL DEFAULT 'g'");
+    await db.execute('ALTER TABLE custom_foods ADD COLUMN portions TEXT'); // JSON [[label, amount]]
+    await db.execute('CREATE UNIQUE INDEX custom_foods_barcode ON custom_foods (barcode) WHERE barcode IS NOT NULL');
+    await db.execute("ALTER TABLE food_entries ADD COLUMN unit TEXT NOT NULL DEFAULT 'g'");
   }
 
   /// Version 7 — recipe cache, favourite recipes and what you cooked (PRD v1.2 §5).

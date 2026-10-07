@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/activity_repository.dart';
+import '../data/food_facts_api.dart';
 import '../data/food_repository.dart';
 import '../data/hydration_repository.dart';
 import '../data/kitchen_repository.dart';
@@ -509,6 +510,7 @@ final reviewActionsProvider = Provider(ReviewActions.new);
 // --- Food diary (PRD v1.2 §3) ---------------------------------------------------
 
 final foodRepositoryProvider = Provider((ref) => FoodRepository(ref.watch(databaseProvider)));
+final foodFactsApiProvider = Provider((ref) => FoodFactsApi());
 
 /// USDA FoodData Central SR Legacy, bundled (public domain); loaded once.
 final usdaFoodsProvider = FutureProvider<List<Food>>((ref) async {
@@ -566,6 +568,7 @@ class FoodActions {
         foodKey: food.key,
         grams: grams,
         portion: portion,
+        unit: food.unit,
         nutrients: scaleNutrients(food.per100g, grams),
       ),
     );
@@ -593,10 +596,23 @@ class FoodActions {
     _ref.invalidate(savedFoodsProvider);
   }
 
-  Future<Food> createCustom(String name, Nutrients per100g, Portion? serving) async {
-    final f = await _repo.addCustomFood(name, per100g, serving, _now());
+  Future<Food> createCustom(Food food) async {
+    final f = await _repo.addCustomFood(food, _now());
     _ref.invalidate(customFoodsProvider);
     return f;
+  }
+
+  /// Finds a packaged food: first among foods you scanned or created, then
+  /// Open Food Facts (saved locally so it works offline next time). Null when
+  /// unknown; throws when offline and not saved.
+  Future<Food?> lookupBarcode(String barcode, {required String servingLabel, required String packLabel}) async {
+    final local = await _repo.byBarcode(barcode);
+    if (local != null) return local;
+    final product = await _ref.read(foodFactsApiProvider).product(barcode);
+    final food = product == null
+        ? null
+        : foodFromOpenFoodFacts(barcode, product, servingLabel: servingLabel, packLabel: packLabel);
+    return food == null ? null : createCustom(food);
   }
 }
 

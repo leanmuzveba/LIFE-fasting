@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/domain/settings.dart';
+import 'package:life_fasting/features/food/barcode_scanner_screen.dart';
 import 'package:life_fasting/main.dart';
 import 'package:life_fasting/state/providers.dart';
 
@@ -15,6 +16,10 @@ late FakeNotifications notifications;
 /// Canned TheMealDB responses; tests never use the network.
 late FakeRecipeApi recipeApi;
 
+/// Canned Open Food Facts products, and the code the fake scanner returns.
+late FakeFoodFactsApi foodFacts;
+String? scannedBarcode;
+
 /// Boots the real app on an in-memory database with a fake clock.
 
 Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = AgeEligibility.adult}) async {
@@ -24,12 +29,16 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   _ticks = StreamController<DateTime>.broadcast();
   notifications = FakeNotifications();
   recipeApi = FakeRecipeApi();
+  foodFacts = FakeFoodFactsApi();
+  scannedBarcode = null;
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
       clockProvider.overrideWithValue(clock.call),
       notificationServiceProvider.overrideWithValue(notifications),
       recipeApiProvider.overrideWithValue(recipeApi),
+      foodFactsApiProvider.overrideWithValue(foodFacts),
+      barcodeScannerProvider.overrideWithValue((_) async => scannedBarcode),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {
         yield clock();

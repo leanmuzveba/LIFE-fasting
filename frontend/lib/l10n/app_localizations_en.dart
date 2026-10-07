@@ -309,7 +309,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDataStaysSub =>
-      'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB.';
+      'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts.';
 
   @override
   String get settingsDeleteAll => 'Delete all data';
@@ -1305,7 +1305,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addFoodSearch => 'Search foods…';
 
   @override
-  String get addFoodSource => 'USDA FoodData Central · values are estimates';
+  String get addFoodSource => 'USDA FoodData Central & Open Food Facts · values are estimates';
 
   @override
   String get addFoodLoading => 'Loading foods…';
@@ -1384,7 +1384,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customName => 'Name';
 
   @override
-  String get customServing => 'Serving size (g)';
+  String get customServing => 'Serving size';
 
   @override
   String get customPerServing => 'Nutrition per serving · optional';
@@ -1408,7 +1408,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsFoodData => 'Food data';
 
   @override
-  String get settingsFoodDataSub => 'USDA FoodData Central, SR Legacy (public domain). Values are estimates.';
+  String get settingsFoodDataSub =>
+      'Foods: USDA FoodData Central, SR Legacy (public domain). Scanned packaged foods: Open Food Facts (Open Database Licence). Values are estimates.';
 
   @override
   String get diaryRecipes => 'Recipes';
@@ -1607,6 +1608,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recipeNotFound => 'This recipe couldn’t be loaded. Check your connection and try again.';
+
+  @override
+  String get scanTitle => 'Scan a barcode';
+
+  @override
+  String get scanHint => 'Point the camera at the barcode on the pack. Product data comes from Open Food Facts.';
+
+  @override
+  String get scanType => 'Type the barcode instead';
+
+  @override
+  String get scanNumber => 'Barcode number';
+
+  @override
+  String get scanLookUp => 'Look up';
+
+  @override
+  String get scanInvalid => 'Enter the 8–14 digits under the barcode.';
+
+  @override
+  String get scanTorch => 'Torch';
+
+  @override
+  String get scanLooking => 'Looking up the product…';
+
+  @override
+  String get scanCameraError => 'The camera isn’t available. You can type the barcode instead.';
+
+  @override
+  String scanNotFound(String code) {
+    return '$code isn’t in Open Food Facts yet — add it from the label.';
+  }
+
+  @override
+  String get scanOffline => 'Couldn’t look up the barcode. Check your connection and try again.';
+
+  @override
+  String scanAddFromLabel(String code) {
+    return 'Barcode $code. Copy the values from the nutrition label; next time the scan will find it.';
+  }
+
+  @override
+  String get foodPack => 'Whole pack';
+
+  @override
+  String get foodPackaged => 'Packaged food';
+
+  @override
+  String addFoodPer100ml(String kcal, String protein) {
+    return '100 ml · $kcal kcal · $protein g protein (est.)';
+  }
+
+  @override
+  String get customGrams => 'Grams';
+
+  @override
+  String get customMl => 'Millilitres';
+
+  @override
+  String get logHow => 'How do you want to log it?';
+
+  @override
+  String get logSearch => 'Search foods';
+
+  @override
+  String get logSearchSub => 'Food database, recent and favourites';
+
+  @override
+  String get logScanSub => 'Packaged foods and drinks';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

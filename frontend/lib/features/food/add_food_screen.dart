@@ -10,15 +10,17 @@ import '../../core/widgets/sheet.dart';
 import '../../data/food_repository.dart' show FoodShortcut;
 import '../../domain/food.dart';
 import '../../state/providers.dart';
+import 'barcode_scanner_screen.dart';
 import 'food_labels.dart';
 
 /// Search the bundled food database, pick an amount and log it (RUVA design,
 /// PRD v1.2 §3). Recent and saved foods are one tap away.
 class AddFoodScreen extends ConsumerStatefulWidget {
-  const AddFoodScreen({super.key, required this.day, required this.meal});
+  const AddFoodScreen({super.key, required this.day, required this.meal, this.scan = false});
 
   final DateTime day; // local date
   final Meal meal;
+  final bool scan; // open the barcode scanner straight away
 
   @override
   ConsumerState<AddFoodScreen> createState() => _AddFoodScreenState();
@@ -33,6 +35,13 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
   Food? _selected;
   double _grams = 100;
   String _portion = '';
+  bool _looking = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.scan) WidgetsBinding.instance.addPostFrameCallback((_) => _scan());
+  }
 
   TimeOfDay _defaultTime() {
     final now = ref.read(clockProvider)().toLocal();
@@ -76,9 +85,34 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
     Navigator.of(context).pop();
   }
 
-  Future<void> _createCustom() async {
-    final f = await showAppSheet<Food>(context, (_) => _CustomFoodSheet(initialName: _query.trim()));
+  Future<void> _createCustom({String? barcode}) async {
+    final f = await showAppSheet<Food>(
+      context,
+      (_) => _CustomFoodSheet(initialName: barcode == null ? _query.trim() : '', barcode: barcode),
+    );
     if (f != null && mounted) _select(f);
+  }
+
+  /// Scan → your saved foods → Open Food Facts → otherwise add it from the label.
+  Future<void> _scan() async {
+    final l = context.l10n;
+    final code = await ref.read(barcodeScannerProvider)(context);
+    if (code == null || !mounted) return;
+    setState(() => _looking = true);
+    try {
+      final f = await ref
+          .read(foodActionsProvider)
+          .lookupBarcode(code, servingLabel: l.customServingLabel, packLabel: l.foodPack);
+      if (!mounted) return;
+      setState(() => _looking = false);
+      if (f != null) return _select(f);
+      showRuvaSnack(context, l.scanNotFound(code));
+      await _createCustom(barcode: code);
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _looking = false);
+      showRuvaSnack(context, l.scanOffline);
+    }
   }
 
   @override
@@ -112,11 +146,36 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
                     padding: const EdgeInsets.all(18),
                     child: Column(
                       children: [
-                        SearchField(
-                          hint: count == null ? l.addFoodLoading : l.addFoodSearch,
-                          controller: _search,
-                          onChanged: (v) => setState(() => _query = v),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: SearchField(
+                                hint: count == null ? l.addFoodLoading : l.addFoodSearch,
+                                controller: _search,
+                                onChanged: (v) => setState(() => _query = v),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            RoundIconButton(
+                              icon: Icons.qr_code_scanner_rounded,
+                              onTap: _looking ? null : _scan,
+                              tooltip: l.scanTitle,
+                              size: 50,
+                              background: AppColors.accent,
+                              foreground: AppColors.primaryDark,
+                            ),
+                          ],
                         ),
+                        if (_looking) ...[
+                          const SizedBox(height: 10),
+                          Semantics(
+                            label: l.scanLooking,
+                            child: const LinearProgressIndicator(
+                              color: AppColors.accent,
+                              backgroundColor: Color(0x33FFFFFF),
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 10),
                         Text(
                           l.addFoodSource,
@@ -178,9 +237,14 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
                               title: Text(f.name, style: AppText.cardValue.copyWith(fontSize: 15)),
                               subtitle: Text(
                                 [
-                                  if (f.isCustom) l.addFoodYours,
+                                  if (f.isCustom)
+                                    f.brand.isNotEmpty
+                                        ? f.brand
+                                        : f.barcode != null
+                                        ? l.foodPackaged
+                                        : l.addFoodYours,
                                   if (f.per100g[Nutrient.energy] case final kcal?)
-                                    l.addFoodPer100(
+                                    (f.unit == 'ml' ? l.addFoodPer100ml : l.addFoodPer100)(
                                       formatNutrient(kcal),
                                       formatNutrient(f.per100g[Nutrient.protein] ?? 0),
                                     )
@@ -250,10 +314,11 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
             ],
           ),
           Text(f.name, style: AppText.title.copyWith(fontSize: 20)),
+          if (f.brand.isNotEmpty) Text(f.brand, style: AppText.small),
           const SizedBox(height: 16),
           ValueStepper(
             large: true,
-            label: formatPortion(_portion, _grams),
+            label: formatPortion(_portion, _grams, f.unit),
             minusTooltip: l.addFoodLess,
             plusTooltip: l.addFoodMore,
             onMinus: _grams > 5 ? () => step(-10) : null,
@@ -266,7 +331,7 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
             children: [
               for (final p in portions)
                 RuvaChip(
-                  label: p.label.isEmpty ? '100 g' : p.label,
+                  label: p.label.isEmpty ? '100 ${f.unit}' : p.label,
                   outlined: true,
                   selected: _portion == p.label && _grams == p.grams,
                   onTap: () => setState(() {
@@ -323,8 +388,9 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
 /// Create a food that isn't in the database. Nutrition is optional; blanks
 /// stay "unavailable", never zero.
 class _CustomFoodSheet extends ConsumerStatefulWidget {
-  const _CustomFoodSheet({required this.initialName});
+  const _CustomFoodSheet({required this.initialName, this.barcode});
   final String initialName;
+  final String? barcode; // set when adding a scanned product that wasn't found
 
   @override
   ConsumerState<_CustomFoodSheet> createState() => _CustomFoodSheetState();
@@ -334,6 +400,7 @@ class _CustomFoodSheetState extends ConsumerState<_CustomFoodSheet> {
   late final _name = TextEditingController(text: widget.initialName);
   final _serving = TextEditingController(text: '100');
   final _values = {for (final n in Nutrient.macros) n: TextEditingController()};
+  String _unit = 'g';
   String? _error;
 
   @override
@@ -359,7 +426,16 @@ class _CustomFoodSheetState extends ConsumerState<_CustomFoodSheet> {
     };
     final f = await ref
         .read(foodActionsProvider)
-        .createCustom(_name.text, per100, Portion(l.customServingLabel, grams));
+        .createCustom(
+          Food(
+            key: '',
+            name: _name.text,
+            per100g: per100,
+            portions: [Portion(l.customServingLabel, grams)],
+            unit: _unit,
+            barcode: widget.barcode,
+          ),
+        );
     if (mounted) Navigator.pop(context, f);
   }
 
@@ -371,7 +447,15 @@ class _CustomFoodSheetState extends ConsumerState<_CustomFoodSheet> {
       children: [
         Semantics(header: true, child: Text(l.customTitle, style: AppText.title)),
         RuvaTextField(controller: _name, label: l.customName, bold: true),
-        RuvaTextField(controller: _serving, label: l.customServing, keyboardType: numeric),
+        if (widget.barcode != null) Text(l.scanAddFromLabel(widget.barcode!), style: AppText.small),
+        RuvaTextField(controller: _serving, label: '${l.customServing} ($_unit)', keyboardType: numeric),
+        Wrap(
+          spacing: 8,
+          children: [
+            for (final (u, label) in [('g', l.customGrams), ('ml', l.customMl)])
+              RuvaChip(label: label, outlined: true, selected: _unit == u, onTap: () => setState(() => _unit = u)),
+          ],
+        ),
         MonoLabel(l.customPerServing),
         Wrap(
           spacing: 10,

@@ -64,6 +64,8 @@ void main() {
     // USDA food with a household portion.
     await tester.tap(find.byTooltip('Add to Breakfast'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('Search foods'));
+    await tester.pumpAndSettle();
     expect(find.text('Search foods…'), findsOneWidget);
     await tester.enterText(find.byType(TextField), 'greek yogurt plain');
     await tester.pumpAndSettle();
@@ -80,6 +82,8 @@ void main() {
 
     // Your own food, energy only.
     await tester.tap(find.byTooltip('Add to Lunch'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Search foods'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Create custom food'));
     await tester.pumpAndSettle();
@@ -119,6 +123,8 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.tap(find.byTooltip('Add food'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Search foods'));
     await tester.pumpAndSettle();
     expect(find.text('RECENT'), findsOneWidget);
     expect(find.text('SAVED'), findsOneWidget);

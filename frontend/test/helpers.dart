@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:life_fasting/data/app_database.dart';
+import 'package:life_fasting/data/food_facts_api.dart';
 import 'package:life_fasting/data/notification_service.dart';
 import 'package:life_fasting/data/recipe_repository.dart';
 import 'package:life_fasting/domain/hydration.dart';
@@ -113,5 +114,19 @@ class FakeRecipeApi extends RecipeApi {
     requests.add(path);
     if (offline) throw const SocketException('offline');
     return responses[path] ?? {'meals': null};
+  }
+}
+
+/// Serves canned Open Food Facts products by barcode; records lookups.
+class FakeFoodFactsApi extends FoodFactsApi {
+  final products = <String, Map<String, dynamic>>{};
+  final lookups = <String>[];
+  bool offline = false;
+
+  @override
+  Future<Map<String, dynamic>?> product(String barcode) async {
+    lookups.add(barcode);
+    if (offline) throw const SocketException('offline');
+    return products[barcode];
   }
 }

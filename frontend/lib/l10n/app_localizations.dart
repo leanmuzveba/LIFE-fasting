@@ -616,7 +616,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsDataStaysSub.
   ///
   /// In en, this message translates to:
-  /// **'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB.'**
+  /// **'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts.'**
   String get settingsDataStaysSub;
 
   /// No description provided for @settingsDeleteAll.
@@ -2350,7 +2350,7 @@ abstract class AppLocalizations {
   /// No description provided for @addFoodSource.
   ///
   /// In en, this message translates to:
-  /// **'USDA FoodData Central · values are estimates'**
+  /// **'USDA FoodData Central & Open Food Facts · values are estimates'**
   String get addFoodSource;
 
   /// No description provided for @addFoodLoading.
@@ -2488,7 +2488,7 @@ abstract class AppLocalizations {
   /// No description provided for @customServing.
   ///
   /// In en, this message translates to:
-  /// **'Serving size (g)'**
+  /// **'Serving size'**
   String get customServing;
 
   /// No description provided for @customPerServing.
@@ -2536,7 +2536,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsFoodDataSub.
   ///
   /// In en, this message translates to:
-  /// **'USDA FoodData Central, SR Legacy (public domain). Values are estimates.'**
+  /// **'Foods: USDA FoodData Central, SR Legacy (public domain). Scanned packaged foods: Open Food Facts (Open Database Licence). Values are estimates.'**
   String get settingsFoodDataSub;
 
   /// No description provided for @diaryRecipes.
@@ -2838,6 +2838,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This recipe couldn’t be loaded. Check your connection and try again.'**
   String get recipeNotFound;
+
+  /// No description provided for @scanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a barcode'**
+  String get scanTitle;
+
+  /// No description provided for @scanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at the barcode on the pack. Product data comes from Open Food Facts.'**
+  String get scanHint;
+
+  /// No description provided for @scanType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the barcode instead'**
+  String get scanType;
+
+  /// No description provided for @scanNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode number'**
+  String get scanNumber;
+
+  /// No description provided for @scanLookUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Look up'**
+  String get scanLookUp;
+
+  /// No description provided for @scanInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 8–14 digits under the barcode.'**
+  String get scanInvalid;
+
+  /// No description provided for @scanTorch.
+  ///
+  /// In en, this message translates to:
+  /// **'Torch'**
+  String get scanTorch;
+
+  /// No description provided for @scanLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking up the product…'**
+  String get scanLooking;
+
+  /// No description provided for @scanCameraError.
+  ///
+  /// In en, this message translates to:
+  /// **'The camera isn’t available. You can type the barcode instead.'**
+  String get scanCameraError;
+
+  /// No description provided for @scanNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{code} isn’t in Open Food Facts yet — add it from the label.'**
+  String scanNotFound(String code);
+
+  /// No description provided for @scanOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t look up the barcode. Check your connection and try again.'**
+  String get scanOffline;
+
+  /// No description provided for @scanAddFromLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Barcode {code}. Copy the values from the nutrition label; next time the scan will find it.'**
+  String scanAddFromLabel(String code);
+
+  /// No description provided for @foodPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Whole pack'**
+  String get foodPack;
+
+  /// No description provided for @foodPackaged.
+  ///
+  /// In en, this message translates to:
+  /// **'Packaged food'**
+  String get foodPackaged;
+
+  /// No description provided for @addFoodPer100ml.
+  ///
+  /// In en, this message translates to:
+  /// **'100 ml · {kcal} kcal · {protein} g protein (est.)'**
+  String addFoodPer100ml(String kcal, String protein);
+
+  /// No description provided for @customGrams.
+  ///
+  /// In en, this message translates to:
+  /// **'Grams'**
+  String get customGrams;
+
+  /// No description provided for @customMl.
+  ///
+  /// In en, this message translates to:
+  /// **'Millilitres'**
+  String get customMl;
+
+  /// No description provided for @logHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you want to log it?'**
+  String get logHow;
+
+  /// No description provided for @logSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search foods'**
+  String get logSearch;
+
+  /// No description provided for @logSearchSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Food database, recent and favourites'**
+  String get logSearchSub;
+
+  /// No description provided for @logScanSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Packaged foods and drinks'**
+  String get logScanSub;
 
   /// No description provided for @notifDailyBody.
   ///

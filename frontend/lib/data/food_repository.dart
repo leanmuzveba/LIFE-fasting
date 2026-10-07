@@ -30,6 +30,7 @@ class FoodRepository {
     'food_key': e.foodKey,
     'grams': e.grams,
     'portion': e.portion,
+    'unit': e.unit,
     'nutrients': _encode(e.nutrients),
   };
 
@@ -44,6 +45,7 @@ class FoodRepository {
       foodKey: r['food_key'] as String?,
       grams: (r['grams'] as num?)?.toDouble(),
       portion: (r['portion'] as String?) ?? '',
+      unit: (r['unit'] as String?) ?? 'g',
       nutrients: _decode(r['nutrients']),
     );
   }
@@ -118,28 +120,47 @@ class FoodRepository {
 
   // --- Custom foods -------------------------------------------------------------
 
+  static Food _customFromRow(Map<String, Object?> r) => Food(
+    key: 'custom:${r['id']}',
+    name: r['name']! as String,
+    per100g: _decode(r['nutrients']),
+    unit: (r['unit'] as String?) ?? 'g',
+    brand: (r['brand'] as String?) ?? '',
+    barcode: r['barcode'] as String?,
+    portions: r['portions'] is String
+        ? [
+            for (final p in jsonDecode(r['portions']! as String) as List<dynamic>)
+              Portion(p[0] as String, (p[1] as num).toDouble()),
+          ]
+        : [if (r['serving_grams'] case final num g) Portion((r['serving_label'] as String?) ?? '', g.toDouble())],
+  );
+
   Future<List<Food>> customFoods() async => [
-    for (final r in await _db.query('custom_foods', orderBy: 'name COLLATE NOCASE'))
-      Food(
-        key: 'custom:${r['id']}',
-        name: r['name']! as String,
-        per100g: _decode(r['nutrients']),
-        portions: [
-          if (r['serving_grams'] case final num g) Portion((r['serving_label'] as String?) ?? '', g.toDouble()),
-        ],
-      ),
+    for (final r in await _db.query('custom_foods', orderBy: 'name COLLATE NOCASE')) _customFromRow(r),
   ];
 
-  /// Stores a food you created. [per100g] may be empty (nutrition unavailable).
-  Future<Food> addCustomFood(String name, Nutrients per100g, Portion? serving, DateTime at) async {
-    final id = await _db.insert('custom_foods', {
-      'name': name.trim(),
-      'nutrients': _encode(per100g),
-      'serving_grams': serving?.grams,
-      'serving_label': serving?.label,
+  /// A food you saved (or scanned before) with this barcode.
+  Future<Food?> byBarcode(String barcode) async {
+    final rows = await _db.query('custom_foods', where: 'barcode = ?', whereArgs: [barcode], limit: 1);
+    return rows.isEmpty ? null : _customFromRow(rows.first);
+  }
+
+  /// Stores a food you created or scanned. [food].per100g may be empty
+  /// (nutrition unavailable). A food with the same barcode is replaced.
+  Future<Food> addCustomFood(Food food, DateTime at) async {
+    final row = {
+      'name': food.name.trim(),
+      'nutrients': _encode(food.per100g),
+      'portions': jsonEncode([
+        for (final p in food.portions) [p.label, p.grams],
+      ]),
+      'unit': food.unit,
+      'brand': food.brand,
+      'barcode': food.barcode,
       'created_at': _ms(at),
-    });
-    return Food(key: 'custom:$id', name: name.trim(), per100g: per100g, portions: [?serving]);
+    };
+    final id = await _db.insert('custom_foods', row, conflictAlgorithm: ConflictAlgorithm.replace);
+    return _customFromRow({...row, 'id': id});
   }
 
   Future<void> deleteAll() async {

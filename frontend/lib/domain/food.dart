@@ -38,12 +38,23 @@ class Portion {
 /// A food you can log: from the USDA database (`usda:<fdcId>`) or one you
 /// created (`custom:<id>`).
 class Food {
-  const Food({required this.key, required this.name, required this.per100g, this.portions = const []});
+  const Food({
+    required this.key,
+    required this.name,
+    required this.per100g,
+    this.portions = const [],
+    this.unit = 'g',
+    this.brand = '',
+    this.barcode,
+  });
 
   final String key;
   final String name;
   final Nutrients per100g;
   final List<Portion> portions;
+  final String unit; // 'g', or 'ml' for drinks (values are per 100 ml)
+  final String brand;
+  final String? barcode;
 
   bool get hasNutrition => per100g.isNotEmpty;
   bool get isCustom => key.startsWith('custom:');
@@ -74,6 +85,7 @@ class FoodEntry {
     this.foodKey,
     this.grams,
     this.portion = '',
+    this.unit = 'g',
     required this.nutrients,
   });
 
@@ -85,6 +97,7 @@ class FoodEntry {
   final String? foodKey;
   final double? grams; // null for a recipe serving (weight unknown)
   final String portion; // e.g. "1 cup", empty when entered in grams
+  final String unit; // 'g' or 'ml'
   final Nutrients nutrients; // totals for this entry
 
   FoodEntry copyWith({int? id, double? grams, DateTime? loggedAt, Meal? meal}) {
@@ -99,6 +112,7 @@ class FoodEntry {
       foodKey: foodKey,
       grams: g,
       portion: grams == null ? portion : '',
+      unit: unit,
       nutrients: g != null && old != null && old > 0 ? scaleNutrients(nutrients, g * 100 / old) : nutrients,
     );
   }
@@ -146,4 +160,63 @@ List<Food> searchFoods(Iterable<Food> foods, String query, {int limit = 40}) {
     return r != 0 ? r : a.name.length.compareTo(b.name.length);
   });
   return hits.take(limit).toList();
+}
+
+/// Parses an Open Food Facts product. Null when it has no name. Minerals and
+/// vitamins arrive in grams and are converted to mg; missing values stay
+/// unavailable. [servingLabel]/[packLabel] name the portions ("1 serving").
+Food? foodFromOpenFoodFacts(
+  String barcode,
+  Map<String, dynamic> p, {
+  required String servingLabel,
+  required String packLabel,
+}) {
+  String s(String k) => '${p[k] ?? ''}'.trim();
+  final name = s('product_name').isNotEmpty ? s('product_name') : s('product_name_en');
+  if (name.isEmpty) return null;
+  final n = (p['nutriments'] as Map?)?.cast<String, dynamic>() ?? const <String, dynamic>{};
+  double? v(String k) => switch (n['${k}_100g']) {
+    final num x => x.toDouble(),
+    final String x => double.tryParse(x),
+    _ => null,
+  };
+  double? amount(String k) => switch (p[k]) {
+    final num x when x > 0 => x.toDouble(),
+    final String x => double.tryParse(x),
+    _ => null,
+  };
+  final kj = v('energy');
+  final per100 = <Nutrient, double>{
+    Nutrient.energy: ?(v('energy-kcal') ?? (kj == null ? null : kj / 4.184)),
+    Nutrient.protein: ?v('proteins'),
+    Nutrient.carbs: ?v('carbohydrates'),
+    Nutrient.fat: ?v('fat'),
+    Nutrient.fibre: ?v('fiber'),
+    for (final (key, nutrient) in [
+      ('calcium', Nutrient.calcium),
+      ('iron', Nutrient.iron),
+      ('potassium', Nutrient.potassium),
+      ('sodium', Nutrient.sodium),
+      ('vitamin-c', Nutrient.vitaminC),
+    ])
+      if (v(key) case final g?) nutrient: g * 1000,
+  };
+  final ml = RegExp(r'\d\s*(ml|cl|l)\b', caseSensitive: false).hasMatch(s('quantity'));
+  // "1 bar (40 g)" -> "1 bar"; a bare amount like "330 ml" -> "1 serving".
+  var serving = s('serving_size').replaceAll(RegExp(r'\s*\(.*?\)'), '').trim();
+  if (serving.isEmpty || RegExp(r'^[\d.,\s]+(g|kg|mg|ml|cl|l|oz|fl\.? ?oz)?$', caseSensitive: false).hasMatch(serving)) serving = servingLabel;
+  final servingAmount = amount('serving_quantity');
+  final packAmount = amount('product_quantity');
+  return Food(
+    key: 'barcode:$barcode',
+    name: name,
+    brand: s('brands').split(',').first.trim(),
+    barcode: barcode,
+    unit: ml ? 'ml' : 'g',
+    per100g: per100,
+    portions: [
+      if (servingAmount != null) Portion(serving, servingAmount),
+      if (packAmount != null && packAmount != servingAmount) Portion(packLabel, packAmount),
+    ],
+  );
 }
