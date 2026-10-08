@@ -3121,6 +3121,300 @@ abstract class AppLocalizations {
   /// **'Remove my key'**
   String get settingsPhotoKeyClear;
 
+  /// No description provided for @bodyStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Your stats'**
+  String get bodyStats;
+
+  /// No description provided for @bodyHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height'**
+  String get bodyHeight;
+
+  /// No description provided for @bodyAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Age'**
+  String get bodyAge;
+
+  /// No description provided for @bodySex.
+  ///
+  /// In en, this message translates to:
+  /// **'Sex'**
+  String get bodySex;
+
+  /// No description provided for @bodyWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight'**
+  String get bodyWeight;
+
+  /// No description provided for @bodyNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get bodyNotSet;
+
+  /// No description provided for @bodyUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update stats'**
+  String get bodyUpdate;
+
+  /// No description provided for @bodyFemale.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get bodyFemale;
+
+  /// No description provided for @bodyMale.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get bodyMale;
+
+  /// No description provided for @bodySexNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer not to say'**
+  String get bodySexNone;
+
+  /// No description provided for @bodySexHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Only used in the body-fat formulas.'**
+  String get bodySexHint;
+
+  /// No description provided for @bodyAgeYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{age} years'**
+  String bodyAgeYears(int age);
+
+  /// No description provided for @bodyOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything here is optional and stays on this phone.'**
+  String get bodyOptional;
+
+  /// No description provided for @bodyTape.
+  ///
+  /// In en, this message translates to:
+  /// **'Tape measurements · optional'**
+  String get bodyTape;
+
+  /// No description provided for @bodyTapeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Waist at the navel, neck just below the Adam’s apple, hips at the widest point. They give a better body-fat estimate than BMI alone.'**
+  String get bodyTapeHint;
+
+  /// No description provided for @bodyWaist.
+  ///
+  /// In en, this message translates to:
+  /// **'Waist'**
+  String get bodyWaist;
+
+  /// No description provided for @bodyNeck.
+  ///
+  /// In en, this message translates to:
+  /// **'Neck'**
+  String get bodyNeck;
+
+  /// No description provided for @bodyHip.
+  ///
+  /// In en, this message translates to:
+  /// **'Hips'**
+  String get bodyHip;
+
+  /// No description provided for @bodyFeet.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (ft)'**
+  String get bodyFeet;
+
+  /// No description provided for @bodyInches.
+  ///
+  /// In en, this message translates to:
+  /// **'(in)'**
+  String get bodyInches;
+
+  /// No description provided for @bodyInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check the numbers — they look out of range.'**
+  String get bodyInvalid;
+
+  /// No description provided for @bodyNumbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Your numbers'**
+  String get bodyNumbers;
+
+  /// No description provided for @bodyBmi.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI'**
+  String get bodyBmi;
+
+  /// No description provided for @bmiUnder.
+  ///
+  /// In en, this message translates to:
+  /// **'Below the healthy range'**
+  String get bmiUnder;
+
+  /// No description provided for @bmiHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Within the healthy range'**
+  String get bmiHealthy;
+
+  /// No description provided for @bmiOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Above the healthy range'**
+  String get bmiOver;
+
+  /// No description provided for @bmiObese.
+  ///
+  /// In en, this message translates to:
+  /// **'Well above the healthy range'**
+  String get bmiObese;
+
+  /// No description provided for @bodyRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy range for your height: {low} – {high}'**
+  String bodyRange(String low, String high);
+
+  /// No description provided for @bodyLose.
+  ///
+  /// In en, this message translates to:
+  /// **'To reach it: lose about {amount}'**
+  String bodyLose(String amount);
+
+  /// No description provided for @bodyGain.
+  ///
+  /// In en, this message translates to:
+  /// **'To reach it: gain about {amount}'**
+  String bodyGain(String amount);
+
+  /// No description provided for @bodyInRange.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re within it.'**
+  String get bodyInRange;
+
+  /// No description provided for @bodyFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Body fat (estimate)'**
+  String get bodyFat;
+
+  /// No description provided for @bodyFatTape.
+  ///
+  /// In en, this message translates to:
+  /// **'From your tape measurements (US Navy method) · about ±3%'**
+  String get bodyFatTape;
+
+  /// No description provided for @bodyFatBmi.
+  ///
+  /// In en, this message translates to:
+  /// **'Rough, from BMI · add tape measurements for a better estimate'**
+  String get bodyFatBmi;
+
+  /// No description provided for @bodyFatNeeds.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your age and sex for an estimate.'**
+  String get bodyFatNeeds;
+
+  /// No description provided for @bodyUnder18.
+  ///
+  /// In en, this message translates to:
+  /// **'Adult BMI categories and weight targets don’t apply under 18 — growth charts do. A doctor or nurse can help you make sense of these numbers.'**
+  String get bodyUnder18;
+
+  /// No description provided for @bodyNeedStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your height and weight to see your BMI and healthy weight range.'**
+  String get bodyNeedStats;
+
+  /// No description provided for @bodyAboutBmi.
+  ///
+  /// In en, this message translates to:
+  /// **'About BMI'**
+  String get bodyAboutBmi;
+
+  /// No description provided for @bodyAboutBmiBody.
+  ///
+  /// In en, this message translates to:
+  /// **'BMI compares weight with height. It’s a quick screening number, not a diagnosis: it can’t tell muscle from fat, and it reads differently for athletes, older adults, pregnancy and some ethnic groups. Body-fat estimates can be several percent off. Treat these numbers as one signal among many — RUVA won’t set diets or calorie targets from them, and a healthcare professional can help you interpret them.'**
+  String get bodyAboutBmiBody;
+
+  /// No description provided for @bodyHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight history'**
+  String get bodyHistory;
+
+  /// No description provided for @bodyAddWeighIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Add weigh-in'**
+  String get bodyAddWeighIn;
+
+  /// No description provided for @bodyWeighIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Weigh-in'**
+  String get bodyWeighIn;
+
+  /// No description provided for @bodyNoWeighIns.
+  ///
+  /// In en, this message translates to:
+  /// **'No weigh-ins yet.'**
+  String get bodyNoWeighIns;
+
+  /// No description provided for @bodyChange.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} since {date}'**
+  String bodyChange(String amount, String date);
+
+  /// No description provided for @bodyTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Track my weight'**
+  String get bodyTrack;
+
+  /// No description provided for @bodyTrackSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off to hide weight, BMI and history. Records are kept until you delete them.'**
+  String get bodyTrackSub;
+
+  /// No description provided for @bodyTrackOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight tracking is off.'**
+  String get bodyTrackOff;
+
+  /// No description provided for @bodyDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Weigh-in deleted'**
+  String get bodyDeleted;
+
+  /// No description provided for @bodyWeighInLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{weight} on {date}'**
+  String bodyWeighInLabel(String weight, String date);
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

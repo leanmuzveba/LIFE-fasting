@@ -105,8 +105,13 @@ void main() {
     expect(find.text('MEMBER SINCE OCT 2026'), findsOneWidget);
     await tester.tap(find.text('Add your name'));
     await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Name: Not set'));
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextField), 'Ruvarashe M');
     await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Name: Ruvarashe M'), findsOneWidget);
+    await tester.tap(find.byTooltip('Back'));
     await tester.pumpAndSettle();
     expect(find.text('Ruvarashe M'), findsOneWidget);
     expect(find.text('RM'), findsOneWidget);

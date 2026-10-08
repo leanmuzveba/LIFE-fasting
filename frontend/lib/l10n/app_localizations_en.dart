@@ -1782,5 +1782,167 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsPhotoKeyClear => 'Remove my key';
 
   @override
+  String get bodyStats => 'Your stats';
+
+  @override
+  String get bodyHeight => 'Height';
+
+  @override
+  String get bodyAge => 'Age';
+
+  @override
+  String get bodySex => 'Sex';
+
+  @override
+  String get bodyWeight => 'Weight';
+
+  @override
+  String get bodyNotSet => 'Not set';
+
+  @override
+  String get bodyUpdate => 'Update stats';
+
+  @override
+  String get bodyFemale => 'Female';
+
+  @override
+  String get bodyMale => 'Male';
+
+  @override
+  String get bodySexNone => 'Prefer not to say';
+
+  @override
+  String get bodySexHint => 'Only used in the body-fat formulas.';
+
+  @override
+  String bodyAgeYears(int age) {
+    return '$age years';
+  }
+
+  @override
+  String get bodyOptional => 'Everything here is optional and stays on this phone.';
+
+  @override
+  String get bodyTape => 'Tape measurements · optional';
+
+  @override
+  String get bodyTapeHint =>
+      'Waist at the navel, neck just below the Adam’s apple, hips at the widest point. They give a better body-fat estimate than BMI alone.';
+
+  @override
+  String get bodyWaist => 'Waist';
+
+  @override
+  String get bodyNeck => 'Neck';
+
+  @override
+  String get bodyHip => 'Hips';
+
+  @override
+  String get bodyFeet => 'Height (ft)';
+
+  @override
+  String get bodyInches => '(in)';
+
+  @override
+  String get bodyInvalid => 'Please check the numbers — they look out of range.';
+
+  @override
+  String get bodyNumbers => 'Your numbers';
+
+  @override
+  String get bodyBmi => 'BMI';
+
+  @override
+  String get bmiUnder => 'Below the healthy range';
+
+  @override
+  String get bmiHealthy => 'Within the healthy range';
+
+  @override
+  String get bmiOver => 'Above the healthy range';
+
+  @override
+  String get bmiObese => 'Well above the healthy range';
+
+  @override
+  String bodyRange(String low, String high) {
+    return 'Healthy range for your height: $low – $high';
+  }
+
+  @override
+  String bodyLose(String amount) {
+    return 'To reach it: lose about $amount';
+  }
+
+  @override
+  String bodyGain(String amount) {
+    return 'To reach it: gain about $amount';
+  }
+
+  @override
+  String get bodyInRange => 'You’re within it.';
+
+  @override
+  String get bodyFat => 'Body fat (estimate)';
+
+  @override
+  String get bodyFatTape => 'From your tape measurements (US Navy method) · about ±3%';
+
+  @override
+  String get bodyFatBmi => 'Rough, from BMI · add tape measurements for a better estimate';
+
+  @override
+  String get bodyFatNeeds => 'Add your age and sex for an estimate.';
+
+  @override
+  String get bodyUnder18 =>
+      'Adult BMI categories and weight targets don’t apply under 18 — growth charts do. A doctor or nurse can help you make sense of these numbers.';
+
+  @override
+  String get bodyNeedStats => 'Add your height and weight to see your BMI and healthy weight range.';
+
+  @override
+  String get bodyAboutBmi => 'About BMI';
+
+  @override
+  String get bodyAboutBmiBody =>
+      'BMI compares weight with height. It’s a quick screening number, not a diagnosis: it can’t tell muscle from fat, and it reads differently for athletes, older adults, pregnancy and some ethnic groups. Body-fat estimates can be several percent off. Treat these numbers as one signal among many — RUVA won’t set diets or calorie targets from them, and a healthcare professional can help you interpret them.';
+
+  @override
+  String get bodyHistory => 'Weight history';
+
+  @override
+  String get bodyAddWeighIn => 'Add weigh-in';
+
+  @override
+  String get bodyWeighIn => 'Weigh-in';
+
+  @override
+  String get bodyNoWeighIns => 'No weigh-ins yet.';
+
+  @override
+  String bodyChange(String amount, String date) {
+    return '$amount since $date';
+  }
+
+  @override
+  String get bodyTrack => 'Track my weight';
+
+  @override
+  String get bodyTrackSub => 'Turn off to hide weight, BMI and history. Records are kept until you delete them.';
+
+  @override
+  String get bodyTrackOff => 'Weight tracking is off.';
+
+  @override
+  String get bodyDeleted => 'Weigh-in deleted';
+
+  @override
+  String bodyWeighInLabel(String weight, String date) {
+    return '$weight on $date';
+  }
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

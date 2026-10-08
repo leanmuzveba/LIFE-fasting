@@ -12,6 +12,7 @@ import '../../core/widgets/ruva_logo.dart';
 import '../../core/widgets/sheet.dart';
 import '../../domain/settings.dart';
 import '../kitchen/kitchen_review_screen.dart';
+import '../profile/profile_screen.dart';
 import '../../state/providers.dart';
 
 String unitsLabel(AppLocalizations l, UnitSystem u) => u == UnitSystem.metric ? l.unitsMetric : l.unitsImperial;
@@ -77,7 +78,10 @@ class SettingsScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 20),
-        _ProfileCard(settings: settings, onTap: () => _editName(context, settings.userName)),
+        _ProfileCard(
+          settings: settings,
+          onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const ProfileScreen())),
+        ),
         const SizedBox(height: 26),
         _SectionLabel(l.settingsPreferences),
         _Group(
@@ -271,9 +275,6 @@ class SettingsScreen extends ConsumerWidget {
     ),
   );
 
-  Future<void> _editName(BuildContext context, String current) =>
-      showAppSheet<void>(context, (_) => _NameSheet(initial: current));
-
   Future<void> _confirmDelete(BuildContext context, WidgetRef ref) => showAppSheet<void>(
     context,
     (ctx) => Gap16Column(
@@ -359,15 +360,15 @@ class _ProfileCard extends StatelessWidget {
   }
 }
 
-class _NameSheet extends ConsumerStatefulWidget {
-  const _NameSheet({required this.initial});
+class ProfileNameSheet extends ConsumerStatefulWidget {
+  const ProfileNameSheet({super.key, required this.initial});
   final String initial;
 
   @override
-  ConsumerState<_NameSheet> createState() => _NameSheetState();
+  ConsumerState<ProfileNameSheet> createState() => _ProfileNameSheetState();
 }
 
-class _NameSheetState extends ConsumerState<_NameSheet> {
+class _ProfileNameSheetState extends ConsumerState<ProfileNameSheet> {
   late final _name = TextEditingController(text: widget.initial);
 
   @override

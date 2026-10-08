@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/activity_repository.dart';
+import '../data/body_repository.dart';
 import '../data/food_facts_api.dart';
 import '../data/food_repository.dart';
 import '../data/hydration_repository.dart';
@@ -18,6 +19,7 @@ import '../data/review_repository.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
 import '../domain/activity.dart';
+import '../domain/body.dart';
 import '../domain/fasting_session.dart';
 import '../domain/fasting_timer.dart';
 import '../domain/food.dart';
@@ -183,6 +185,7 @@ class SessionActions {
     await _ref.read(kitchenRepositoryProvider).deleteAll();
     await _ref.read(reviewRepositoryProvider).deleteAll();
     await _ref.read(foodRepositoryProvider).deleteAll();
+    await _ref.read(bodyRepositoryProvider).deleteAll();
     await _ref.read(recipeRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
@@ -197,6 +200,8 @@ class SessionActions {
     _ref.invalidate(customFoodsProvider);
     _ref.invalidate(recentFoodsProvider);
     _ref.invalidate(savedFoodsProvider);
+    _ref.invalidate(bodyProfileProvider);
+    _ref.invalidate(weighInsProvider);
     _ref.invalidate(savedRecipesProvider);
     _ref.invalidate(lastCookedProvider);
     _ref.invalidate(recipeSuggestionsProvider);
@@ -771,3 +776,40 @@ final mealPhotoApiProvider = FutureProvider<MealPhotoApi?>((ref) async {
   final k = await ref.watch(geminiKeyProvider.future);
   return k == null ? null : MealPhotoApi(k.key);
 });
+
+// --- Personal measurements (PRD v1.2 §7) -------------------------------------------
+
+final bodyRepositoryProvider = Provider((ref) => BodyRepository(ref.watch(databaseProvider)));
+final bodyProfileProvider = FutureProvider((ref) => ref.watch(bodyRepositoryProvider).profile());
+final weighInsProvider = FutureProvider((ref) => ref.watch(bodyRepositoryProvider).weighIns());
+
+class BodyActions {
+  BodyActions(this._ref);
+  final Ref _ref;
+
+  BodyRepository get _repo => _ref.read(bodyRepositoryProvider);
+
+  Future<void> saveProfile(BodyProfile p) async {
+    await _repo.saveProfile(p);
+    _ref.invalidate(bodyProfileProvider);
+  }
+
+  Future<void> addWeighIn(WeighIn w) async {
+    if (w.weightKg <= 0) return;
+    await _repo.addWeighIn(w);
+    _ref.invalidate(weighInsProvider);
+  }
+
+  Future<void> updateWeighIn(WeighIn w) async {
+    if (w.weightKg <= 0) return;
+    await _repo.updateWeighIn(w);
+    _ref.invalidate(weighInsProvider);
+  }
+
+  Future<void> deleteWeighIn(WeighIn w) async {
+    await _repo.deleteWeighIn(w.id!);
+    _ref.invalidate(weighInsProvider);
+  }
+}
+
+final bodyActionsProvider = Provider(BodyActions.new);

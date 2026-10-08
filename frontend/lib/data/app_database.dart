@@ -22,6 +22,7 @@ abstract final class AppDatabase {
     _v6Food,
     _v7Recipes,
     _v8Packaged,
+    _v9Body,
   ];
 
   static int get latestVersion => migrations.length;
@@ -48,6 +49,19 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 9 — weigh-ins with optional tape measurements (PRD v1.2 §7).
+  static Future<void> _v9Body(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE weigh_ins (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        measured_at INTEGER NOT NULL,         -- UTC epoch ms
+        weight_kg REAL NOT NULL CHECK (weight_kg > 0),
+        waist_cm REAL,
+        neck_cm REAL,
+        hip_cm REAL
+      )''');
   }
 
   /// Version 8 — scanned packaged foods (barcode, brand, ml) and entry units.
