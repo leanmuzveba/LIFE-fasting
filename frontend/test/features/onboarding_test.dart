@@ -14,7 +14,7 @@ void main() {
     expect(find.text('Are you 18 or older?'), findsOneWidget);
     await tester.tap(find.text('I’m 18 or older'));
     await tester.pumpAndSettle();
-    expect(find.text('Start fast'), findsOneWidget);
+    expect(find.text('Today’s steps'), findsOneWidget);
   });
 
   testWidgets('under-18 never sees fasting controls or encouraging copy', (tester) async {

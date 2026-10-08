@@ -7,7 +7,9 @@ import '../widget_test.dart' show pumpApp;
 Future<void> _openActivity(WidgetTester tester) async {
   tester.view.physicalSize = const Size(390, 2600);
   await tester.pumpAndSettle();
-  await tester.tap(find.text('ACTIVITY TODAY'));
+  await tester.tap(find.byTooltip('Quick add'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('Log activity'));
   await tester.pumpAndSettle();
 }
 
@@ -38,11 +40,6 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Run logged — 32 min'), findsOneWidget);
     expect(find.bySemanticsLabel(RegExp(r'^Run, 32 min · moderate')), findsOneWidget);
-
-    await _scrollTo(tester, find.byTooltip('Back').first);
-    await tester.tap(find.byTooltip('Back').first);
-    await tester.pumpAndSettle();
-    expect(find.bySemanticsLabel('Activity: 32 min'), findsOneWidget);
   });
 
   testWidgets('edit and delete a logged activity', (tester) async {

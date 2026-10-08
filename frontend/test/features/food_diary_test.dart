@@ -122,7 +122,7 @@ void main() {
     await c.read(foodActionsProvider).setSaved(yogurt, true, grams: 150);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byTooltip('Add food'));
+    await tester.tap(find.byTooltip('Add to Breakfast'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Search foods'));
     await tester.pumpAndSettle();

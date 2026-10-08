@@ -57,11 +57,11 @@ void main() {
     expect(tester.hasRunningAnimations, isFalse);
   });
 
-  testWidgets('app opens on the splash, then Today', (tester) async {
+  testWidgets('app opens on the splash, then Home', (tester) async {
     await loadAppFonts();
     await pumpApp(tester); // pumpAndSettle runs past the minimum splash time
     expect(find.byType(SplashScreen), findsNothing);
-    expect(find.text('Start fast'), findsOneWidget);
+    expect(find.text('Today’s steps'), findsOneWidget);
   });
 }
 

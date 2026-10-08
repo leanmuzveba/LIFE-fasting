@@ -18,6 +18,7 @@ import '../data/recipe_repository.dart';
 import '../data/review_repository.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
+import '../data/step_counter.dart';
 import '../domain/activity.dart';
 import '../domain/body.dart';
 import '../domain/fasting_session.dart';
@@ -30,6 +31,7 @@ import '../domain/kitchen_review.dart';
 import '../domain/meal_estimate.dart';
 import '../domain/recipe.dart';
 import '../domain/settings.dart';
+import '../domain/steps.dart';
 
 /// Opened in main() and injected with an override.
 final databaseProvider = Provider<Database>((ref) => throw UnimplementedError('override databaseProvider'));
@@ -813,3 +815,42 @@ class BodyActions {
 }
 
 final bodyActionsProvider = Provider(BodyActions.new);
+
+// --- Steps (home page) ---------------------------------------------------------------
+
+final stepCounterProvider = Provider((ref) => StepCounter());
+
+/// Today's steps, or why they can't be shown.
+class StepsState {
+  const StepsState({this.steps = 0, this.needsPermission = false, this.unavailable = false});
+  final int steps;
+  final bool needsPermission;
+  final bool unavailable;
+}
+
+final todayStepsProvider = StreamProvider<StepsState>((ref) async* {
+  final counter = ref.watch(stepCounterProvider);
+  final repo = ref.watch(settingsRepositoryProvider);
+  DateTime now() => ref.read(clockProvider)().toLocal();
+  if (!await counter.granted()) {
+    yield const StepsState(needsPermission: true);
+    return;
+  }
+  var book = StepBook.fromJson(await repo.stepBook());
+  yield StepsState(steps: stepsToday(book, now()));
+  var saved = book?.last ?? -1;
+  try {
+    await for (final reading in counter.readings()) {
+      final day = book?.day;
+      book = recordSteps(book, reading, now());
+      // Save on a new day, after a reboot, or every 50 steps.
+      if (book.day != day || reading < saved || reading - saved >= 50) {
+        await repo.saveStepBook(book.toJson());
+        saved = reading;
+      }
+      yield StepsState(steps: book.today);
+    }
+  } catch (_) {
+    yield const StepsState(unavailable: true);
+  }
+});

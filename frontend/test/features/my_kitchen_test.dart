@@ -10,7 +10,7 @@ import '../widget_test.dart' show pumpApp;
 Future<void> _openKitchen(WidgetTester tester, List<Ingredient> items) async {
   await pumpApp(tester);
   tester.view.physicalSize = const Size(390, 2600);
-  final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+  final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
   for (final i in items) {
     await c.read(kitchenRepositoryProvider).insert(i);
   }

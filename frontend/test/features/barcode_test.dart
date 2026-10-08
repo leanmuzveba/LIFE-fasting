@@ -57,13 +57,13 @@ void main() {
   testWidgets('+ offers search or scan; a scanned drink logs in ml and is saved for offline', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 3000);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
     await tester.pumpAndSettle();
     foodFacts.products[_cola] = _colaProduct;
     scannedBarcode = _cola;
 
-    await tester.tap(find.byTooltip('Add food'));
+    await tester.tap(find.byTooltip('Add to Breakfast'));
     await tester.pumpAndSettle();
     expect(find.text('Search foods'), findsOneWidget);
     expect(find.text('Scan a barcode'), findsOneWidget);

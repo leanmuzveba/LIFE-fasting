@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/core/theme/tokens.dart';
 import 'package:life_fasting/domain/settings.dart';
 
-import '../widget_test.dart' show openTimer, pumpApp, tick;
+import '../widget_test.dart' show openTimer, pumpApp, tick, quickAdd;
 
 /// Pixel-sampled textContrastGuideline misfires on nodes mixing icons, text and
 /// shadows, so colour pairs are checked exactly in the contrast test below.
@@ -19,8 +19,7 @@ void main() {
     final handle = tester.ensureSemantics();
     final clock = await pumpApp(tester);
     await _guidelines(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     await tick(tester, clock, const Duration(hours: 15));
     await _guidelines(tester);
     await openTimer(tester);
@@ -31,8 +30,7 @@ void main() {
   testWidgets('history, settings and onboarding meet guidelines', (tester) async {
     final handle = tester.ensureSemantics();
     final clock = await pumpApp(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     await tick(tester, clock, const Duration(hours: 3));
     await tester.tap(find.bySemanticsLabel('History'));
     await tester.pumpAndSettle();
@@ -56,7 +54,7 @@ void main() {
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       await pumpApp(tester);
       expect(tester.takeException(), isNull);
-      for (final tab in ['History', 'Nutrition', 'Settings', 'Today']) {
+      for (final tab in ['History', 'Nutrition', 'Settings', 'Home']) {
         await tester.tap(find.bySemanticsLabel(tab).last);
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull, reason: tab);

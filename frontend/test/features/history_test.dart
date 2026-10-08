@@ -3,14 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/domain/fasting_session.dart';
 import 'package:life_fasting/domain/history.dart';
 
-import '../widget_test.dart' show pumpApp, tick;
+import '../widget_test.dart' show pumpApp, tick, quickAdd;
 
 Future<void> _fast(WidgetTester tester, dynamic clock, Duration d) async {
-  await tester.tap(find.text('Start fast'));
-  await tester.pumpAndSettle();
+  await quickAdd(tester, 'Start fast');
   await tick(tester, clock, d);
-  await tester.tap(find.text('End fast'));
-  await tester.pumpAndSettle();
+  await quickAdd(tester, 'End fast');
   await tester.tap(find.text('End session'));
   await tester.pumpAndSettle();
 }
@@ -62,8 +60,8 @@ void main() {
   testWidgets('a completed fast shows on the calendar, trend and recent days', (tester) async {
     final clock = await pumpApp(tester);
     await _fast(tester, clock, const Duration(hours: 16, minutes: 5));
-    await tester.tap(find.bySemanticsLabel('Add 500 ml'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Drink water');
+    await quickAdd(tester, 'Drink water');
     await _openHistory(tester);
     expect(find.bySemanticsLabel('Sunday 4 October: Fasting, Water'), findsOneWidget);
     expect(find.text('16.1 h'), findsNWidgets(2)); // average and longest
@@ -83,8 +81,7 @@ void main() {
   testWidgets('filters change which markers show', (tester) async {
     final clock = await pumpApp(tester);
     await _fast(tester, clock, const Duration(hours: 12));
-    await tester.tap(find.bySemanticsLabel('Add 250 ml'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Drink water');
     await _openHistory(tester);
     await tester.tap(find.bySemanticsLabel('Water').first);
     await tester.pumpAndSettle();

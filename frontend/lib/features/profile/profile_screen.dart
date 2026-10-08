@@ -36,11 +36,34 @@ class _Units {
 
 /// Profile (PRD v1.2 §7): name, optional body stats, BMI and healthy range
 /// with their limits explained, a body-fat estimate and weigh-in history.
-class ProfileScreen extends ConsumerWidget {
-  const ProfileScreen({super.key});
+class ProfileScreen extends ConsumerStatefulWidget {
+  const ProfileScreen({super.key, this.openWeighIn = false});
+
+  /// Opens the weigh-in sheet straight away (home + menu → Weigh in).
+  final bool openWeighIn;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.openWeighIn) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final settings = await ref.read(settingsProvider.future);
+        if (!mounted) return;
+        await showAppSheet<void>(
+          context,
+          (_) => _WeighInSheet(imperial: settings.units == UnitSystem.imperial, existing: null),
+        );
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l = context.l10n;
     final settings = ref.watch(settingsProvider).value ?? const AppSettings();
     final profile = ref.watch(bodyProfileProvider).value ?? const BodyProfile();

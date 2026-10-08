@@ -3,6 +3,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <!-- Recipe search (TheMealDB) only. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Step counter on the home page. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
     <application
         android:label="RUVA"
         android:name="${applicationName}"

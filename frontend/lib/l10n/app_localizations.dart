@@ -130,7 +130,7 @@ abstract class AppLocalizations {
   /// No description provided for @navToday.
   ///
   /// In en, this message translates to:
-  /// **'Today'**
+  /// **'Home'**
   String get navToday;
 
   /// No description provided for @navTimer.
@@ -3414,6 +3414,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{weight} on {date}'**
   String bodyWeighInLabel(String weight, String date);
+
+  /// No description provided for @homeGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'{greeting}, {name}!'**
+  String homeGreeting(String greeting, String name);
+
+  /// No description provided for @homeSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s steps'**
+  String get homeSteps;
+
+  /// No description provided for @homeStepGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal {goal}'**
+  String homeStepGoal(String goal);
+
+  /// No description provided for @homeKm.
+  ///
+  /// In en, this message translates to:
+  /// **'{km} km'**
+  String homeKm(String km);
+
+  /// No description provided for @homeOfGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% of goal'**
+  String homeOfGoal(int pct);
+
+  /// No description provided for @homeStepsAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Count my steps'**
+  String get homeStepsAllow;
+
+  /// No description provided for @homeStepsWhy.
+  ///
+  /// In en, this message translates to:
+  /// **'RUVA can read your phone’s step sensor. Steps stay on this phone.'**
+  String get homeStepsWhy;
+
+  /// No description provided for @homeStepsDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow “Physical activity” for RUVA in your phone’s settings to count steps.'**
+  String get homeStepsDenied;
+
+  /// No description provided for @homeStepsOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get homeStepsOpenSettings;
+
+  /// No description provided for @homeStepsUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone doesn’t have a step counter.'**
+  String get homeStepsUnavailable;
+
+  /// No description provided for @homeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get homeToday;
+
+  /// No description provided for @homeCalories.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories eaten'**
+  String get homeCalories;
+
+  /// No description provided for @homeCaloriesSub.
+  ///
+  /// In en, this message translates to:
+  /// **'From your food diary · estimated'**
+  String get homeCaloriesSub;
+
+  /// No description provided for @homeFasted.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours fasted'**
+  String get homeFasted;
+
+  /// No description provided for @homeFastGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Target {target} · {pct}%'**
+  String homeFastGoal(String target, int pct);
+
+  /// No description provided for @homeNotFasting.
+  ///
+  /// In en, this message translates to:
+  /// **'Not fasting · tap + to start'**
+  String get homeNotFasting;
+
+  /// No description provided for @homeWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Water'**
+  String get homeWater;
+
+  /// No description provided for @homeWaterGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'of {goal}'**
+  String homeWaterGoal(String goal);
+
+  /// No description provided for @quickEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick add'**
+  String get quickEyebrow;
+
+  /// No description provided for @quickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What would you like to log?'**
+  String get quickTitle;
+
+  /// No description provided for @quickWater.
+  ///
+  /// In en, this message translates to:
+  /// **'Drink water'**
+  String get quickWater;
+
+  /// No description provided for @quickWaterSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a {amount} glass'**
+  String quickWaterSub(String amount);
+
+  /// No description provided for @quickWaterAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added {amount} · {total} today'**
+  String quickWaterAdded(String amount, String total);
+
+  /// No description provided for @quickStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start fast'**
+  String get quickStart;
+
+  /// No description provided for @quickStartSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Begin your {target} fast'**
+  String quickStartSub(String target);
+
+  /// No description provided for @quickStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast started — the timer is running.'**
+  String get quickStarted;
+
+  /// No description provided for @quickEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End fast'**
+  String get quickEnd;
+
+  /// No description provided for @quickEndSub.
+  ///
+  /// In en, this message translates to:
+  /// **'{elapsed} so far'**
+  String quickEndSub(String elapsed);
+
+  /// No description provided for @quickFood.
+  ///
+  /// In en, this message translates to:
+  /// **'Log food'**
+  String get quickFood;
+
+  /// No description provided for @quickFoodSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Search, scan a barcode or snap a meal'**
+  String get quickFoodSub;
+
+  /// No description provided for @quickActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Log activity'**
+  String get quickActivity;
+
+  /// No description provided for @quickActivitySub.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk, run, cycle, strength…'**
+  String get quickActivitySub;
+
+  /// No description provided for @quickWeigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Weigh in'**
+  String get quickWeigh;
+
+  /// No description provided for @quickWeighSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your weight'**
+  String get quickWeighSub;
 
   /// No description provided for @notifDailyBody.
   ///

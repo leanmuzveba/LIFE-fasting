@@ -101,7 +101,7 @@ void main() {
   ) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 3200);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     await c.read(kitchenRepositoryProvider).insert(_k('Eggs', expires: DateTime(2026, 10, 5)));
     await c.read(kitchenRepositoryProvider).insert(_k('Baby spinach'));
     c.invalidate(kitchenProvider);
@@ -180,7 +180,7 @@ void main() {
 
   testWidgets('offline with nothing cached shows a retry', (tester) async {
     await pumpApp(tester);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     await c.read(kitchenRepositoryProvider).insert(_k('Eggs'));
     c.invalidate(kitchenProvider);
     recipeApi.offline = true;

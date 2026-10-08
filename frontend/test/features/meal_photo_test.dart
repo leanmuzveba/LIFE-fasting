@@ -39,7 +39,7 @@ void main() {
   testWidgets('photo → review and edit → logged as labelled estimates', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 3000);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     app.mealPhoto!.reply = const MealEstimate(
       isFood: true,
       note: 'Rice may be larger than it looks.',
@@ -79,7 +79,7 @@ void main() {
   testWidgets('no key, a bad key, or not food: clear messages, nothing saved', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 3000);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     app.mealPhoto!.reply = const MealEstimate(isFood: false, items: []);
     await _openPhoto(tester);
     expect(find.textContaining('No food was recognised'), findsOneWidget);

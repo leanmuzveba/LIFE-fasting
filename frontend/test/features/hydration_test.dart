@@ -2,24 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/data/notification_service.dart';
 
-import '../widget_test.dart' show notifications, pumpApp, tick;
+import '../widget_test.dart' show notifications, pumpApp, quickAdd, tick;
 
 Future<void> _openWater(WidgetTester tester) async {
-  await tester.tap(find.text('WATER TODAY'));
+  await tester.tap(find.bySemanticsLabel(RegExp(r'^Water: ')));
   await tester.pumpAndSettle();
 }
 
 void main() {
-  testWidgets('quick-add on Today updates the total', (tester) async {
+  testWidgets('+ → Drink water updates the home total', (tester) async {
     await pumpApp(tester);
-    expect(find.text('0 ml'), findsOneWidget);
-    await tester.tap(find.bySemanticsLabel('Add 250 ml'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Add 500 ml'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Add 500 ml'));
-    await tester.pumpAndSettle();
-    expect(find.text('1.25 L'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Water: 0 ml')), findsOneWidget);
+    for (var i = 0; i < 5; i++) {
+      await quickAdd(tester, 'Drink water');
+    }
+    expect(find.bySemanticsLabel(RegExp(r'^Water: 1.25 L')), findsOneWidget);
   });
 
   testWidgets('Activity & Water: ring against the goal, +200/+300/+500 quick-adds', (tester) async {
@@ -89,10 +86,10 @@ void main() {
 
   testWidgets('a new day starts at zero', (tester) async {
     final clock = await pumpApp(tester);
-    await tester.tap(find.bySemanticsLabel('Add 500 ml'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Drink water');
+    expect(find.bySemanticsLabel(RegExp(r'^Water: 250 ml')), findsOneWidget);
     await tick(tester, clock, const Duration(days: 1));
-    expect(find.text('0 ml'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Water: 0 ml')), findsOneWidget);
   });
 
   testWidgets('Imperial units show fl oz and fl oz quick-adds', (tester) async {
@@ -103,11 +100,10 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Imperial'));
     await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Today'));
+    await tester.tap(find.bySemanticsLabel('Home').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.bySemanticsLabel('Add 8 fl oz'));
-    await tester.pumpAndSettle();
-    expect(find.text('8 fl oz'), findsOneWidget);
+    await quickAdd(tester, 'Drink water');
+    expect(find.bySemanticsLabel(RegExp(r'^Water: 8 fl oz')), findsOneWidget);
   });
 
   testWidgets('water reminders are opt-in and can be turned off', (tester) async {

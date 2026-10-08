@@ -28,7 +28,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get back => 'Back';
 
   @override
-  String get navToday => 'Today';
+  String get navToday => 'Home';
 
   @override
   String get navTimer => 'Timer';
@@ -1942,6 +1942,128 @@ class AppLocalizationsEn extends AppLocalizations {
   String bodyWeighInLabel(String weight, String date) {
     return '$weight on $date';
   }
+
+  @override
+  String homeGreeting(String greeting, String name) {
+    return '$greeting, $name!';
+  }
+
+  @override
+  String get homeSteps => 'Today’s steps';
+
+  @override
+  String homeStepGoal(String goal) {
+    return 'Goal $goal';
+  }
+
+  @override
+  String homeKm(String km) {
+    return '$km km';
+  }
+
+  @override
+  String homeOfGoal(int pct) {
+    return '$pct% of goal';
+  }
+
+  @override
+  String get homeStepsAllow => 'Count my steps';
+
+  @override
+  String get homeStepsWhy => 'RUVA can read your phone’s step sensor. Steps stay on this phone.';
+
+  @override
+  String get homeStepsDenied => 'Allow “Physical activity” for RUVA in your phone’s settings to count steps.';
+
+  @override
+  String get homeStepsOpenSettings => 'Open settings';
+
+  @override
+  String get homeStepsUnavailable => 'This phone doesn’t have a step counter.';
+
+  @override
+  String get homeToday => 'Today';
+
+  @override
+  String get homeCalories => 'Calories eaten';
+
+  @override
+  String get homeCaloriesSub => 'From your food diary · estimated';
+
+  @override
+  String get homeFasted => 'Hours fasted';
+
+  @override
+  String homeFastGoal(String target, int pct) {
+    return 'Target $target · $pct%';
+  }
+
+  @override
+  String get homeNotFasting => 'Not fasting · tap + to start';
+
+  @override
+  String get homeWater => 'Water';
+
+  @override
+  String homeWaterGoal(String goal) {
+    return 'of $goal';
+  }
+
+  @override
+  String get quickEyebrow => 'Quick add';
+
+  @override
+  String get quickTitle => 'What would you like to log?';
+
+  @override
+  String get quickWater => 'Drink water';
+
+  @override
+  String quickWaterSub(String amount) {
+    return 'Add a $amount glass';
+  }
+
+  @override
+  String quickWaterAdded(String amount, String total) {
+    return 'Added $amount · $total today';
+  }
+
+  @override
+  String get quickStart => 'Start fast';
+
+  @override
+  String quickStartSub(String target) {
+    return 'Begin your $target fast';
+  }
+
+  @override
+  String get quickStarted => 'Fast started — the timer is running.';
+
+  @override
+  String get quickEnd => 'End fast';
+
+  @override
+  String quickEndSub(String elapsed) {
+    return '$elapsed so far';
+  }
+
+  @override
+  String get quickFood => 'Log food';
+
+  @override
+  String get quickFoodSub => 'Search, scan a barcode or snap a meal';
+
+  @override
+  String get quickActivity => 'Log activity';
+
+  @override
+  String get quickActivitySub => 'Walk, run, cycle, strength…';
+
+  @override
+  String get quickWeigh => 'Weigh in';
+
+  @override
+  String get quickWeighSub => 'Update your weight';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

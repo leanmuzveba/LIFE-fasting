@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 
 import '../domain/hydration.dart';
@@ -32,6 +34,17 @@ class SettingsRepository {
       waterGoalMl: (int.tryParse(kv['waterGoalMl'] ?? '') ?? d.waterGoalMl).clamp(minWaterGoalMl, maxWaterGoalMl),
     );
   }
+
+  /// Step-counter bookkeeping (see domain/steps.dart).
+  Future<Map<String, dynamic>?> stepBook() async {
+    final v = (await _db.query('settings', where: 'key = ?', whereArgs: ['steps.book'])).firstOrNull?['value'];
+    return v is String ? jsonDecode(v) as Map<String, dynamic> : null;
+  }
+
+  Future<void> saveStepBook(Map<String, Object> json) => _db.insert('settings', {
+    'key': 'steps.book',
+    'value': jsonEncode(json),
+  }, conflictAlgorithm: ConflictAlgorithm.replace);
 
   /// An API key you entered (stored only in this phone's app database).
   Future<String?> apiKey(String name) async =>

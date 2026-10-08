@@ -11,7 +11,7 @@ import '../widget_test.dart' show pumpApp;
 Future<ProviderContainer> openForm(WidgetTester tester, {Ingredient? existing}) async {
   await pumpApp(tester);
   tester.view.physicalSize = const Size(390, 2200);
-  final ctx = tester.element(find.text('RUVA'));
+  final ctx = tester.element(find.byType(Scaffold).first);
   Navigator.of(ctx).push(MaterialPageRoute<void>(builder: (_) => IngredientFormScreen(existing: existing)));
   await tester.pumpAndSettle();
   return ProviderScope.containerOf(ctx);
@@ -73,7 +73,7 @@ void main() {
     Navigator.of(tester.element(find.text('New Stock Entry'))).pop();
     await tester.pumpAndSettle();
 
-    Navigator.of(tester.element(find.text('RUVA')))
+    Navigator.of(tester.element(find.byType(Scaffold).first))
         .push(MaterialPageRoute<void>(builder: (_) => IngredientFormScreen(existing: saved)));
     await tester.pumpAndSettle();
     expect(find.text('Update Stock'), findsOneWidget);
@@ -85,13 +85,13 @@ void main() {
     await tester.pump(const Duration(seconds: 3)); // let the snackbar clear
     await tester.pumpAndSettle();
     final again = await c.read(kitchenRepositoryProvider).insert(existing);
-    Navigator.of(tester.element(find.text('RUVA')))
+    Navigator.of(tester.element(find.byType(Scaffold).first))
         .push(MaterialPageRoute<void>(builder: (_) => IngredientFormScreen(existing: again)));
     await tester.pumpAndSettle();
     await tapText(tester, 'Remove from kitchen');
     expect(find.text('Remove Eggs?'), findsOneWidget);
     await tapText(tester, 'Delete');
-    c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     expect((await c.read(kitchenRepositoryProvider).all()).where((i) => i.id == again.id), isEmpty);
   });
 }

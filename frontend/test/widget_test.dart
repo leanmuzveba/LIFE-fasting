@@ -24,6 +24,9 @@ String? scannedBarcode;
 /// Fake Gemini replies; null = no API key configured.
 FakeMealPhotoApi? mealPhoto;
 
+/// Fake hardware step counter (permission + readings).
+late FakeStepCounter steps;
+
 /// Boots the real app on an in-memory database with a fake clock.
 
 Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = AgeEligibility.adult}) async {
@@ -36,6 +39,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   foodFacts = FakeFoodFactsApi();
   scannedBarcode = null;
   mealPhoto = FakeMealPhotoApi();
+  steps = FakeStepCounter();
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
@@ -45,6 +49,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
       foodFactsApiProvider.overrideWithValue(foodFacts),
       barcodeScannerProvider.overrideWithValue((_) async => scannedBarcode),
       mealPhotoApiProvider.overrideWith((ref) async => mealPhoto),
+      stepCounterProvider.overrideWithValue(steps),
       mealPhotoPickerProvider.overrideWithValue((_) async => onePixelPng),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {
@@ -75,23 +80,31 @@ Future<void> tick(WidgetTester tester, FakeClock clock, Duration d) async {
   await tester.pumpAndSettle();
 }
 
-/// Opens the full timer from the Today hero card.
+/// Opens the full timer from the home "Hours fasted" row.
 Future<void> openTimer(WidgetTester tester) async {
-  await tester.tap(find.text('Open timer'));
+  ScaffoldMessenger.of(tester.element(find.byType(Scaffold).first)).removeCurrentSnackBar();
+  await tester.pumpAndSettle();
+  await tester.tap(find.bySemanticsLabel(RegExp(r'^Hours fasted')));
+  await tester.pumpAndSettle();
+}
+
+/// Centre + menu → [option] (e.g. "Start fast", "Drink water").
+Future<void> quickAdd(WidgetTester tester, String option) async {
+  await tester.tap(find.byTooltip('Quick add'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(option));
   await tester.pumpAndSettle();
 }
 
 void main() {
-  testWidgets('Today shows the greeting and the fasting hero card', (tester) async {
+  testWidgets('home shows the greeting, steps and today’s numbers', (tester) async {
     await pumpApp(tester);
-    expect(find.text('RUVA'), findsOneWidget);
     expect(find.text('Good morning'), findsOneWidget);
-    expect(find.text('Sunday 4 October'), findsOneWidget);
-    expect(find.text('FASTING'), findsOneWidget);
-    expect(find.text('Ready when you are'), findsOneWidget);
-    expect(find.text('16 h target · ends 11:24 PM if you start now'), findsOneWidget);
-    expect(find.text('Start fast'), findsOneWidget);
-    expect(find.textContaining('estimates and vary'), findsOneWidget);
+    expect(find.text('SUNDAY · 4 OCT'), findsOneWidget);
+    expect(find.text('Today’s steps'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Calories eaten: 0 kcal')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Hours fasted: —\. Not fasting')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Water: 0 ml\. of ')), findsOneWidget);
   });
 
   testWidgets('timer page keeps the ring, pop-up cards and target link', (tester) async {
@@ -113,14 +126,12 @@ void main() {
     expect(find.text('Good morning'), findsOneWidget);
   });
 
-  testWidgets('start on Today → running → end saves to history', (tester) async {
+  testWidgets('start from + → running → end saves to history', (tester) async {
     final clock = await pumpApp(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
+    expect(find.text('Fast started — the timer is running.'), findsOneWidget);
     await tick(tester, clock, const Duration(hours: 12, minutes: 24));
-    expect(find.text('Fasting for 12 h 24 m'), findsOneWidget);
-    expect(find.text('16 h target · ends 11:24 PM'), findsOneWidget);
-    expect(find.text('12:24:00'), findsOneWidget); // compact ring
+    expect(find.bySemanticsLabel('Hours fasted: 12 h 24 m. Target 16 h · 78%'), findsOneWidget);
 
     await openTimer(tester);
     expect(find.text('Sunday 4 October · Session in progress'), findsOneWidget);
@@ -131,7 +142,7 @@ void main() {
     await tester.tap(find.text('Close'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('End fast'));
+    await tester.tap(find.text('End fast').last);
     await tester.pumpAndSettle();
     expect(find.text('End this session?'), findsOneWidget);
     expect(find.textContaining('Recorded so far: 12 h 24 m', findRichText: true), findsOneWidget);
@@ -141,24 +152,22 @@ void main() {
     expect(find.text('00:00:00'), findsOneWidget);
   });
 
-  testWidgets('End fast on Today asks for confirmation', (tester) async {
+  testWidgets('End fast from + asks for confirmation', (tester) async {
     final clock = await pumpApp(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     await tick(tester, clock, const Duration(hours: 2));
-    await tester.tap(find.text('End fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'End fast');
+    expect(find.text('End this session?'), findsOneWidget);
     await tester.tap(find.text('End session'));
     await tester.pumpAndSettle();
-    expect(find.text('Ready when you are'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Hours fasted: —')), findsOneWidget);
   });
 
   testWidgets('target reached keeps counting and never asks to continue', (tester) async {
     final clock = await pumpApp(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     await tick(tester, clock, const Duration(hours: 17));
-    expect(find.text('Target reached'), findsOneWidget); // hero card
+    expect(find.bySemanticsLabel(RegExp(r'^Hours fasted: 17 h 0 m')), findsOneWidget);
     await openTimer(tester);
     expect(find.text('TARGET REACHED'), findsOneWidget);
     expect(find.text('17:00:00'), findsOneWidget);
@@ -178,8 +187,7 @@ void main() {
 
   testWidgets('edit start time sheet previews the resolved start', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     await openTimer(tester);
     await tester.tap(find.text('Edit start time'));
     await tester.pumpAndSettle();
@@ -190,16 +198,46 @@ void main() {
     expect(find.text('STARTED AT'), findsNothing);
   });
 
-  testWidgets('bottom nav: Today · History · Nutrition · Settings', (tester) async {
+  testWidgets('bottom nav: Home · History · (+) · Nutrition · Settings', (tester) async {
     await pumpApp(tester);
     await tester.tap(find.bySemanticsLabel('History'));
     await tester.pumpAndSettle();
-    expect(find.text('Start fast'), findsNothing);
+    expect(find.text('Today’s steps'), findsNothing);
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
     await tester.pumpAndSettle();
     expect(find.text('Food Diary'), findsOneWidget);
-    await tester.tap(find.bySemanticsLabel('Today').last);
+    await tester.tap(find.bySemanticsLabel('Home').last);
     await tester.pumpAndSettle();
-    expect(find.text('Start fast'), findsOneWidget);
+    expect(find.text('Today’s steps'), findsOneWidget);
+  });
+
+  testWidgets('+ menu: water adds a glass, food opens Nutrition, weigh-in opens Profile', (tester) async {
+    await pumpApp(tester);
+    await quickAdd(tester, 'Drink water');
+    expect(find.text('Added 250 ml · 250 ml today'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^Water: 250 ml')), findsOneWidget);
+    await quickAdd(tester, 'Log food');
+    expect(find.text('Food Diary'), findsOneWidget);
+    await quickAdd(tester, 'Weigh in');
+    expect(find.text('Weigh-in'), findsOneWidget);
+    await tester.enterText(find.byType(TextField).last, '72.5');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Weight: 72.5 kg'), findsOneWidget);
+  });
+
+  testWidgets('steps: ask for permission, then count from the sensor', (tester) async {
+    await pumpApp(tester);
+    steps.allowed = false;
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    c.invalidate(todayStepsProvider);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Count my steps'));
+    await tester.pumpAndSettle();
+    steps.readingsController.add(5000); // since boot: starts the day's count
+    await tester.pumpAndSettle();
+    steps.readingsController.add(8240);
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Today’s steps: 3,240, 32% of goal'), findsOneWidget);
   });
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/data/notification_service.dart';
 
-import '../widget_test.dart' show notifications, openTimer, pumpApp, tick;
+import '../widget_test.dart' show notifications, openTimer, pumpApp, tick, quickAdd;
 
 Future<void> _openSettings(WidgetTester tester) async {
   await tester.tap(find.bySemanticsLabel('Settings').last);
@@ -20,13 +20,12 @@ Future<void> _tapRow(WidgetTester tester, String text) async {
 }
 
 void main() {
-  testWidgets('24-hour clock changes the home cards', (tester) async {
+  testWidgets('24-hour clock changes the timer times', (tester) async {
     await pumpApp(tester);
     await _openSettings(tester);
     await _tapRow(tester, '24-hour clock');
-    await tester.tap(find.bySemanticsLabel('Today'));
+    await tester.tap(find.bySemanticsLabel('Home').last);
     await tester.pumpAndSettle();
-    expect(find.text('16 h target · ends 23:24 if you start now'), findsOneWidget);
     await openTimer(tester);
     await tester.tap(find.text('00:00:00'));
     await tester.pumpAndSettle();
@@ -35,8 +34,7 @@ void main() {
 
   testWidgets('target notification is opt-in and follows the session', (tester) async {
     final clock = await pumpApp(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     expect(notifications.scheduled, isEmpty, reason: 'nothing scheduled until opted in');
 
     await _openSettings(tester);
@@ -54,14 +52,12 @@ void main() {
     final clock = await pumpApp(tester);
     await _openSettings(tester);
     await _tapRow(tester, 'Target time reached');
-    await tester.tap(find.bySemanticsLabel('Today'));
+    await tester.tap(find.bySemanticsLabel('Home').last);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     expect(notifications.scheduled, contains(NotificationService.targetReachedId));
     await tick(tester, clock, const Duration(hours: 2));
-    await tester.tap(find.text('End fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'End fast');
     await tester.tap(find.text('End session'));
     await tester.pumpAndSettle();
     expect(notifications.scheduled, isEmpty);
@@ -83,8 +79,7 @@ void main() {
 
   testWidgets('delete all data wipes everything and returns to onboarding', (tester) async {
     final clock = await pumpApp(tester);
-    await tester.tap(find.text('Start fast'));
-    await tester.pumpAndSettle();
+    await quickAdd(tester, 'Start fast');
     await tick(tester, clock, const Duration(hours: 1));
     await _openSettings(tester);
     await tester.scrollUntilVisible(find.text('Delete all data'), 200);

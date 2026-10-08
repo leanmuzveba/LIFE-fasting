@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:life_fasting/data/meal_photo_api.dart';
 import 'package:life_fasting/domain/meal_estimate.dart';
 import 'package:life_fasting/data/notification_service.dart';
 import 'package:life_fasting/data/recipe_repository.dart';
+import 'package:life_fasting/data/step_counter.dart';
 import 'package:life_fasting/domain/hydration.dart';
 import 'package:life_fasting/state/providers.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -155,4 +157,20 @@ class FakeMealPhotoApi extends MealPhotoApi {
     if (error != null) throw error!;
     return reply;
   }
+}
+
+/// Permission state and a controllable stream of since-boot step totals.
+class FakeStepCounter extends StepCounter {
+  bool allowed = true;
+  bool allowOnRequest = true;
+  final readingsController = StreamController<int>.broadcast();
+
+  @override
+  Future<bool> granted() async => allowed;
+
+  @override
+  Future<bool> request() async => allowed = allowOnRequest;
+
+  @override
+  Stream<int> readings() => readingsController.stream;
 }

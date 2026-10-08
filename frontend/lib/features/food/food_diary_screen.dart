@@ -89,15 +89,6 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
     final totals = DayTotals(entries);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'diary-fab',
-        tooltip: l.diaryAddFood,
-        onPressed: () => _add(mealForHour(ref.read(clockProvider)().toLocal().hour), day),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, size: 30),
-      ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 110),

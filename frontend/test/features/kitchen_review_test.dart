@@ -38,7 +38,7 @@ void main() {
   testWidgets('a review updates the kitchen, fills the shopping list and is recorded', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 2600);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     for (final i in [
       _i('Rice', q: 1.5, unit: 'kg'),
       _i('Eggs', q: 12, expires: DateTime(2026, 10, 6)),
@@ -101,7 +101,7 @@ void main() {
   testWidgets('shopping list: add, dedupe, tick and clear', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 2600);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
     await tester.pumpAndSettle();
     await tester.tap(find.text('My Kitchen'));
@@ -127,7 +127,7 @@ void main() {
   testWidgets('monthly review reminder is off by default and toggles from Settings', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 2600);
-    final c = ProviderScope.containerOf(tester.element(find.text('RUVA')));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     final fake = c.read(notificationServiceProvider) as FakeNotifications;
     await tester.tap(find.bySemanticsLabel('Settings').last);
     await tester.pumpAndSettle();
