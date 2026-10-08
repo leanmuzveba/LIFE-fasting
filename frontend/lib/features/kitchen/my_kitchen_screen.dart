@@ -93,7 +93,7 @@ class _MyKitchenScreenState extends ConsumerState<MyKitchenScreen> {
                   const SizedBox(height: 4),
                   Semantics(
                     header: true,
-                    child: Text(l.kitchenTitle, style: AppText.title.copyWith(fontSize: 34, height: 1.1)),
+                    child: Text(l.kitchenTitle, style: AppText.title.copyWith(fontSize: 27, height: 1.1)),
                   ),
                   const SizedBox(height: 18),
                   SearchField(hint: l.kitchenSearch, onChanged: (v) => setState(() => _query = v)),
@@ -152,7 +152,7 @@ class _MyKitchenScreenState extends ConsumerState<MyKitchenScreen> {
                               ? l.kitchenShoppingTrip
                               : l.kitchenWellStocked,
                           style: AppText.title.copyWith(
-                            fontSize: 22,
+                            fontSize: 19,
                             color: AppColors.white,
                             fontWeight: FontWeight.w500,
                           ),
@@ -219,7 +219,7 @@ class _MyKitchenScreenState extends ConsumerState<MyKitchenScreen> {
                   const SizedBox(height: 14),
                   if (all != null && shown.isEmpty)
                     Padding(
-                      padding: const EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(18),
                       child: Text(
                         items.isEmpty ? l.kitchenNothingHere : l.kitchenNoMatches,
                         textAlign: TextAlign.center,
@@ -340,7 +340,7 @@ class _KitchenItemCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.name, style: AppText.cardValue.copyWith(fontSize: 17, fontWeight: FontWeight.w500)),
+                      Text(item.name, style: AppText.cardValue.copyWith(fontSize: 16, fontWeight: FontWeight.w500)),
                       const SizedBox(height: 4),
                       Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,

@@ -27,9 +27,9 @@ class RuvaCard extends StatelessWidget {
   const RuvaCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(20),
+    this.padding = const EdgeInsets.all(16),
     this.color = AppColors.white,
-    this.radius = 24,
+    this.radius = 20,
     this.bordered = false,
     this.onTap,
   });
@@ -63,14 +63,14 @@ class RuvaCard extends StatelessWidget {
 
 /// The one forest "hero" card per screen.
 class ForestCard extends StatelessWidget {
-  const ForestCard({super.key, required this.child, this.padding = const EdgeInsets.all(24), this.onTap});
+  const ForestCard({super.key, required this.child, this.padding = const EdgeInsets.all(18), this.onTap});
   final Widget child;
   final EdgeInsets padding;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) =>
-      RuvaCard(color: AppColors.primary, radius: 28, padding: padding, onTap: onTap, child: child);
+      RuvaCard(color: AppColors.primary, radius: 24, padding: padding, onTap: onTap, child: child);
 }
 
 /// White 70%: secondary text on forest.
@@ -104,45 +104,56 @@ class RuvaChip extends StatelessWidget {
       selected: selected,
       label: label,
       excludeSemantics: true,
-      child: Material(
-        color: bg,
-        shape: StadiumBorder(
-          side: outlined && !selected ? const BorderSide(color: AppColors.divider) : BorderSide.none,
-        ),
-        child: InkWell(
-          customBorder: const StadiumBorder(),
-          onTap: onTap,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minHeight: 48),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) ...[
-                    Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: selected ? const Color(0x33FFFFFF) : AppColors.primary,
-                        shape: BoxShape.circle,
+      child: GestureDetector(
+        // 48 px tap target around the 40 px pill.
+        behavior: HitTestBehavior.translucent,
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Material(
+            color: bg,
+            shape: StadiumBorder(
+              side: outlined && !selected ? const BorderSide(color: AppColors.divider) : BorderSide.none,
+            ),
+            child: InkWell(
+              customBorder: const StadiumBorder(),
+              onTap: onTap,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 40),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (icon != null) ...[
+                        Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: selected ? const Color(0x33FFFFFF) : AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(icon, size: 12, color: selected ? AppColors.white : AppColors.accent),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                      Flexible(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            label,
+                            style: AppText.body.copyWith(fontSize: 13, fontWeight: FontWeight.w500, color: fg),
+                          ),
+                        ),
                       ),
-                      child: Icon(icon, size: 14, color: selected ? AppColors.white : AppColors.accent),
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                  Flexible(
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(
-                        label,
-                        style: AppText.body.copyWith(fontSize: 14, fontWeight: FontWeight.w500, color: fg),
-                      ),
-                    ),
+                      if (trailingCheck && selected) ...[
+                        const SizedBox(width: 6),
+                        Icon(Icons.check, size: 16, color: fg),
+                      ],
+                    ],
                   ),
-                  if (trailingCheck && selected) ...[const SizedBox(width: 6), Icon(Icons.check, size: 16, color: fg)],
-                ],
+                ),
               ),
             ),
           ),
@@ -170,7 +181,7 @@ class ChipRow extends StatelessWidget {
   );
 }
 
-/// Full-width pill button (56 px): forest, or lime-pale when [light].
+/// Full-width pill button (48 px): forest, or lime-pale when [light].
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({super.key, required this.label, required this.onPressed, this.light = false, this.icon});
   final String label;
@@ -180,7 +191,7 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    height: 56,
+    height: 48,
     width: double.infinity,
     child: FilledButton(
       onPressed: onPressed,
@@ -188,7 +199,7 @@ class PrimaryButton extends StatelessWidget {
         backgroundColor: light ? AppColors.lime200 : AppColors.primary,
         foregroundColor: light ? AppColors.primary : AppColors.white,
         shape: const StadiumBorder(),
-        textStyle: AppText.link.copyWith(fontSize: 16),
+        textStyle: AppText.link.copyWith(fontSize: 15),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -251,7 +262,7 @@ class IconBubble extends StatelessWidget {
   const IconBubble({
     super.key,
     required this.icon,
-    this.size = 50,
+    this.size = 42,
     this.background = AppColors.lime200,
     this.foreground = AppColors.primary,
   });
@@ -306,14 +317,14 @@ class ValueStepper extends StatelessWidget {
             icon: Icons.remove,
             onTap: onMinus,
             tooltip: minusTooltip,
-            size: large ? 44 : 36,
+            size: large ? 40 : 34,
             background: btnBg,
             foreground: AppColors.primary,
           ),
           if (large)
             Expanded(
               child: Center(
-                child: Semantics(liveRegion: true, child: Text(label, style: AppText.title.copyWith(fontSize: 22))),
+                child: Semantics(liveRegion: true, child: Text(label, style: AppText.title.copyWith(fontSize: 19))),
               ),
             )
           else
@@ -325,7 +336,7 @@ class ValueStepper extends StatelessWidget {
             icon: Icons.add,
             onTap: onPlus,
             tooltip: plusTooltip,
-            size: large ? 44 : 36,
+            size: large ? 40 : 34,
             background: btnBg,
             foreground: AppColors.primary,
           ),
@@ -379,7 +390,7 @@ class RuvaTextField extends StatelessWidget {
           errorText: errorText,
           filled: true,
           fillColor: AppColors.lime200,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(18), borderSide: BorderSide.none),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(18),
@@ -412,7 +423,7 @@ class SearchField extends StatelessWidget {
       prefixIcon: const Icon(Icons.search, color: AppColors.primary),
       filled: true,
       fillColor: AppColors.lime200,
-      contentPadding: const EdgeInsets.symmetric(vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(vertical: 10),
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(100), borderSide: BorderSide.none),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(100),
@@ -453,7 +464,7 @@ class ScreenHeader extends StatelessWidget {
           child: Text(
             title,
             textAlign: centered ? TextAlign.center : TextAlign.start,
-            style: AppText.title.copyWith(fontSize: large ? 30 : 22, height: 1.15),
+            style: AppText.title.copyWith(fontSize: large ? 25 : 19, height: 1.15),
           ),
         ),
         if (subtitle != null) ...[const SizedBox(height: 2), Text(subtitle!, style: AppText.dateLine)],

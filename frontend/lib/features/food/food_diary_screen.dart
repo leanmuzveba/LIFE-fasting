@@ -59,8 +59,8 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
           ])
             ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: IconBubble(icon: icon, size: 44),
-              title: Text(title, style: AppText.cardValue.copyWith(fontSize: 16)),
+              leading: IconBubble(icon: icon, size: 37),
+              title: Text(title, style: AppText.cardValue.copyWith(fontSize: 15)),
               subtitle: Text(sub, style: AppText.small.copyWith(fontSize: 13)),
               trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
               onTap: () => Navigator.pop(ctx, value),
@@ -232,7 +232,7 @@ class _DatePill extends StatelessWidget {
           ),
           ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 110),
-            child: Text(label, textAlign: TextAlign.center, style: AppText.cardValue.copyWith(fontSize: 16)),
+            child: Text(label, textAlign: TextAlign.center, style: AppText.cardValue.copyWith(fontSize: 15)),
           ),
           IconButton(
             tooltip: l.diaryNextDay,
@@ -293,7 +293,7 @@ class _SummaryCard extends StatelessWidget {
                   header: true,
                   child: Text(
                     title,
-                    style: AppText.title.copyWith(fontSize: 20, color: AppColors.white, fontWeight: FontWeight.w500),
+                    style: AppText.title.copyWith(fontSize: 18, color: AppColors.white, fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
@@ -364,7 +364,7 @@ class _Value extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: value == null ? '—' : formatNutrient(value!),
-                    style: AppText.title.copyWith(fontSize: 24, color: AppColors.white),
+                    style: AppText.title.copyWith(fontSize: 19, color: AppColors.white),
                   ),
                   if (value != null)
                     TextSpan(
@@ -442,7 +442,7 @@ class _EntryRow extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
             children: [
-              IconBubble(icon: mealIcon(entry.meal), size: 48),
+              IconBubble(icon: mealIcon(entry.meal), size: 41),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(

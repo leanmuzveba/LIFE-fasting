@@ -71,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
         Row(
           children: [
             Expanded(
-              child: Semantics(header: true, child: Text(l.navSettings, style: AppText.title.copyWith(fontSize: 30))),
+              child: Semantics(header: true, child: Text(l.navSettings, style: AppText.title.copyWith(fontSize: 24))),
             ),
             const RuvaLogo(size: 40, semanticLabel: null),
           ],
@@ -240,14 +240,14 @@ class SettingsScreen extends ConsumerWidget {
     (ctx) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(header: true, child: Text(title, style: AppText.title.copyWith(fontSize: 22))),
+        Semantics(header: true, child: Text(title, style: AppText.title.copyWith(fontSize: 19))),
         const SizedBox(height: 8),
         for (final o in options)
           ListTile(
             contentPadding: EdgeInsets.zero,
             minTileHeight: 52,
             selected: o == current,
-            title: Text(label(o), style: AppText.body.copyWith(fontSize: 16)),
+            title: Text(label(o), style: AppText.body.copyWith(fontSize: 15)),
             trailing: Icon(
               o == current ? Icons.check_circle : Icons.circle_outlined,
               color: o == current ? AppColors.primary : AppColors.muted,
@@ -265,7 +265,7 @@ class SettingsScreen extends ConsumerWidget {
     context,
     (_) => Gap16Column(
       children: [
-        Semantics(header: true, child: Text(title, style: AppText.title.copyWith(fontSize: 22))),
+        Semantics(header: true, child: Text(title, style: AppText.title.copyWith(fontSize: 19))),
         Text(body, style: AppText.body),
       ],
     ),
@@ -324,13 +324,13 @@ class _ProfileCard extends StatelessWidget {
         child: Row(
           children: [
             Container(
-              width: 64,
-              height: 64,
+              width: 52,
+              height: 52,
               alignment: Alignment.center,
               decoration: const BoxDecoration(color: AppColors.cream, shape: BoxShape.circle),
               child: initials == null
                   ? const Icon(Icons.person_outline, color: AppColors.primary, size: 30)
-                  : Text(initials, style: AppText.title.copyWith(fontSize: 22, color: AppColors.primary)),
+                  : Text(initials, style: AppText.title.copyWith(fontSize: 19, color: AppColors.primary)),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -346,7 +346,7 @@ class _ProfileCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Text(
                     name.isEmpty ? l.profileAddName : name,
-                    style: AppText.title.copyWith(fontSize: 22, color: AppColors.white),
+                    style: AppText.title.copyWith(fontSize: 19, color: AppColors.white),
                   ),
                 ],
               ),
@@ -457,7 +457,7 @@ class _AllergiesSheet extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Semantics(header: true, child: Text(l.settingsAllergies, style: AppText.title.copyWith(fontSize: 22))),
+        Semantics(header: true, child: Text(l.settingsAllergies, style: AppText.title.copyWith(fontSize: 19))),
         const SizedBox(height: 6),
         Text(l.allergiesHint, style: AppText.small),
         const SizedBox(height: 8),
@@ -466,7 +466,7 @@ class _AllergiesSheet extends ConsumerWidget {
             contentPadding: EdgeInsets.zero,
             activeColor: AppColors.primary,
             value: selected.contains(a),
-            title: Text(allergenLabel(l, a), style: AppText.body.copyWith(fontSize: 16)),
+            title: Text(allergenLabel(l, a), style: AppText.body.copyWith(fontSize: 15)),
             onChanged: (v) => ref
                 .read(settingsProvider.notifier)
                 .change((s) => s.copyWith(allergies: v! ? {...s.allergies, a} : ({...s.allergies}..remove(a)))),
@@ -527,12 +527,12 @@ class _NavRow extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 56),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Row(
             children: [
               IconBubble(
                 icon: icon,
-                size: 42,
+                size: 36,
                 background: danger ? const Color(0xFFFCE3DE) : AppColors.primary,
                 foreground: danger ? AppColors.errorText : AppColors.white,
               ),
@@ -544,7 +544,7 @@ class _NavRow extends StatelessWidget {
                     Text(
                       title,
                       style: AppText.link.copyWith(
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                         color: danger ? AppColors.errorText : AppColors.text,
                       ),
@@ -591,7 +591,7 @@ class _ToggleRow extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 56),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Row(
               children: [
                 Expanded(
@@ -600,7 +600,7 @@ class _ToggleRow extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: AppText.link.copyWith(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.text),
+                        style: AppText.link.copyWith(fontSize: 15, fontWeight: FontWeight.w500, color: AppColors.text),
                       ),
                       const SizedBox(height: 3),
                       Text(subtitle ?? l.settingsCurrentState(value ? l.on : l.off), style: AppText.small),

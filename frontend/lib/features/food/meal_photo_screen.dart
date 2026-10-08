@@ -238,7 +238,7 @@ class _MealPhotoScreenState extends ConsumerState<MealPhotoScreen> {
             children: [
               Row(
                 children: [
-                  Expanded(child: Text(item.name, style: AppText.cardValue.copyWith(fontSize: 16))),
+                  Expanded(child: Text(item.name, style: AppText.cardValue.copyWith(fontSize: 15))),
                   IconButton(
                     tooltip: l.photoRename(item.name),
                     onPressed: () => _rename(i),

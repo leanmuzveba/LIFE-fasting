@@ -98,7 +98,7 @@ class _KitchenReviewScreenState extends ConsumerState<KitchenReviewScreen> {
       context,
       (ctx) => Gap16Column(
         children: [
-          const Center(child: IconBubble(icon: Icons.check, size: 56)),
+          const Center(child: IconBubble(icon: Icons.check, size: 48)),
           Semantics(
             header: true,
             child: Text(l.reviewDoneTitle, textAlign: TextAlign.center, style: AppText.title),
@@ -151,7 +151,7 @@ class _KitchenReviewScreenState extends ConsumerState<KitchenReviewScreen> {
                   padding: const EdgeInsets.only(left: 8),
                   child: Semantics(
                     header: true,
-                    child: Text(l.reviewTitle, style: AppText.title.copyWith(fontSize: 30)),
+                    child: Text(l.reviewTitle, style: AppText.title.copyWith(fontSize: 24)),
                   ),
                 ),
                 const Spacer(),
@@ -183,7 +183,7 @@ class _KitchenReviewScreenState extends ConsumerState<KitchenReviewScreen> {
                   const SizedBox(height: 14),
                   MonoLabel(l.reviewEyebrow),
                   const SizedBox(height: 6),
-                  Semantics(header: true, child: Text(l.reviewTitle, style: AppText.title.copyWith(fontSize: 30))),
+                  Semantics(header: true, child: Text(l.reviewTitle, style: AppText.title.copyWith(fontSize: 24))),
                   const SizedBox(height: 6),
                   Text(
                     l.reviewProgress(_index + 1, queue.length, item.name),
@@ -215,14 +215,14 @@ class _KitchenReviewScreenState extends ConsumerState<KitchenReviewScreen> {
                           ),
                         ),
                         const SizedBox(height: 18),
-                        Text(l.reviewCardText, style: AppText.body.copyWith(fontSize: 16, color: AppColors.white)),
+                        Text(l.reviewCardText, style: AppText.body.copyWith(fontSize: 15, color: AppColors.white)),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20),
                   RuvaCard(
                     bordered: true,
-                    padding: const EdgeInsets.all(22),
+                    padding: const EdgeInsets.all(18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -241,7 +241,7 @@ class _KitchenReviewScreenState extends ConsumerState<KitchenReviewScreen> {
                                 children: [
                                   Text(
                                     '${item.name} — ${formatQuantity(_keptQuantity ?? item.quantity, item.unit)}',
-                                    style: AppText.cardValue.copyWith(fontSize: 17),
+                                    style: AppText.cardValue.copyWith(fontSize: 16),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
@@ -260,7 +260,7 @@ class _KitchenReviewScreenState extends ConsumerState<KitchenReviewScreen> {
                         const SizedBox(height: 22),
                         Text(
                           l.reviewQuestion,
-                          style: AppText.title.copyWith(fontSize: 19, fontWeight: FontWeight.w400),
+                          style: AppText.title.copyWith(fontSize: 17, fontWeight: FontWeight.w400),
                         ),
                         const SizedBox(height: 14),
                         _ChoiceButton(

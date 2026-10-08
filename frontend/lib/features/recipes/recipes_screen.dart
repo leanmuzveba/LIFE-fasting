@@ -111,7 +111,7 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                                 header: true,
                                 child: Text(
                                   l.recipesHero,
-                                  style: AppText.title.copyWith(fontSize: 26, color: AppColors.white),
+                                  style: AppText.title.copyWith(fontSize: 21, color: AppColors.white),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -344,7 +344,7 @@ class _RecipeCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(r.name, style: AppText.cardValue.copyWith(fontSize: 18)),
+                Text(r.name, style: AppText.cardValue.copyWith(fontSize: 16)),
                 if (tags.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(tags, style: AppText.small.copyWith(fontSize: 13)),

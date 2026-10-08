@@ -294,7 +294,7 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
     return RuvaCard(
       key: _selectedKey,
       bordered: true,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -313,7 +313,7 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
               ),
             ],
           ),
-          Text(f.name, style: AppText.title.copyWith(fontSize: 20)),
+          Text(f.name, style: AppText.title.copyWith(fontSize: 18)),
           if (f.brand.isNotEmpty) Text(f.brand, style: AppText.small),
           const SizedBox(height: 16),
           ValueStepper(

@@ -54,7 +54,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             ListTile(
               contentPadding: EdgeInsets.zero,
               leading: IconBubble(icon: mealIcon(m), size: 40),
-              title: Text(mealLabel(l, m), style: AppText.cardValue.copyWith(fontSize: 16)),
+              title: Text(mealLabel(l, m), style: AppText.cardValue.copyWith(fontSize: 15)),
               trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
               onTap: () => Navigator.pop(ctx, m),
             ),
@@ -132,7 +132,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Semantics(header: true, child: Text(r.name, style: AppText.title.copyWith(fontSize: 26))),
+                        Semantics(header: true, child: Text(r.name, style: AppText.title.copyWith(fontSize: 21))),
                         if (tags.isNotEmpty) ...[
                           const SizedBox(height: 10),
                           Wrap(
@@ -246,7 +246,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                             children: [
                               Text(
                                 l.recipeNutrition,
-                                style: AppText.title.copyWith(fontSize: 16, color: AppColors.white),
+                                style: AppText.title.copyWith(fontSize: 15, color: AppColors.white),
                               ),
                               const SizedBox(height: 8),
                               Text(

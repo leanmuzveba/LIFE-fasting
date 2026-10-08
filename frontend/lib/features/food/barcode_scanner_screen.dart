@@ -124,7 +124,7 @@ class _BarcodeScannerScreenState extends State<BarcodeScannerScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Semantics(header: true, child: Text(l.scanTitle, style: AppText.title.copyWith(fontSize: 20))),
+                      Semantics(header: true, child: Text(l.scanTitle, style: AppText.title.copyWith(fontSize: 18))),
                       const SizedBox(height: 6),
                       Text(l.scanHint, style: AppText.small),
                       const SizedBox(height: 14),

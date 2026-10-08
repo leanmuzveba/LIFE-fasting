@@ -53,7 +53,7 @@ class _ActivityWaterScreenState extends State<ActivityWaterScreen> {
             const SizedBox(height: 12),
             MonoLabel(l.today),
             const SizedBox(height: 4),
-            Semantics(header: true, child: Text(l.awTitle, style: AppText.title.copyWith(fontSize: 32, height: 1.1))),
+            Semantics(header: true, child: Text(l.awTitle, style: AppText.title.copyWith(fontSize: 26, height: 1.1))),
             const SizedBox(height: 18),
             _Segmented(
               labels: [l.awWaterTab, l.awActivityTab],
@@ -101,7 +101,7 @@ class _Segmented extends StatelessWidget {
                   child: Text(
                     labels[i],
                     style: AppText.link.copyWith(
-                      fontSize: 16,
+                      fontSize: 15,
                       color: i == index ? AppColors.white : AppColors.textSecondary,
                       fontWeight: i == index ? FontWeight.w600 : FontWeight.w500,
                     ),
@@ -172,7 +172,7 @@ class _WaterTab extends ConsumerWidget {
                                       children: [
                                         Text(
                                           formatVolume(total, unit),
-                                          style: AppText.cardValue.copyWith(color: AppColors.white, fontSize: 28),
+                                          style: AppText.cardValue.copyWith(color: AppColors.white, fontSize: 22),
                                         ),
                                         const SizedBox(height: 4),
                                         MonoLabel(
@@ -268,13 +268,13 @@ class _WaterRow extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
         children: [
-          const IconBubble(icon: Icons.water_drop_outlined, size: 48),
+          const IconBubble(icon: Icons.water_drop_outlined, size: 41),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(amount, style: AppText.cardValue.copyWith(fontSize: 17)),
+                Text(amount, style: AppText.cardValue.copyWith(fontSize: 16)),
                 Text(time, style: AppText.small),
               ],
             ),
@@ -416,7 +416,7 @@ class _ActivityTab extends ConsumerWidget {
         if (recent.isEmpty) Text(l.activityNone, style: AppText.small),
         for (final a in recent.take(3)) ...[ActivityCard(entry: a, use24h: use24h), const SizedBox(height: 10)],
         const SizedBox(height: 16),
-        const RuvaCard(padding: EdgeInsets.all(22), child: ActivityForm()),
+        const RuvaCard(padding: EdgeInsets.all(18), child: ActivityForm()),
       ],
     );
   }
@@ -456,7 +456,7 @@ class ActivityCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(activityLabel(l, a.type), style: AppText.cardValue.copyWith(fontSize: 16)),
+                  Text(activityLabel(l, a.type), style: AppText.cardValue.copyWith(fontSize: 15)),
                   Text(detail, style: AppText.small),
                   if (a.notes.isNotEmpty)
                     Text(a.notes, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.small),
@@ -548,7 +548,7 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
           header: true,
           child: Text(
             widget.entry == null ? l.activityLogTitle : l.activityEditTitle,
-            style: AppText.title.copyWith(fontSize: 19),
+            style: AppText.title.copyWith(fontSize: 17),
           ),
         ),
         const SizedBox(height: 14),

@@ -180,7 +180,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
                                 const SizedBox(height: 8),
                                 Text(
                                   _editing ? l.ingredientUpdate : l.ingredientNewEntry,
-                                  style: AppText.title.copyWith(fontSize: 19, color: AppColors.white),
+                                  style: AppText.title.copyWith(fontSize: 17, color: AppColors.white),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -204,7 +204,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
                     child: RuvaCard(
-                      padding: const EdgeInsets.all(22),
+                      padding: const EdgeInsets.all(18),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [

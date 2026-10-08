@@ -41,7 +41,7 @@ class TodayScreen extends ConsumerWidget {
       children: [
         const BrandHeader(),
         const SizedBox(height: 12),
-        Semantics(header: true, child: Text(greeting, style: AppText.title.copyWith(fontSize: 24, height: 1.2))),
+        Semantics(header: true, child: Text(greeting, style: AppText.title.copyWith(fontSize: 19, height: 1.2))),
         const SizedBox(height: 2),
         Text(formatLongDay(now), style: AppText.dateLine),
         const SizedBox(height: 16),
@@ -106,7 +106,7 @@ class _FastingHeroCard extends ConsumerWidget {
               children: [
                 Text(l.heroEyebrow, style: AppText.overline.copyWith(color: _onCard)),
                 const SizedBox(height: 4),
-                Text(status, style: AppText.title.copyWith(color: AppColors.white, fontSize: 18)),
+                Text(status, style: AppText.title.copyWith(color: AppColors.white, fontSize: 16)),
                 const SizedBox(height: 2),
                 Text(detail, style: AppText.cardSub.copyWith(color: _onCard)),
                 const SizedBox(height: 12),
@@ -187,7 +187,7 @@ class _CompactRing extends StatelessWidget {
               padding: const EdgeInsets.all(18),
               child: Text(
                 formatHms(s.elapsed),
-                style: AppText.cardValue.copyWith(color: AppColors.white, fontSize: 18),
+                style: AppText.cardValue.copyWith(color: AppColors.white, fontSize: 16),
               ),
             ),
           ),

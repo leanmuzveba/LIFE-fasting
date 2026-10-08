@@ -40,7 +40,7 @@ class _Page extends StatelessWidget {
                   const SizedBox(height: 28),
                   Semantics(
                     header: true,
-                    child: Text(title, style: AppText.title.copyWith(fontSize: 26, height: 1.25)),
+                    child: Text(title, style: AppText.title.copyWith(fontSize: 21, height: 1.25)),
                   ),
                   const SizedBox(height: 16),
                   for (final c in children) ...[c, const SizedBox(height: 14)],

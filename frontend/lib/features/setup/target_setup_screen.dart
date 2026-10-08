@@ -112,7 +112,7 @@ class _Choice extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
-              Expanded(child: Text(label, style: AppText.cardValue.copyWith(fontSize: 18))),
+              Expanded(child: Text(label, style: AppText.cardValue.copyWith(fontSize: 16))),
               if (selected) const AppIconView(AppIcon.check, size: 20, color: AppColors.primary, strokeWidth: 2.5),
             ],
           ),

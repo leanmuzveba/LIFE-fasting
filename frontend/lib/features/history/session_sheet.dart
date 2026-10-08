@@ -168,7 +168,7 @@ class _TimeField extends StatelessWidget {
               height: 52,
               padding: const EdgeInsets.symmetric(horizontal: 14),
               alignment: Alignment.centerLeft,
-              child: Text(value, style: AppText.cardValue.copyWith(fontSize: 17)),
+              child: Text(value, style: AppText.cardValue.copyWith(fontSize: 16)),
             ),
           ),
         ),

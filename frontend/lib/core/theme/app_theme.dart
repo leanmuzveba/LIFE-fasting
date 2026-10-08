@@ -36,7 +36,7 @@ abstract final class AppText {
   );
   static const cardValue = TextStyle(
     fontFamily: AppFonts.display,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: FontWeight.w700,
     color: AppColors.text,
     fontFeatures: tabular,
@@ -49,8 +49,8 @@ abstract final class AppText {
   );
   static const title = TextStyle(
     fontFamily: AppFonts.display,
-    fontSize: 20,
-    height: 26 / 20,
+    fontSize: 18,
+    height: 24 / 18,
     fontWeight: FontWeight.w700,
     color: AppColors.text,
   );

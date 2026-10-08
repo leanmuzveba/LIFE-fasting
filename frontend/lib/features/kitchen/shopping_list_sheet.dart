@@ -45,7 +45,7 @@ class _ShoppingListState extends ConsumerState<_ShoppingList> {
       children: [
         MonoLabel(l.shoppingTitle),
         const SizedBox(height: 6),
-        Semantics(header: true, child: Text(l.shoppingCount(open), style: AppText.title.copyWith(fontSize: 22))),
+        Semantics(header: true, child: Text(l.shoppingCount(open), style: AppText.title.copyWith(fontSize: 19))),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -83,7 +83,7 @@ class _ShoppingListState extends ConsumerState<_ShoppingList> {
             title: Text(
               item.name,
               style: AppText.body.copyWith(
-                fontSize: 16,
+                fontSize: 15,
                 decoration: item.checked ? TextDecoration.lineThrough : null,
                 color: item.checked ? AppColors.textSecondary : AppColors.text,
               ),

@@ -78,7 +78,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 children: [
                   const RuvaLogo(size: 36, semanticLabel: null),
                   const SizedBox(width: 10),
-                  Semantics(header: true, child: Text(l.navHistory, style: AppText.title.copyWith(fontSize: 32))),
+                  Semantics(header: true, child: Text(l.navHistory, style: AppText.title.copyWith(fontSize: 26))),
                 ],
               ),
               const SizedBox(height: 6),
@@ -107,7 +107,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       children: [
                         const SizedBox(width: 10),
                         Expanded(
-                          child: Text(DateFormat('MMMM y').format(_month), style: AppText.title.copyWith(fontSize: 19)),
+                          child: Text(DateFormat('MMMM y').format(_month), style: AppText.title.copyWith(fontSize: 17)),
                         ),
                         IconButton(
                           tooltip: l.previousMonth,
@@ -152,7 +152,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                 RuvaCard(
                   child: Column(
                     children: [
-                      const IconBubble(icon: Icons.calendar_month_outlined, size: 56),
+                      const IconBubble(icon: Icons.calendar_month_outlined, size: 48),
                       const SizedBox(height: 12),
                       Text(l.historyEmptyTitle, style: AppText.title),
                       const SizedBox(height: 6),
@@ -403,7 +403,7 @@ class _TrendCard extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(_h(t.average!), style: AppText.cardValue.copyWith(fontSize: 34, color: AppColors.white)),
+                  Text(_h(t.average!), style: AppText.cardValue.copyWith(fontSize: 27, color: AppColors.white)),
                   const SizedBox(width: 8),
                   Flexible(
                     child: Padding(
@@ -450,7 +450,7 @@ class _Stat extends StatelessWidget {
     children: [
       MonoLabel(label, color: onForestMuted, size: 10),
       const SizedBox(height: 4),
-      Text(value, style: AppText.cardValue.copyWith(fontSize: 18, color: AppColors.white)),
+      Text(value, style: AppText.cardValue.copyWith(fontSize: 16, color: AppColors.white)),
     ],
   );
 }
@@ -572,7 +572,7 @@ class _RecentDayCard extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(formatShortDay(summary.day), style: AppText.cardValue.copyWith(fontSize: 16)),
+            Text(formatShortDay(summary.day), style: AppText.cardValue.copyWith(fontSize: 15)),
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
@@ -635,7 +635,7 @@ class _DaySheet extends ConsumerWidget {
               header: true,
               child: Text(
                 s.isEmpty ? l.historyNothingLogged : l.historyDaySummary,
-                style: AppText.title.copyWith(fontSize: 22),
+                style: AppText.title.copyWith(fontSize: 19),
               ),
             ),
           ],
