@@ -104,3 +104,51 @@ class RecipeRepository {
     await _db.delete('api_cache');
   }
 }
+
+/// Recipes you write yourself (ids `mine:<row id>`).
+class MyRecipeRepository {
+  MyRecipeRepository(this._db, this._now);
+  final Database _db;
+  final DateTime Function() _now;
+
+  static int? _rowId(String id) => int.tryParse(id.replaceFirst('mine:', ''));
+
+  Future<List<Recipe>> all() async => [
+    for (final r in await _db.query('my_recipes', orderBy: 'name COLLATE NOCASE'))
+      Recipe(
+        id: 'mine:${r['id']}',
+        name: r['name']! as String,
+        category: (r['category'] as String?) ?? '',
+        minutes: r['minutes'] as int?,
+        servings: r['servings'] as int?,
+        ingredients: [
+          for (final i in jsonDecode(r['ingredients']! as String) as List<dynamic>)
+            RecipeIngredient(i[0] as String, i[1] as String),
+        ],
+        steps: [for (final s in jsonDecode(r['steps']! as String) as List<dynamic>) s as String],
+      ),
+  ];
+
+  /// Inserts (id "mine:" or empty) or updates; returns the saved id.
+  Future<String> save(Recipe r) async {
+    final now = _now().toUtc().millisecondsSinceEpoch;
+    final row = {
+      'name': r.name.trim(),
+      'category': r.category.trim(),
+      'minutes': r.minutes,
+      'servings': r.servings,
+      'ingredients': jsonEncode([
+        for (final i in r.ingredients) [i.name.trim(), i.measure.trim()],
+      ]),
+      'steps': jsonEncode([for (final s in r.steps) s.trim()]),
+      'updated_at': now,
+    };
+    final id = _rowId(r.id);
+    if (id == null) return 'mine:${await _db.insert('my_recipes', {...row, 'created_at': now})}';
+    await _db.update('my_recipes', row, where: 'id = ?', whereArgs: [id]);
+    return r.id;
+  }
+
+  Future<void> delete(String id) => _db.delete('my_recipes', where: 'id = ?', whereArgs: [_rowId(id)]);
+  Future<void> deleteAll() => _db.delete('my_recipes');
+}

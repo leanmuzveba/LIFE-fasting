@@ -12,8 +12,9 @@ import '../../domain/recipe.dart';
 import '../../state/providers.dart';
 import '../settings/settings_screen.dart' show allergenLabel, dietLabel;
 import 'recipe_detail_screen.dart';
+import 'recipe_form_screen.dart';
 
-enum _Show { all, ready, expiring, saved }
+enum _Show { all, mine, ready, expiring, saved }
 
 /// Smart Recipe Planner (RUVA design, PRD v1.2 §5): what you can make with
 /// your kitchen, from TheMealDB, filtered by diet and never showing recipes
@@ -39,6 +40,7 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
 
   String _showLabel(AppLocalizations l, _Show s) => switch (s) {
     _Show.all => l.recipesShowAll,
+    _Show.mine => l.recipesShowMine,
     _Show.ready => l.recipesShowReady,
     _Show.expiring => l.recipesShowExpiring,
     _Show.saved => l.recipesShowSaved,
@@ -54,12 +56,22 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
     final saved = ref.watch(savedRecipesProvider).value ?? const <String>{};
     final cooked = ref.watch(lastCookedProvider).value ?? const <String, DateTime>{};
     final source = _query.isEmpty ? ref.watch(recipeSuggestionsProvider) : ref.watch(recipeSearchProvider(_query));
-    final all = source.value ?? const <RecipeMatch>[];
+    // Your own recipes always show (even offline), matched like the rest.
+    final t = ref.watch(clockProvider)().toLocal();
+    final q = _query.toLowerCase();
+    final mine = [
+      for (final r in ref.watch(myRecipesProvider).value ?? const <Recipe>[])
+        if (r.name.toLowerCase().contains(q) && allergensIn(r).intersection(allergies).isEmpty)
+          RecipeMatch(r, kitchen, DateTime(t.year, t.month, t.day)),
+    ];
+    final online = source.value ?? const <RecipeMatch>[];
+    final all = rankMatches([...mine, ...online]);
     final shown = [
       for (final m in all)
         if (fitsDiet(m.recipe, diet) &&
             switch (_show) {
               _Show.all => true,
+              _Show.mine => m.recipe.isMine,
               _Show.ready => m.complete,
               _Show.expiring => m.usesExpiring > 0,
               _Show.saved => saved.contains(m.recipe.id),
@@ -68,6 +80,15 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
     ];
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        heroTag: 'new-recipe',
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const RecipeFormScreen())),
+        backgroundColor: AppColors.accent,
+        foregroundColor: AppColors.primaryDark,
+        icon: const Icon(Icons.add),
+        label: Text(l.myRecipeNew, style: AppText.link.copyWith(color: AppColors.primaryDark)),
+        shape: const StadiumBorder(),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
@@ -174,12 +195,12 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                           : l.recipesAllergyNote(allergies.map((a) => allergenLabel(l, a)).join(', ')),
                     ),
                     const SizedBox(height: 18),
-                    if (source.isLoading && all.isEmpty)
+                    if (source.isLoading && online.isEmpty && _show != _Show.mine)
                       const Padding(
                         padding: EdgeInsets.all(32),
                         child: Center(child: CircularProgressIndicator()),
                       )
-                    else if (source.hasError && all.isEmpty)
+                    else if (source.hasError && online.isEmpty && _show != _Show.mine)
                       Column(
                         children: [
                           Text(l.recipesOffline, textAlign: TextAlign.center, style: AppText.small),
@@ -191,7 +212,12 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                           ),
                         ],
                       )
-                    else if (_query.isEmpty && kitchen.isEmpty)
+                    else if (_show == _Show.mine && shown.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text(l.recipesMineEmpty, textAlign: TextAlign.center, style: AppText.small),
+                      )
+                    else if (_query.isEmpty && kitchen.isEmpty && mine.isEmpty)
                       Padding(
                         padding: const EdgeInsets.all(16),
                         child: Text(l.recipesEmptyKitchen, textAlign: TextAlign.center, style: AppText.small),
@@ -315,7 +341,7 @@ class _RecipeCard extends StatelessWidget {
     final r = match.recipe;
     final total = r.ingredients.length;
     final have = match.available.length;
-    final tags = [r.category, r.area].where((t) => t.isNotEmpty).join(' · ');
+    final tags = [if (r.isMine) l.myRecipeBadge, r.category, r.area].where((t) => t.isNotEmpty).join(' · ');
     return RuvaCard(
       padding: EdgeInsets.zero,
       radius: 28,

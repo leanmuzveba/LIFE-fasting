@@ -3703,6 +3703,168 @@ abstract class AppLocalizations {
   /// **'Added from a photo'**
   String get groceryNote;
 
+  /// No description provided for @myRecipeNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New recipe'**
+  String get myRecipeNew;
+
+  /// No description provided for @myRecipeEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit recipe'**
+  String get myRecipeEditTitle;
+
+  /// No description provided for @myRecipeName.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe name'**
+  String get myRecipeName;
+
+  /// No description provided for @myRecipeCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Type · optional'**
+  String get myRecipeCategory;
+
+  /// No description provided for @myRecipeCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Breakfast, Dinner, Snack'**
+  String get myRecipeCategoryHint;
+
+  /// No description provided for @myRecipeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Time (min) · optional'**
+  String get myRecipeMinutes;
+
+  /// No description provided for @myRecipeServings.
+  ///
+  /// In en, this message translates to:
+  /// **'Servings · optional'**
+  String get myRecipeServings;
+
+  /// No description provided for @myRecipeIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get myRecipeIngredients;
+
+  /// No description provided for @myRecipeIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient'**
+  String get myRecipeIngredient;
+
+  /// No description provided for @myRecipeAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get myRecipeAmount;
+
+  /// No description provided for @myRecipeAddIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ingredient'**
+  String get myRecipeAddIngredient;
+
+  /// No description provided for @myRecipeRemoveIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove ingredient'**
+  String get myRecipeRemoveIngredient;
+
+  /// No description provided for @myRecipeSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps · one per line'**
+  String get myRecipeSteps;
+
+  /// No description provided for @myRecipeStepsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rinse the rice.\nBring to the boil…'**
+  String get myRecipeStepsHint;
+
+  /// No description provided for @myRecipeSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save recipe'**
+  String get myRecipeSave;
+
+  /// No description provided for @myRecipeSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} saved'**
+  String myRecipeSaved(String name);
+
+  /// No description provided for @myRecipeNeedName.
+  ///
+  /// In en, this message translates to:
+  /// **'Give the recipe a name.'**
+  String get myRecipeNeedName;
+
+  /// No description provided for @myRecipeNeedIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one ingredient.'**
+  String get myRecipeNeedIngredient;
+
+  /// No description provided for @myRecipeDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete recipe'**
+  String get myRecipeDelete;
+
+  /// No description provided for @myRecipeDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String myRecipeDeleteConfirm(String name);
+
+  /// No description provided for @myRecipeDeleteBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This removes your recipe from this phone. Meals you logged from it stay in your diary.'**
+  String get myRecipeDeleteBody;
+
+  /// No description provided for @myRecipeDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} deleted'**
+  String myRecipeDeleted(String name);
+
+  /// No description provided for @myRecipeBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Your recipe'**
+  String get myRecipeBadge;
+
+  /// No description provided for @recipesShowMine.
+  ///
+  /// In en, this message translates to:
+  /// **'My recipes'**
+  String get recipesShowMine;
+
+  /// No description provided for @recipesMineEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven’t written any recipes yet — tap “New recipe”.'**
+  String get recipesMineEmpty;
+
+  /// No description provided for @recipeMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} min'**
+  String recipeMinutes(int count);
+
+  /// No description provided for @recipeServings.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 serving} other{{count} servings}}'**
+  String recipeServings(int count);
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

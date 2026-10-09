@@ -23,6 +23,7 @@ abstract final class AppDatabase {
     _v7Recipes,
     _v8Packaged,
     _v9Body,
+    _v10MyRecipes,
   ];
 
   static int get latestVersion => migrations.length;
@@ -49,6 +50,22 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 10 — recipes you create (PRD v1.2 §5).
+  static Future<void> _v10MyRecipes(DatabaseExecutor db) async {
+    await db.execute('''
+      CREATE TABLE my_recipes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+        category TEXT NOT NULL DEFAULT '',
+        minutes INTEGER,
+        servings INTEGER,
+        ingredients TEXT NOT NULL,            -- JSON [[name, amount]]
+        steps TEXT NOT NULL,                  -- JSON [step]
+        created_at INTEGER NOT NULL,
+        updated_at INTEGER NOT NULL
+      )''');
   }
 
   /// Version 9 — weigh-ins with optional tape measurements (PRD v1.2 §7).

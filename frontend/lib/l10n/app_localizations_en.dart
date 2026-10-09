@@ -2130,5 +2130,98 @@ class AppLocalizationsEn extends AppLocalizations {
   String get groceryNote => 'Added from a photo';
 
   @override
+  String get myRecipeNew => 'New recipe';
+
+  @override
+  String get myRecipeEditTitle => 'Edit recipe';
+
+  @override
+  String get myRecipeName => 'Recipe name';
+
+  @override
+  String get myRecipeCategory => 'Type · optional';
+
+  @override
+  String get myRecipeCategoryHint => 'e.g. Breakfast, Dinner, Snack';
+
+  @override
+  String get myRecipeMinutes => 'Time (min) · optional';
+
+  @override
+  String get myRecipeServings => 'Servings · optional';
+
+  @override
+  String get myRecipeIngredients => 'Ingredients';
+
+  @override
+  String get myRecipeIngredient => 'Ingredient';
+
+  @override
+  String get myRecipeAmount => 'Amount';
+
+  @override
+  String get myRecipeAddIngredient => 'Add ingredient';
+
+  @override
+  String get myRecipeRemoveIngredient => 'Remove ingredient';
+
+  @override
+  String get myRecipeSteps => 'Steps · one per line';
+
+  @override
+  String get myRecipeStepsHint => 'Rinse the rice.\nBring to the boil…';
+
+  @override
+  String get myRecipeSave => 'Save recipe';
+
+  @override
+  String myRecipeSaved(String name) {
+    return '$name saved';
+  }
+
+  @override
+  String get myRecipeNeedName => 'Give the recipe a name.';
+
+  @override
+  String get myRecipeNeedIngredient => 'Add at least one ingredient.';
+
+  @override
+  String get myRecipeDelete => 'Delete recipe';
+
+  @override
+  String myRecipeDeleteConfirm(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get myRecipeDeleteBody =>
+      'This removes your recipe from this phone. Meals you logged from it stay in your diary.';
+
+  @override
+  String myRecipeDeleted(String name) {
+    return '$name deleted';
+  }
+
+  @override
+  String get myRecipeBadge => 'Your recipe';
+
+  @override
+  String get recipesShowMine => 'My recipes';
+
+  @override
+  String get recipesMineEmpty => 'You haven’t written any recipes yet — tap “New recipe”.';
+
+  @override
+  String recipeMinutes(int count) {
+    return '$count min';
+  }
+
+  @override
+  String recipeServings(int count) {
+    String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count servings', one: '1 serving');
+    return '$_temp0';
+  }
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

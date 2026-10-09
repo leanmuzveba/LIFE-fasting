@@ -189,6 +189,7 @@ class SessionActions {
     await _ref.read(foodRepositoryProvider).deleteAll();
     await _ref.read(bodyRepositoryProvider).deleteAll();
     await _ref.read(recipeRepositoryProvider).deleteAll();
+    await _ref.read(myRecipeRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
     _ref.invalidate(historyProvider);
@@ -206,6 +207,7 @@ class SessionActions {
     _ref.invalidate(weighInsProvider);
     _ref.invalidate(savedRecipesProvider);
     _ref.invalidate(lastCookedProvider);
+    _ref.invalidate(myRecipesProvider);
     _ref.invalidate(recipeSuggestionsProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
@@ -663,6 +665,11 @@ final recipeRepositoryProvider = Provider(
 final recipeProvider = FutureProvider.family<Recipe?, String>(
   (ref, id) => ref.watch(recipeRepositoryProvider).byId(id),
 );
+final myRecipeRepositoryProvider = Provider(
+  (ref) => MyRecipeRepository(ref.watch(databaseProvider), ref.watch(clockProvider)),
+);
+final myRecipesProvider = FutureProvider((ref) => ref.watch(myRecipeRepositoryProvider).all());
+
 final savedRecipesProvider = FutureProvider((ref) => ref.watch(recipeRepositoryProvider).savedIds());
 final lastCookedProvider = FutureProvider((ref) => ref.watch(recipeRepositoryProvider).lastCooked());
 
@@ -718,6 +725,20 @@ class RecipeActions {
 
   Future<void> setSaved(Recipe r, bool saved) async {
     await _repo.setSaved(r, saved);
+    _ref.invalidate(savedRecipesProvider);
+  }
+
+  /// Saves your own recipe; returns its id.
+  Future<String> saveMine(Recipe r) async {
+    final id = await _ref.read(myRecipeRepositoryProvider).save(r);
+    _ref.invalidate(myRecipesProvider);
+    return id;
+  }
+
+  Future<void> deleteMine(Recipe r) async {
+    await _ref.read(myRecipeRepositoryProvider).delete(r.id);
+    await _repo.setSaved(r, false);
+    _ref.invalidate(myRecipesProvider);
     _ref.invalidate(savedRecipesProvider);
   }
 

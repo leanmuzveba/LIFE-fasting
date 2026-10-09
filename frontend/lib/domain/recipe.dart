@@ -21,6 +21,8 @@ class Recipe {
     this.steps = const [],
     this.ingredients = const [],
     this.source,
+    this.minutes,
+    this.servings,
   });
 
   final String id;
@@ -31,6 +33,11 @@ class Recipe {
   final List<String> steps;
   final List<RecipeIngredient> ingredients;
   final String? source;
+  final int? minutes; // only your own recipes have these
+  final int? servings;
+
+  /// Created by you (stored on this phone), not from TheMealDB.
+  bool get isMine => id.startsWith('mine:');
 
   /// Parses a full TheMealDB meal (lookup.php / search.php).
   static Recipe fromMealDb(Map<String, dynamic> m) {

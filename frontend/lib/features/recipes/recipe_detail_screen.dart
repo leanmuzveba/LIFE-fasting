@@ -13,6 +13,7 @@ import '../../domain/recipe.dart';
 import '../food/food_labels.dart';
 import '../settings/settings_screen.dart' show dietLabel;
 import '../../state/providers.dart';
+import 'recipe_form_screen.dart';
 import 'recipes_screen.dart' show RecipeImage;
 
 /// One recipe (RUVA design, PRD v1.2 §5.2): what you have and what's missing,
@@ -32,6 +33,26 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   DateTime get _today {
     final t = ref.read(clockProvider)().toLocal();
     return DateTime(t.year, t.month, t.day);
+  }
+
+  Future<void> _delete(Recipe r) async {
+    final l = context.l10n;
+    final ok = await showAppSheet<bool>(
+      context,
+      (ctx) => Gap16Column(
+        children: [
+          Semantics(header: true, child: Text(l.myRecipeDeleteConfirm(r.name), style: AppText.title)),
+          Text(l.myRecipeDeleteBody, style: AppText.body),
+          PrimaryButton(label: l.myRecipeDelete, onPressed: () => Navigator.pop(ctx, true)),
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: Text(l.cancel)),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    await ref.read(recipeActionsProvider).deleteMine(r);
+    if (!mounted) return;
+    showRuvaSnack(context, l.myRecipeDeleted(r.name));
+    Navigator.of(context).pop();
   }
 
   Future<void> _markCooked() async {
@@ -73,7 +94,10 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final r = widget.recipe;
+    // Your own recipe may have been edited since this page opened.
+    final r = widget.recipe.isMine
+        ? (ref.watch(myRecipesProvider).value?.where((x) => x.id == widget.recipe.id).firstOrNull ?? widget.recipe)
+        : widget.recipe;
     final today = _today;
     final kitchen = ref.watch(kitchenProvider).value ?? const <Ingredient>[];
     final match = RecipeMatch(r, kitchen, today);
@@ -110,13 +134,28 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     Positioned(
                       right: 16,
                       top: MediaQuery.paddingOf(context).top + 12,
-                      child: RoundIconButton(
-                        icon: saved ? Icons.favorite : Icons.favorite_border,
-                        onTap: () => ref.read(recipeActionsProvider).setSaved(r, !saved),
-                        tooltip: saved ? l.recipesUnsave : l.recipesSave,
-                        size: 44,
-                        background: AppColors.white,
-                        foreground: AppColors.primary,
+                      child: Row(
+                        children: [
+                          if (r.isMine)
+                            RoundIconButton(
+                              icon: Icons.edit_outlined,
+                              onTap: () =>
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute<void>(builder: (_) => RecipeFormScreen(existing: r))),
+                              tooltip: l.myRecipeEditTitle,
+                              size: 44,
+                              background: AppColors.white,
+                              foreground: AppColors.primary,
+                            ),
+                          RoundIconButton(
+                            icon: saved ? Icons.favorite : Icons.favorite_border,
+                            onTap: () => ref.read(recipeActionsProvider).setSaved(r, !saved),
+                            tooltip: saved ? l.recipesUnsave : l.recipesSave,
+                            size: 44,
+                            background: AppColors.white,
+                            foreground: AppColors.primary,
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -133,6 +172,24 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Semantics(header: true, child: Text(r.name, style: AppText.title.copyWith(fontSize: 21))),
+                        if (r.minutes != null || r.servings != null) ...[
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              if (r.minutes case final m?) ...[
+                                const Icon(Icons.schedule, size: 16, color: AppColors.textSecondary),
+                                const SizedBox(width: 5),
+                                Text(l.recipeMinutes(m), style: AppText.body.copyWith(fontSize: 14)),
+                                const SizedBox(width: 16),
+                              ],
+                              if (r.servings case final n?) ...[
+                                const Icon(Icons.people_outline, size: 16, color: AppColors.textSecondary),
+                                const SizedBox(width: 5),
+                                Text(l.recipeServings(n), style: AppText.body.copyWith(fontSize: 14)),
+                              ],
+                            ],
+                          ),
+                        ],
                         if (tags.isNotEmpty) ...[
                           const SizedBox(height: 10),
                           Wrap(
@@ -157,7 +214,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                           ],
                         ),
                         const SizedBox(height: 6),
-                        Text(l.recipeBatchHint, style: AppText.small.copyWith(fontSize: 12.5)),
+                        if (!r.isMine) Text(l.recipeBatchHint, style: AppText.small.copyWith(fontSize: 12.5)),
                         const SizedBox(height: 24),
                         Row(
                           children: [
@@ -259,7 +316,21 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                         const SizedBox(height: 14),
                         Text(l.recipesAllergyGeneric, style: AppText.small.copyWith(fontSize: 12.5)),
                         const SizedBox(height: 6),
-                        Text(l.recipeSource, style: AppText.small.copyWith(fontSize: 12.5)),
+                        if (!r.isMine)
+                          Text(l.recipeSource, style: AppText.small.copyWith(fontSize: 12.5))
+                        else
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton.icon(
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.errorText,
+                                minimumSize: const Size(48, 48),
+                              ),
+                              onPressed: () => _delete(r),
+                              icon: const Icon(Icons.delete_outline),
+                              label: Text(l.myRecipeDelete),
+                            ),
+                          ),
                       ],
                     ),
                   ),
