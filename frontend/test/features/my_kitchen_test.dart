@@ -56,6 +56,8 @@ void main() {
     expect(find.text('Nothing here yet.'), findsOneWidget);
     await tester.tap(find.text('Add Ingredient'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('Type it in'));
+    await tester.pumpAndSettle();
     expect(find.text('New Stock Entry'), findsOneWidget);
   });
 

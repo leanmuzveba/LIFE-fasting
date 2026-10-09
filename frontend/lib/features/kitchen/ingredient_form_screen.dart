@@ -38,7 +38,7 @@ class _IngredientFormScreenState extends ConsumerState<IngredientFormScreen> {
   late DateTime? _expires = _e?.expiresOn;
   String? _error;
 
-  bool get _editing => _e != null;
+  bool get _editing => _e?.id != null; // a draft from a scan has no id yet
 
   static String _num(double v) => v == v.roundToDouble() ? v.toInt().toString() : v.toString();
 

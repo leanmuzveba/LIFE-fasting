@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:life_fasting/data/app_database.dart';
 import 'package:life_fasting/data/food_facts_api.dart';
 import 'package:life_fasting/data/meal_photo_api.dart';
+import 'package:life_fasting/domain/kitchen.dart';
 import 'package:life_fasting/domain/meal_estimate.dart';
 import 'package:life_fasting/data/notification_service.dart';
 import 'package:life_fasting/data/recipe_repository.dart';
@@ -156,6 +157,15 @@ class FakeMealPhotoApi extends MealPhotoApi {
     calls++;
     if (error != null) throw error!;
     return reply;
+  }
+
+  List<SpottedItem> groceriesReply = const [];
+
+  @override
+  Future<List<SpottedItem>> groceries(Uint8List jpeg) async {
+    calls++;
+    if (error != null) throw error!;
+    return groceriesReply;
   }
 }
 

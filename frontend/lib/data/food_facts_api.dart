@@ -5,7 +5,8 @@ import 'dart:io';
 /// barcode number is sent.
 class FoodFactsApi {
   static const _fields =
-      'product_name,product_name_en,brands,quantity,product_quantity,serving_size,serving_quantity,nutriments';
+      'product_name,product_name_en,brands,quantity,product_quantity,product_quantity_unit,serving_size,'
+      'serving_quantity,nutriments,categories_tags';
 
   /// The product JSON, or null when Open Food Facts doesn't know the barcode.
   /// Throws on network errors.

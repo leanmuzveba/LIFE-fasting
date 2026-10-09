@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import '../domain/food.dart';
+import '../domain/kitchen.dart';
 import '../domain/meal_estimate.dart';
 
 /// The key and model can't be used (wrong/expired key, quota, blocked).
@@ -59,11 +60,51 @@ class MealPhotoApi {
     'required': ['is_food', 'items'],
   };
 
-  Future<MealEstimate> estimate(Uint8List jpeg) async {
+  Future<MealEstimate> estimate(Uint8List jpeg) async =>
+      parseMealEstimate(await _withFallback((m) => _ask(m, jpeg, _prompt, _schema)));
+
+  static final _groceryPrompt =
+      'You are helping someone record the groceries they have at home. List each distinct food item visible '
+      '(packets, tins, produce, bottles). For each give a plain name (no brand), a count or amount you can see, '
+      'a unit from: $_units, the best categories from: $_cats, and its state from: fresh, frozen, canned, dried. '
+      'Read pack sizes from labels when legible; otherwise count items with unit "pcs". Skip non-food items. '
+      'If there is no food, return no items.';
+  static final _units = kitchenUnits.join(', ');
+  static final _cats = IngredientCategory.values.map((c) => c.name).join(', ');
+
+  static const _grocerySchema = {
+    'type': 'OBJECT',
+    'properties': {
+      'items': {
+        'type': 'ARRAY',
+        'items': {
+          'type': 'OBJECT',
+          'properties': {
+            'name': {'type': 'STRING'},
+            'quantity': {'type': 'NUMBER'},
+            'unit': {'type': 'STRING'},
+            'categories': {
+              'type': 'ARRAY',
+              'items': {'type': 'STRING'},
+            },
+            'state': {'type': 'STRING'},
+          },
+          'required': ['name', 'quantity', 'unit', 'categories', 'state'],
+        },
+      },
+    },
+    'required': ['items'],
+  };
+
+  /// Food items spotted in a photo of groceries, for review before saving.
+  Future<List<SpottedItem>> groceries(Uint8List jpeg) async =>
+      parseGroceries(await _withFallback((m) => _ask(m, jpeg, _groceryPrompt, _grocerySchema)));
+
+  Future<Map<String, dynamic>> _withFallback(Future<Map<String, dynamic>> Function(String model) call) async {
     Object? last;
     for (final model in models) {
       try {
-        return await _estimate(model, jpeg);
+        return await call(model);
       } on MealPhotoKeyException {
         rethrow; // the key itself is the problem; another model won't help
       } catch (e) {
@@ -73,7 +114,7 @@ class MealPhotoApi {
     throw last ?? const HttpException('No model available');
   }
 
-  Future<MealEstimate> _estimate(String model, Uint8List jpeg) async {
+  Future<Map<String, dynamic>> _ask(String model, Uint8List jpeg, String prompt, Map<String, Object> schema) async {
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 15);
     try {
       final req = await client.postUrl(
@@ -91,11 +132,11 @@ class MealPhotoApi {
                   {
                     'inline_data': {'mime_type': 'image/jpeg', 'data': base64Encode(jpeg)},
                   },
-                  {'text': _prompt},
+                  {'text': prompt},
                 ],
               },
             ],
-            'generationConfig': {'responseMimeType': 'application/json', 'responseSchema': _schema, 'temperature': 0.2},
+            'generationConfig': {'responseMimeType': 'application/json', 'responseSchema': schema, 'temperature': 0.2},
           }),
         ),
       );
@@ -108,7 +149,7 @@ class MealPhotoApi {
       if (res.statusCode != 200) throw HttpException('HTTP ${res.statusCode}');
       final text =
           (((jsonDecode(body) as Map)['candidates'] as List).first as Map)['content']['parts'][0]['text'] as String;
-      return parseMealEstimate(jsonDecode(text) as Map<String, dynamic>);
+      return jsonDecode(text) as Map<String, dynamic>;
     } finally {
       client.close(force: true);
     }
@@ -138,3 +179,19 @@ MealEstimate parseMealEstimate(Map<String, dynamic> j) {
     ],
   );
 }
+
+/// Parses spotted groceries; unknown units fall back to pieces, unknown
+/// categories are dropped, nameless or zero items are skipped.
+List<SpottedItem> parseGroceries(Map<String, dynamic> j) => [
+  for (final i in (j['items'] as List? ?? const []).cast<Map<String, dynamic>>())
+    if ('${i['name'] ?? ''}'.trim().isNotEmpty && i['quantity'] is num && (i['quantity'] as num) > 0)
+      SpottedItem(
+        name: '${i['name']}'.trim(),
+        quantity: (i['quantity'] as num).toDouble(),
+        unit: kitchenUnits.contains(i['unit']) ? i['unit'] as String : 'pcs',
+        categories: {
+          for (final c in (i['categories'] as List? ?? const [])) ?IngredientCategory.values.asNameMap()['$c'],
+        },
+        state: FoodState.values.asNameMap()['${i['state']}'] ?? FoodState.fresh,
+      ),
+];

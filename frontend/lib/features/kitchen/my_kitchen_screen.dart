@@ -8,6 +8,9 @@ import '../../core/widgets/ruva_kit.dart';
 import '../../core/widgets/ruva_logo.dart';
 import '../../domain/kitchen.dart';
 import '../../state/providers.dart';
+import '../../core/widgets/sheet.dart';
+import '../food/barcode_scanner_screen.dart' show barcodeScannerProvider;
+import 'grocery_photo_screen.dart';
 import 'ingredient_form_screen.dart';
 import 'kitchen_labels.dart';
 import 'kitchen_review_screen.dart';
@@ -32,6 +35,63 @@ class _MyKitchenScreenState extends ConsumerState<MyKitchenScreen> {
   void _openForm([Ingredient? item]) =>
       Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => IngredientFormScreen(existing: item)));
 
+  /// Add Ingredient: type it in, scan a barcode, or photograph your groceries.
+  Future<void> _add() async {
+    final l = context.l10n;
+    final how = await showAppSheet<String>(
+      context,
+      (ctx) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          MonoLabel(l.kitchenTitle),
+          const SizedBox(height: 6),
+          Semantics(header: true, child: Text(l.kitchenAddHow, style: AppText.title)),
+          const SizedBox(height: 8),
+          for (final (icon, title, sub, value) in [
+            (Icons.edit_note_rounded, l.kitchenAddType, l.kitchenAddTypeSub, 'type'),
+            (Icons.qr_code_scanner_rounded, l.scanTitle, l.kitchenAddScanSub, 'scan'),
+            (Icons.photo_camera_outlined, l.groceryTitle, l.kitchenAddPhotoSub, 'photo'),
+          ])
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: IconBubble(icon: icon, size: 40),
+              title: Text(title, style: AppText.cardValue.copyWith(fontSize: 15)),
+              subtitle: Text(sub, style: AppText.small.copyWith(fontSize: 12.5)),
+              trailing: const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+              onTap: () => Navigator.pop(ctx, value),
+            ),
+        ],
+      ),
+    );
+    if (!mounted) return;
+    switch (how) {
+      case 'type':
+        _openForm();
+      case 'scan':
+        await _scan();
+      case 'photo':
+        await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const GroceryPhotoScreen()));
+    }
+  }
+
+  /// Scan → Open Food Facts → the form, prefilled for you to check.
+  Future<void> _scan() async {
+    final l = context.l10n;
+    final code = await ref.read(barcodeScannerProvider)(context);
+    if (code == null || !mounted) return;
+    showRuvaSnack(context, l.scanLooking);
+    try {
+      final product = await ref.read(foodFactsApiProvider).product(code);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      final draft = product == null ? null : ingredientFromProduct(product, ref.read(clockProvider)());
+      if (draft == null) showRuvaSnack(context, l.kitchenScanNotFound(code));
+      _openForm(draft);
+    } catch (_) {
+      if (mounted) showRuvaSnack(context, l.scanOffline);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -54,7 +114,7 @@ class _MyKitchenScreenState extends ConsumerState<MyKitchenScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         heroTag: 'kitchen-fab',
-        onPressed: _openForm,
+        onPressed: _add,
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
         icon: const Icon(Icons.add, color: AppColors.accent),

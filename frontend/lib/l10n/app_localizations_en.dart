@@ -2066,5 +2066,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickWeighSub => 'Update your weight';
 
   @override
+  String get kitchenAddHow => 'How do you want to add it?';
+
+  @override
+  String get kitchenAddType => 'Type it in';
+
+  @override
+  String get kitchenAddTypeSub => 'Name, amount, dates and more';
+
+  @override
+  String get kitchenAddScanSub => 'Fills in the name, brand and pack size';
+
+  @override
+  String get kitchenAddPhotoSub => 'AI lists what’s in the photo — you check it first';
+
+  @override
+  String kitchenScanNotFound(String code) {
+    return '$code isn’t in Open Food Facts yet — add it yourself.';
+  }
+
+  @override
+  String get groceryTitle => 'Snap your groceries';
+
+  @override
+  String get groceryPhoto => 'Your groceries photo';
+
+  @override
+  String get groceryLooking => 'Looking for food items…';
+
+  @override
+  String get groceryCheck =>
+      'AI suggestions — untick anything that’s wrong and tap the pencil to fix names or amounts.';
+
+  @override
+  String get groceryNone =>
+      'No food items were recognised. Try again with the items spread out and labels facing the camera.';
+
+  @override
+  String groceryAdd(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Add $count items to My Kitchen',
+      one: 'Add 1 item to My Kitchen',
+      zero: 'Nothing selected',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String groceryAdded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items added to My Kitchen',
+      one: '1 item added to My Kitchen',
+      zero: 'Nothing added',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get groceryNote => 'Added from a photo';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

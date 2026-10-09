@@ -3619,6 +3619,90 @@ abstract class AppLocalizations {
   /// **'Update your weight'**
   String get quickWeighSub;
 
+  /// No description provided for @kitchenAddHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you want to add it?'**
+  String get kitchenAddHow;
+
+  /// No description provided for @kitchenAddType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type it in'**
+  String get kitchenAddType;
+
+  /// No description provided for @kitchenAddTypeSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, amount, dates and more'**
+  String get kitchenAddTypeSub;
+
+  /// No description provided for @kitchenAddScanSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Fills in the name, brand and pack size'**
+  String get kitchenAddScanSub;
+
+  /// No description provided for @kitchenAddPhotoSub.
+  ///
+  /// In en, this message translates to:
+  /// **'AI lists what’s in the photo — you check it first'**
+  String get kitchenAddPhotoSub;
+
+  /// No description provided for @kitchenScanNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'{code} isn’t in Open Food Facts yet — add it yourself.'**
+  String kitchenScanNotFound(String code);
+
+  /// No description provided for @groceryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snap your groceries'**
+  String get groceryTitle;
+
+  /// No description provided for @groceryPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Your groceries photo'**
+  String get groceryPhoto;
+
+  /// No description provided for @groceryLooking.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for food items…'**
+  String get groceryLooking;
+
+  /// No description provided for @groceryCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'AI suggestions — untick anything that’s wrong and tap the pencil to fix names or amounts.'**
+  String get groceryCheck;
+
+  /// No description provided for @groceryNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No food items were recognised. Try again with the items spread out and labels facing the camera.'**
+  String get groceryNone;
+
+  /// No description provided for @groceryAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing selected} =1{Add 1 item to My Kitchen} other{Add {count} items to My Kitchen}}'**
+  String groceryAdd(int count);
+
+  /// No description provided for @groceryAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Nothing added} =1{1 item added to My Kitchen} other{{count} items added to My Kitchen}}'**
+  String groceryAdded(int count);
+
+  /// No description provided for @groceryNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Added from a photo'**
+  String get groceryNote;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

@@ -129,3 +129,71 @@ Iterable<Ingredient> filterKitchen(Iterable<Ingredient> items, {String query = '
         (category == null || i.categories.contains(category)),
   );
 }
+
+/// A grocery item suggested from a photo; the user reviews it before saving.
+class SpottedItem {
+  const SpottedItem({
+    required this.name,
+    required this.quantity,
+    required this.unit,
+    required this.categories,
+    required this.state,
+  });
+
+  final String name;
+  final double quantity;
+  final String unit;
+  final Set<IngredientCategory> categories;
+  final FoodState state;
+}
+
+/// A new-ingredient draft from an Open Food Facts product (scanned barcode):
+/// name, brand, pack size and a best-guess category and state to review.
+Ingredient? ingredientFromProduct(Map<String, dynamic> p, DateTime now) {
+  String s(String k) => '${p[k] ?? ''}'.trim();
+  final name = s('product_name').isNotEmpty ? s('product_name') : s('product_name_en');
+  if (name.isEmpty) return null;
+  final tags = (p['categories_tags'] as List? ?? const []).join(' ');
+  bool has(String words) => RegExp(words).hasMatch(tags);
+  final qty = switch (p['product_quantity']) {
+    final num x when x > 0 => x.toDouble(),
+    final String x => double.tryParse(x),
+    _ => null,
+  };
+  final unitHint = '${s('product_quantity_unit')} ${s('quantity')}'.toLowerCase();
+  final unit = qty == null
+      ? 'pcs'
+      : RegExp(r'\bml\b|\bcl\b|\d\s*l\b').hasMatch(unitHint)
+      ? 'ml'
+      : 'g';
+  final today = DateTime(now.year, now.month, now.day);
+  return Ingredient(
+    name: name,
+    brand: s('brands').split(',').first.trim(),
+    categories: {
+      if (has('dairies|milks|cheeses|yogurts')) IngredientCategory.dairy,
+      if (has('meats|fishes|seafood|eggs|legumes|beans|lentils|tofu')) IngredientCategory.protein,
+      if (has('cereals|breads|pastas|rices|potatoes|flours|oats')) IngredientCategory.carbs,
+      if (has('vegetables')) IngredientCategory.vegetables,
+      if (has('fruits')) IngredientCategory.fruits,
+      if (has('fats|oils|nuts|seeds|butters')) IngredientCategory.fatsNutsSeeds,
+      if (has('spices|herbs|condiments')) IngredientCategory.herbsSpices,
+    }.ifEmpty({IngredientCategory.pantry}),
+    quantity: qty ?? 1,
+    unit: unit,
+    state: has('frozen')
+        ? FoodState.frozen
+        : has('canned')
+        ? FoodState.canned
+        : has('dried|dry-')
+        ? FoodState.dried
+        : FoodState.fresh,
+    purchasedOn: today,
+    createdAt: now.toUtc(),
+    updatedAt: now.toUtc(),
+  );
+}
+
+extension<T> on Set<T> {
+  Set<T> ifEmpty(Set<T> other) => isEmpty ? other : this;
+}
