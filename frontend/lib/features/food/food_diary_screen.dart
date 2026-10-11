@@ -355,19 +355,20 @@ class _Value extends StatelessWidget {
                 children: [
                   TextSpan(
                     text: value == null ? '—' : formatNutrient(value!),
-                    style: AppText.title.copyWith(fontSize: 19, color: AppColors.white),
+                    style: AppText.title.copyWith(fontSize: 26, color: AppColors.white),
                   ),
                   if (value != null)
                     TextSpan(
                       text: ' ${n.unit}',
-                      style: AppText.body.copyWith(fontSize: 13, color: AppColors.accent),
+                      style: AppText.body.copyWith(fontSize: 15, color: AppColors.accent),
                     ),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 2),
-          MonoLabel(status, color: onForestMuted, size: 9),
+          // "Estimated" is explained once by the (i) button; only flag gaps here.
+          if (value == null || partial) MonoLabel(status, color: onForestMuted, size: 9),
         ],
       ),
     );
