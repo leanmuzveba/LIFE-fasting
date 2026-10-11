@@ -545,6 +545,11 @@ final diaryDayProvider = FutureProvider.family<List<FoodEntry>, DateTime>(
   (ref, day) => ref.watch(foodRepositoryProvider).forDay(day),
 );
 
+/// Foods you've logged before matching a search (for one-tap re-logging).
+final loggedBeforeProvider = FutureProvider.family<List<FoodEntry>, String>(
+  (ref, query) => ref.watch(foodRepositoryProvider).loggedBefore(query),
+);
+
 final recentFoodsProvider = FutureProvider((ref) => ref.watch(foodRepositoryProvider).recent());
 final savedFoodsProvider = FutureProvider((ref) => ref.watch(foodRepositoryProvider).saved());
 
@@ -558,6 +563,7 @@ class FoodActions {
   void _changed() {
     _ref.invalidate(diaryDayProvider);
     _ref.invalidate(recentFoodsProvider);
+    _ref.invalidate(loggedBeforeProvider);
   }
 
   /// Logs [grams] of [food] to [meal] on local date [day] at local time [at].

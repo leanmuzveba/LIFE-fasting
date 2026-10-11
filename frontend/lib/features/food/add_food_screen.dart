@@ -122,7 +122,13 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
     final byKey = {for (final f in catalogue ?? const <Food>[]) f.key: f};
     final recent = ref.watch(recentFoodsProvider).value ?? const [];
     final saved = ref.watch(savedFoodsProvider).value ?? const [];
-    final results = catalogue == null ? const <Food>[] : searchFoods(catalogue, _query);
+    final past = _query.trim().isEmpty
+        ? const <FoodEntry>[]
+        : ref.watch(loggedBeforeProvider(_query.trim())).value ?? const <FoodEntry>[];
+    final pastKeys = {for (final e in past) foodFromEntry(e).key};
+    final results = catalogue == null
+        ? const <Food>[]
+        : searchFoods(catalogue, _query).where((f) => !pastKeys.contains(f.key)).toList();
     final count = ref.watch(usdaFoodsProvider).value?.length;
 
     return Scaffold(
@@ -218,6 +224,35 @@ class _AddFoodScreenState extends ConsumerState<AddFoodScreen> {
                       ),
                     ],
                   ] else ...[
+                    if (past.isNotEmpty) ...[
+                      const SizedBox(height: 20),
+                      MonoLabel(l.addFoodLoggedBefore),
+                      const SizedBox(height: 10),
+                      RuvaCard(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        child: Column(
+                          children: [
+                            for (final (i, e) in past.indexed) ...[
+                              if (i > 0) const Divider(height: 1, color: AppColors.divider, indent: 20, endIndent: 20),
+                              ListTile(
+                                onTap: () => _select(foodFromEntry(e), grams: e.grams, portion: e.portion),
+                                leading: const Icon(Icons.history_rounded, color: AppColors.primary),
+                                title: Text(e.name, style: AppText.cardValue.copyWith(fontSize: 15)),
+                                subtitle: Text(
+                                  [
+                                    formatPortion(e.portion, e.grams, e.unit),
+                                    if (e.nutrients[Nutrient.energy] case final k?) l.diaryKcal(formatNutrient(k)),
+                                    DateFormat('EEE d MMM').format(e.day),
+                                  ].join(' · '),
+                                  style: AppText.small.copyWith(fontSize: 12),
+                                ),
+                                trailing: const Icon(Icons.add_circle_outline, color: AppColors.primary),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 20),
                     MonoLabel(l.addFoodResults),
                     const SizedBox(height: 10),

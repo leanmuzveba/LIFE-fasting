@@ -75,6 +75,15 @@ class Food {
   }
 }
 
+/// A food rebuilt from something you logged before, so it can be logged
+/// again from search (nutrition per 100 g/ml from that entry).
+Food foodFromEntry(FoodEntry e) => Food(
+  key: e.foodKey ?? 'past:${e.name.toLowerCase()}',
+  name: e.name,
+  per100g: e.grams == null || e.grams! <= 0 ? const {} : scaleNutrients(e.nutrients, 100 * 100 / e.grams!),
+  unit: e.unit,
+);
+
 class FoodEntry {
   const FoodEntry({
     this.id,

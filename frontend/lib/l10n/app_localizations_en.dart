@@ -2249,5 +2249,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get addFoodLoggedBefore => 'Logged before';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

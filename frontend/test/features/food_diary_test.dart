@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/domain/food.dart';
+import 'package:life_fasting/domain/meal_estimate.dart';
 import 'package:life_fasting/state/providers.dart';
 
 import '../widget_test.dart' show pumpApp;
@@ -165,5 +166,36 @@ void main() {
       (50.0, Meal.breakfast, 7),
     ]);
     expect(copied.first.nutrients[Nutrient.energy], closeTo(109.5, 0.01));
+  });
+
+  testWidgets('search shows foods you logged before, with the same amount', (tester) async {
+    await _openDiary(tester);
+    final c = ProviderScope.containerOf(tester.element(find.text('Food Diary')));
+    await c
+        .read(foodActionsProvider)
+        .logEstimate(
+          [
+            const EstimatedItem(name: 'Gogo’s beef stew', grams: 300, nutrients: {Nutrient.energy: 420}),
+          ],
+          meal: Meal.dinner,
+          at: DateTime(2026, 10, 3, 19),
+          label: 'photo estimate',
+        );
+    await tester.tap(find.byTooltip('Add to Lunch'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Search foods'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'beef stew');
+    await tester.pumpAndSettle();
+    expect(find.text('LOGGED BEFORE'), findsOneWidget);
+    await tester.tap(find.text('Gogo’s beef stew'));
+    await tester.pumpAndSettle();
+    expect(find.text('≈ 420 kcal (est.)'), findsOneWidget);
+    await tester.tap(find.text('Add to Lunch'));
+    await tester.pumpAndSettle();
+    final today = await c.read(foodRepositoryProvider).forDay(DateTime(2026, 10, 4));
+    expect(today.single.name, 'Gogo’s beef stew');
+    expect(today.single.grams, 300);
+    expect(today.single.nutrients[Nutrient.energy], closeTo(420, 0.001));
   });
 }

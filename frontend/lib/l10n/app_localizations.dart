@@ -3901,6 +3901,12 @@ abstract class AppLocalizations {
   /// **'{count, plural, =1{Copied to {day}} other{{count} items copied to {day}}}'**
   String diaryCopied(int count, String day);
 
+  /// No description provided for @addFoodLoggedBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged before'**
+  String get addFoodLoggedBefore;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

@@ -757,5 +757,6 @@
   "@diaryCopyMeal": {"placeholders": {"meal": {"type": "String"}}},
   "diaryCopied": "{count, plural, =1{Copied to {day}} other{{count} items copied to {day}}}",
   "@diaryCopied": {"placeholders": {"count": {"type": "int"}, "day": {"type": "String"}}},
+  "addFoodLoggedBefore": "Logged before",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

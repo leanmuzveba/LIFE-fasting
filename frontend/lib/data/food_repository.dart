@@ -81,6 +81,25 @@ class FoodRepository {
     orderBy: 'logged_at',
   )).map(_fromRow).toList();
 
+  /// The latest entry of each food you logged (with an amount) whose name
+  /// contains every word of [query]; newest first.
+  Future<List<FoodEntry>> loggedBefore(String query, {int limit = 8}) async {
+    final words = query.toLowerCase().split(RegExp(r'[\s,]+')).where((w) => w.isNotEmpty).toList();
+    if (words.isEmpty) return const [];
+    final rows = await _db.rawQuery(
+      '''
+      SELECT * FROM food_entries e
+      WHERE grams IS NOT NULL AND name LIKE ? AND id = (
+        SELECT MAX(id) FROM food_entries WHERE grams IS NOT NULL AND name = e.name COLLATE NOCASE)
+      ORDER BY logged_at DESC LIMIT 200''',
+      ['%${words.first}%'],
+    );
+    return [
+      for (final r in rows)
+        if (words.every(((r['name'] as String?) ?? '').toLowerCase().contains)) _fromRow(r),
+    ].take(limit).toList();
+  }
+
   /// Most recently logged distinct foods.
   Future<List<FoodShortcut>> recent({int limit = 6}) async {
     final rows = await _db.rawQuery(
