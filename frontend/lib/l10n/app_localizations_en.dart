@@ -1471,11 +1471,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recipesDietAny => 'Any';
 
   @override
-  String recipesAllergyNote(String list) {
-    return 'Hiding recipes with: $list. Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.';
-  }
-
-  @override
   String get recipesAllergyGeneric =>
       'Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.';
 
@@ -2220,6 +2215,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String recipeServings(int count) {
     String _temp0 = intl.Intl.pluralLogic(count, locale: localeName, other: '$count servings', one: '1 serving');
     return '$_temp0';
+  }
+
+  @override
+  String recipesHiding(String list) {
+    return 'Hiding recipes with: $list.';
   }
 
   @override

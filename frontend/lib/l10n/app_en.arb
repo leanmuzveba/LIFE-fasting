@@ -503,8 +503,6 @@
   "recipesShowSaved": "Favourites",
   "recipesDiet": "Diet",
   "recipesDietAny": "Any",
-  "recipesAllergyNote": "Hiding recipes with: {list}. Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.",
-  "@recipesAllergyNote": {"placeholders": {"list": {"type": "String"}}},
   "recipesAllergyGeneric": "Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.",
   "recipesPrivacy": "Recipes come from TheMealDB online. Only ingredient names and search words are sent.",
   "recipesEmptyKitchen": "Add ingredients to My Kitchen and RUVA will suggest what you can make. You can still search by name.",
@@ -750,5 +748,7 @@
   "@recipeMinutes": {"placeholders": {"count": {"type": "int"}}},
   "recipeServings": "{count, plural, =1{1 serving} other{{count} servings}}",
   "@recipeServings": {"placeholders": {"count": {"type": "int"}}},
+  "recipesHiding": "Hiding recipes with: {list}.",
+  "@recipesHiding": {"placeholders": {"list": {"type": "String"}}},
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

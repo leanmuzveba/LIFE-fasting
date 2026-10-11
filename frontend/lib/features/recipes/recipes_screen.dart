@@ -188,13 +188,14 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _Note(
-                      icon: Icons.health_and_safety_outlined,
-                      text: allergies.isEmpty
-                          ? l.recipesAllergyGeneric
-                          : l.recipesAllergyNote(allergies.map((a) => allergenLabel(l, a)).join(', ')),
-                    ),
-                    const SizedBox(height: 18),
+                    if (allergies.isNotEmpty) ...[
+                      _Note(
+                        icon: Icons.health_and_safety_outlined,
+                        text: l.recipesHiding(allergies.map((a) => allergenLabel(l, a)).join(', ')),
+                      ),
+                      const SizedBox(height: 14),
+                    ] else
+                      const SizedBox(height: 4),
                     if (source.isLoading && online.isEmpty && _show != _Show.mine)
                       const Padding(
                         padding: EdgeInsets.all(32),

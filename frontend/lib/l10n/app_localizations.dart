@@ -2635,12 +2635,6 @@ abstract class AppLocalizations {
   /// **'Any'**
   String get recipesDietAny;
 
-  /// No description provided for @recipesAllergyNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Hiding recipes with: {list}. Ingredient lists can’t guarantee a recipe is free from allergens or cross-contamination — always check labels.'**
-  String recipesAllergyNote(String list);
-
   /// No description provided for @recipesAllergyGeneric.
   ///
   /// In en, this message translates to:
@@ -3864,6 +3858,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 serving} other{{count} servings}}'**
   String recipeServings(int count);
+
+  /// No description provided for @recipesHiding.
+  ///
+  /// In en, this message translates to:
+  /// **'Hiding recipes with: {list}.'**
+  String recipesHiding(String list);
 
   /// No description provided for @notifDailyBody.
   ///
