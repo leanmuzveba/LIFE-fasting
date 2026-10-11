@@ -598,6 +598,14 @@ class FoodActions {
     _changed();
   }
 
+  /// Copies entries as they are (amounts, nutrition, meal, time) to [day].
+  Future<void> copyTo(Iterable<FoodEntry> entries, DateTime day) async {
+    for (final e in entries) {
+      await _repo.insert(e.copyToDay(day));
+    }
+    _changed();
+  }
+
   Future<void> setSaved(Food food, bool saved, {double grams = 100, String portion = ''}) async {
     if (saved) {
       await _repo.save((key: food.key, name: food.name, grams: grams, portion: portion, at: _now()));

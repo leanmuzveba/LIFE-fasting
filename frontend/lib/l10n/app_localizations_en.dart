@@ -2227,5 +2227,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bmiBandOver => 'Over';
 
   @override
+  String get diaryCopy => 'Copy to another day';
+
+  @override
+  String get diaryCopyTo => 'Copy to which day?';
+
+  @override
+  String diaryCopyMeal(String meal) {
+    return 'Copy $meal to another day';
+  }
+
+  @override
+  String diaryCopied(int count, String day) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count items copied to $day',
+      one: 'Copied to $day',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

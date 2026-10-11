@@ -3877,6 +3877,30 @@ abstract class AppLocalizations {
   /// **'Over'**
   String get bmiBandOver;
 
+  /// No description provided for @diaryCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to another day'**
+  String get diaryCopy;
+
+  /// No description provided for @diaryCopyTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to which day?'**
+  String get diaryCopyTo;
+
+  /// No description provided for @diaryCopyMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy {meal} to another day'**
+  String diaryCopyMeal(String meal);
+
+  /// No description provided for @diaryCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Copied to {day}} other{{count} items copied to {day}}}'**
+  String diaryCopied(int count, String day);
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

@@ -392,6 +392,12 @@ class _MealCard extends ConsumerWidget {
           Row(
             children: [
               Expanded(child: Semantics(header: true, child: MonoLabel(name))),
+              if (entries.isNotEmpty)
+                IconButton(
+                  tooltip: l.diaryCopyMeal(name),
+                  onPressed: () => copyEntries(context, ref, entries),
+                  icon: const Icon(Icons.copy_all_outlined, color: AppColors.primary, size: 22),
+                ),
               RoundIconButton(icon: Icons.add, onTap: onAdd, tooltip: l.addFoodAddTo(name)),
             ],
           ),
@@ -500,6 +506,15 @@ class _EntrySheetState extends ConsumerState<_EntrySheet> {
           ),
         ],
         TextButton.icon(
+          style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+          onPressed: () async {
+            final navigator = Navigator.of(context);
+            if (await copyEntries(context, ref, [e])) navigator.pop();
+          },
+          icon: const Icon(Icons.copy_outlined),
+          label: Text(l.diaryCopy),
+        ),
+        TextButton.icon(
           style: TextButton.styleFrom(foregroundColor: AppColors.errorText, minimumSize: const Size(48, 48)),
           onPressed: () async {
             final messenger = ScaffoldMessenger.of(context);
@@ -515,4 +530,23 @@ class _EntrySheetState extends ConsumerState<_EntrySheet> {
       ],
     );
   }
+}
+
+/// Pick a day (up to today) and copy [entries] there as they are.
+/// Returns true when copied.
+Future<bool> copyEntries(BuildContext context, WidgetRef ref, List<FoodEntry> entries) async {
+  final l = context.l10n;
+  final now = ref.read(clockProvider)().toLocal();
+  final today = DateTime(now.year, now.month, now.day);
+  final day = await showDatePicker(
+    context: context,
+    helpText: l.diaryCopyTo,
+    initialDate: today,
+    firstDate: DateTime(today.year - 1),
+    lastDate: today,
+  );
+  if (day == null || !context.mounted) return false;
+  await ref.read(foodActionsProvider).copyTo(entries, day);
+  if (context.mounted) showRuvaSnack(context, l.diaryCopied(entries.length, DateFormat('EEE, d MMM').format(day)));
+  return true;
 }

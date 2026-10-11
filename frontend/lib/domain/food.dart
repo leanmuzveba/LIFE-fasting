@@ -100,6 +100,22 @@ class FoodEntry {
   final String unit; // 'g' or 'ml'
   final Nutrients nutrients; // totals for this entry
 
+  /// The same food, meal and clock time on another local [day] (new entry).
+  FoodEntry copyToDay(DateTime day) {
+    final t = loggedAt.toLocal();
+    return FoodEntry(
+      day: DateTime(day.year, day.month, day.day),
+      meal: meal,
+      loggedAt: DateTime(day.year, day.month, day.day, t.hour, t.minute).toUtc(),
+      name: name,
+      foodKey: foodKey,
+      grams: grams,
+      portion: portion,
+      unit: unit,
+      nutrients: nutrients,
+    );
+  }
+
   FoodEntry copyWith({int? id, double? grams, DateTime? loggedAt, Meal? meal}) {
     final g = grams ?? this.grams;
     final old = this.grams;

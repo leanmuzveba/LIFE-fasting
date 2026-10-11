@@ -143,4 +143,27 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Sat, 3 Oct'), findsNothing);
   });
+
+  testWidgets('copy a whole meal to another day, as it is', (tester) async {
+    await _openDiary(tester);
+    final c = ProviderScope.containerOf(tester.element(find.text('Food Diary')));
+    final foods = await c.read(usdaFoodsProvider.future);
+    final yogurt = foods.firstWhere((f) => f.name == 'Yogurt, Greek, plain, lowfat');
+    await c.read(foodActionsProvider).log(yogurt, 150, meal: Meal.breakfast, at: DateTime(2026, 10, 4, 7, 5));
+    await c.read(foodActionsProvider).log(yogurt, 50, meal: Meal.breakfast, at: DateTime(2026, 10, 4, 7, 10));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('Copy Breakfast to another day'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('3'));
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    expect(find.text('2 items copied to Sat, 3 Oct'), findsOneWidget);
+    final copied = await c.read(foodRepositoryProvider).forDay(DateTime(2026, 10, 3));
+    expect(copied.map((e) => (e.grams, e.meal, e.loggedAt.toLocal().hour)), [
+      (150.0, Meal.breakfast, 7),
+      (50.0, Meal.breakfast, 7),
+    ]);
+    expect(copied.first.nutrients[Nutrient.energy], closeTo(109.5, 0.01));
+  });
 }
