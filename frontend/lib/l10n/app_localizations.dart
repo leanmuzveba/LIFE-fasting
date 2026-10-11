@@ -3025,12 +3025,6 @@ abstract class AppLocalizations {
   /// **'Choose from gallery'**
   String get photoGallery;
 
-  /// No description provided for @photoPrivacy.
-  ///
-  /// In en, this message translates to:
-  /// **'The photo is sent to Google Gemini to estimate the meal. Nothing else about you is sent.'**
-  String get photoPrivacy;
-
   /// No description provided for @photoNotFood.
   ///
   /// In en, this message translates to:

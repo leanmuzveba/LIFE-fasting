@@ -1727,9 +1727,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photoGallery => 'Choose from gallery';
 
   @override
-  String get photoPrivacy => 'The photo is sent to Google Gemini to estimate the meal. Nothing else about you is sent.';
-
-  @override
   String get photoNotFood => 'No food was recognised in that photo. Try again with the whole plate in view.';
 
   @override

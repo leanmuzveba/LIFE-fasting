@@ -187,8 +187,6 @@ class _MealPhotoScreenState extends ConsumerState<MealPhotoScreen> {
                         ),
                       ],
                     ),
-                  const SizedBox(height: 8),
-                  Text(l.photoPrivacy, textAlign: TextAlign.center, style: AppText.small.copyWith(fontSize: 12)),
                 ],
               ),
             ),

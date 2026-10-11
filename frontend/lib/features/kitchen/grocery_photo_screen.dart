@@ -194,7 +194,6 @@ class _GroceryPhotoScreenState extends ConsumerState<GroceryPhotoScreen> {
                         ),
                       ],
                     ),
-                  Text(l.photoPrivacy, textAlign: TextAlign.center, style: AppText.small.copyWith(fontSize: 12)),
                 ],
               ),
             ),

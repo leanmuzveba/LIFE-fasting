@@ -583,7 +583,6 @@
   "photoLabel": "photo estimate",
   "photoRetake": "Retake",
   "photoGallery": "Choose from gallery",
-  "photoPrivacy": "The photo is sent to Google Gemini to estimate the meal. Nothing else about you is sent.",
   "photoNotFood": "No food was recognised in that photo. Try again with the whole plate in view.",
   "photoNoKey": "Meal photos need a Gemini API key. Add one in Settings → Meal photo estimates.",
   "photoKeyError": "Gemini didn’t accept the API key. Check it in Settings → Meal photo estimates.",
