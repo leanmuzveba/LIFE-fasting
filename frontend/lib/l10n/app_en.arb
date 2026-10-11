@@ -511,14 +511,10 @@
   "recipesRetry": "Try again",
   "recipesAvailable": "{have} of {total} ingredients available",
   "@recipesAvailable": {"placeholders": {"have": {"type": "int"}, "total": {"type": "int"}}},
-  "recipesMissing": "Missing: {list}",
-  "@recipesMissing": {"placeholders": {"list": {"type": "String"}}},
   "recipesUsesExpiring": "{count, plural, =1{Uses 1 item expiring soon} other{Uses {count} items expiring soon}}",
   "@recipesUsesExpiring": {"placeholders": {"count": {"type": "int"}}},
   "recipesSave": "Save to favourites",
   "recipesUnsave": "Remove from favourites",
-  "recipesCookedOn": "Cooked {date}",
-  "@recipesCookedOn": {"placeholders": {"date": {"type": "String"}}},
   "recipeIngredients": "Ingredients",
   "recipeTotal": "{count} total",
   "@recipeTotal": {"placeholders": {"count": {"type": "int"}}},
@@ -750,5 +746,7 @@
   "@recipeServings": {"placeholders": {"count": {"type": "int"}}},
   "recipesHiding": "Hiding recipes with: {list}.",
   "@recipesHiding": {"placeholders": {"list": {"type": "String"}}},
+  "recipesHaveShort": "{have}/{total} ingredients",
+  "@recipesHaveShort": {"placeholders": {"have": {"type": "int"}, "total": {"type": "int"}}},
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

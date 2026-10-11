@@ -1496,11 +1496,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String recipesMissing(String list) {
-    return 'Missing: $list';
-  }
-
-  @override
   String recipesUsesExpiring(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -1516,11 +1511,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recipesUnsave => 'Remove from favourites';
-
-  @override
-  String recipesCookedOn(String date) {
-    return 'Cooked $date';
-  }
 
   @override
   String get recipeIngredients => 'Ingredients';
@@ -2220,6 +2210,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String recipesHiding(String list) {
     return 'Hiding recipes with: $list.';
+  }
+
+  @override
+  String recipesHaveShort(int have, int total) {
+    return '$have/$total ingredients';
   }
 
   @override

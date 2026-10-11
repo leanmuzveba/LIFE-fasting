@@ -2677,12 +2677,6 @@ abstract class AppLocalizations {
   /// **'{have} of {total} ingredients available'**
   String recipesAvailable(int have, int total);
 
-  /// No description provided for @recipesMissing.
-  ///
-  /// In en, this message translates to:
-  /// **'Missing: {list}'**
-  String recipesMissing(String list);
-
   /// No description provided for @recipesUsesExpiring.
   ///
   /// In en, this message translates to:
@@ -2700,12 +2694,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove from favourites'**
   String get recipesUnsave;
-
-  /// No description provided for @recipesCookedOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Cooked {date}'**
-  String recipesCookedOn(String date);
 
   /// No description provided for @recipeIngredients.
   ///
@@ -3864,6 +3852,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hiding recipes with: {list}.'**
   String recipesHiding(String list);
+
+  /// No description provided for @recipesHaveShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{have}/{total} ingredients'**
+  String recipesHaveShort(int have, int total);
 
   /// No description provided for @notifDailyBody.
   ///

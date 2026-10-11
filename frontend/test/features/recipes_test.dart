@@ -144,8 +144,7 @@ void main() {
     expect(find.text('Spinach dal'), findsOneWidget);
     expect(find.text('Peanut egg noodles'), findsNothing);
     expect(find.text('Hiding recipes with: Peanuts.'), findsOneWidget);
-    expect(find.text('2 of 3 ingredients available'), findsOneWidget);
-    expect(find.text('Missing: butter'), findsOneWidget);
+    expect(find.text('2/3 ingredients'), findsOneWidget);
 
     await tester.tap(find.text('Spinach scrambled eggs'));
     await tester.pumpAndSettle();

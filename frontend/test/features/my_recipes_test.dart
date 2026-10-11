@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/domain/kitchen.dart';
+import 'package:life_fasting/domain/recipe.dart';
 import 'package:life_fasting/state/providers.dart';
 
 import '../widget_test.dart' show pumpApp, recipeApi;
@@ -55,7 +56,7 @@ void main() {
 
     expect(find.text('Gogo’s eggs'), findsOneWidget);
     expect(find.text('Your recipe'), findsOneWidget);
-    expect(find.text('1 of 2 ingredients available'), findsOneWidget);
+    expect(find.text('1/2 ingredients'), findsOneWidget);
     await tester.tap(find.text('My recipes'));
     await tester.pumpAndSettle();
     expect(find.text('Gogo’s eggs'), findsOneWidget);
@@ -79,5 +80,31 @@ void main() {
     await tester.pumpAndSettle();
     expect(await c.read(myRecipeRepositoryProvider).all(), isEmpty);
     expect(find.text('You haven’t written any recipes yet — tap “New recipe”.'), findsOneWidget);
+  });
+
+  testWidgets('recipes show in a two-column grid, 10 per page', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 3200);
+    recipeApi.offline = true;
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    for (var i = 1; i <= 12; i++) {
+      await c
+          .read(myRecipeRepositoryProvider)
+          .save(
+            Recipe(
+              id: 'mine:',
+              name: 'Dish ${i.toString().padLeft(2, '0')}',
+              ingredients: const [RecipeIngredient('Rice', '1 cup')],
+            ),
+          );
+    }
+    await tester.tap(find.bySemanticsLabel('Nutrition').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Recipes'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Dish '), findsNWidgets(10));
+    await tester.tap(find.text('2'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Dish '), findsNWidgets(2));
   });
 }

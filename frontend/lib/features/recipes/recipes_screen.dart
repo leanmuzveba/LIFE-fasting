@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart' show DateFormat;
 
 import '../../core/l10n.dart';
 import '../../core/theme/app_theme.dart';
@@ -30,6 +29,8 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
   final _search = TextEditingController();
   String _query = '';
   _Show _show = _Show.all;
+  int _page = 0;
+  static const _perPage = 10;
   DietPreference? _diet; // null = follow Settings
 
   @override
@@ -54,7 +55,6 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
     final allergies = settings?.allergies ?? const <Allergen>{};
     final kitchen = ref.watch(kitchenProvider).value ?? const [];
     final saved = ref.watch(savedRecipesProvider).value ?? const <String>{};
-    final cooked = ref.watch(lastCookedProvider).value ?? const <String, DateTime>{};
     final source = _query.isEmpty ? ref.watch(recipeSuggestionsProvider) : ref.watch(recipeSearchProvider(_query));
     // Your own recipes always show (even offline), matched like the rest.
     final t = ref.watch(clockProvider)().toLocal();
@@ -159,7 +159,10 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                       onChanged: (v) {
                         if (v.trim().isEmpty && _query.isNotEmpty) setState(() => _query = '');
                       },
-                      onSubmitted: (v) => setState(() => _query = v.trim()),
+                      onSubmitted: (v) => setState(() {
+                        _query = v.trim();
+                        _page = 0;
+                      }),
                     ),
                   ],
                 ),
@@ -173,7 +176,10 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                       dense: true,
                       label: _showLabel(l, s),
                       selected: _show == s,
-                      onTap: () => setState(() => _show = s),
+                      onTap: () => setState(() {
+                        _show = s;
+                        _page = 0;
+                      }),
                     ),
                 ],
               ),
@@ -186,7 +192,10 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                       dense: true,
                       label: d == DietPreference.none ? l.recipesDietAny : dietLabel(l, d),
                       selected: diet == d,
-                      onTap: () => setState(() => _diet = d),
+                      onTap: () => setState(() {
+                        _diet = d;
+                        _page = 0;
+                      }),
                     ),
                 ],
               ),
@@ -235,18 +244,53 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                         padding: const EdgeInsets.all(16),
                         child: Text(l.recipesNone, textAlign: TextAlign.center, style: AppText.small),
                       ),
-                    for (final m in shown) ...[
-                      _RecipeCard(
-                        match: m,
-                        saved: saved.contains(m.recipe.id),
-                        cooked: cooked[m.recipe.id],
-                        onSave: () => ref.read(recipeActionsProvider).setSaved(m.recipe, !saved.contains(m.recipe.id)),
-                        onTap: () =>
-                            Navigator.of(context)
-                                .push(MaterialPageRoute<void>(builder: (_) => RecipeDetailScreen(recipe: m.recipe))),
-                      ),
-                      const SizedBox(height: 18),
-                    ],
+                    if (shown.isNotEmpty)
+                      ...() {
+                        final pages = (shown.length / _perPage).ceil();
+                        final page = _page.clamp(0, pages - 1);
+                        final visible = shown.skip(page * _perPage).take(_perPage).toList();
+                        Widget card(RecipeMatch m) => _RecipeCard(
+                          match: m,
+                          saved: saved.contains(m.recipe.id),
+                          onSave: () =>
+                              ref.read(recipeActionsProvider).setSaved(m.recipe, !saved.contains(m.recipe.id)),
+                          onTap: () =>
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute<void>(builder: (_) => RecipeDetailScreen(recipe: m.recipe))),
+                        );
+                        return [
+                          for (var r = 0; r < visible.length; r += 2) ...[
+                            IntrinsicHeight(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(child: card(visible[r])),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: r + 1 < visible.length ? card(visible[r + 1]) : const SizedBox.shrink(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
+                          if (pages > 1)
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 6,
+                              children: [
+                                for (var p = 0; p < pages; p++)
+                                  RuvaChip(
+                                    dense: true,
+                                    outlined: true,
+                                    label: '${p + 1}',
+                                    selected: p == page,
+                                    onTap: () => setState(() => _page = p),
+                                  ),
+                              ],
+                            ),
+                        ];
+                      }(),
                     const SizedBox(height: 4),
                     Text(l.recipesPrivacy, textAlign: TextAlign.center, style: AppText.small.copyWith(fontSize: 12)),
                   ],
@@ -329,17 +373,10 @@ class RecipeImage extends StatelessWidget {
 }
 
 class _RecipeCard extends StatelessWidget {
-  const _RecipeCard({
-    required this.match,
-    required this.saved,
-    required this.cooked,
-    required this.onSave,
-    required this.onTap,
-  });
+  const _RecipeCard({required this.match, required this.saved, required this.onSave, required this.onTap});
 
   final RecipeMatch match;
   final bool saved;
-  final DateTime? cooked;
   final VoidCallback onSave;
   final VoidCallback onTap;
 
@@ -347,98 +384,80 @@ class _RecipeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final r = match.recipe;
-    final total = r.ingredients.length;
-    final have = match.available.length;
-    final tags = [if (r.isMine) l.myRecipeBadge, r.category, r.area].where((t) => t.isNotEmpty).join(' · ');
-    return RuvaCard(
-      padding: EdgeInsets.zero,
-      radius: 28,
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
-            children: [
-              RecipeImage(url: r.thumb, height: 160),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: RoundIconButton(
-                  icon: saved ? Icons.favorite : Icons.favorite_border,
-                  onTap: onSave,
-                  tooltip: saved ? l.recipesUnsave : l.recipesSave,
-                  background: AppColors.white,
-                  foreground: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    final have = l.recipesHaveShort(match.available.length, r.ingredients.length);
+    return Semantics(
+      container: true,
+      button: true,
+      label: '${r.name}. $have${r.isMine ? '. ${l.myRecipeBadge}' : ''}',
+      child: RuvaCard(
+        padding: EdgeInsets.zero,
+        radius: 18,
+        onTap: onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Stack(
               children: [
-                Text(r.name, style: AppText.cardValue.copyWith(fontSize: 16)),
-                if (tags.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(tags, style: AppText.small.copyWith(fontSize: 13)),
-                ],
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                  decoration: BoxDecoration(
-                    color: match.complete ? AppColors.lime200 : AppColors.cream,
-                    borderRadius: BorderRadius.circular(20),
-                    border: match.complete ? null : Border.all(color: AppColors.track),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        match.complete ? Icons.check_circle : Icons.info_outline,
-                        size: 16,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          l.recipesAvailable(have, total),
-                          style: AppText.body.copyWith(fontSize: 13, color: AppColors.primary),
-                        ),
-                      ),
-                    ],
+                RecipeImage(url: r.thumb, height: 96),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: RoundIconButton(
+                    icon: saved ? Icons.favorite : Icons.favorite_border,
+                    onTap: onSave,
+                    tooltip: saved ? l.recipesUnsave : l.recipesSave,
+                    size: 32,
+                    background: AppColors.white,
+                    foreground: AppColors.primary,
                   ),
                 ),
-                if (match.missing.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    l.recipesMissing(match.missing.map((i) => i.name.toLowerCase()).join(', ')),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppText.small.copyWith(fontSize: 12.5),
-                  ),
-                ],
-                if (match.usesExpiring > 0) ...[
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      const Icon(Icons.schedule, size: 15, color: AppColors.fatBurningIcon),
-                      const SizedBox(width: 6),
-                      Text(l.recipesUsesExpiring(match.usesExpiring), style: AppText.small.copyWith(fontSize: 12.5)),
-                    ],
-                  ),
-                ],
-                if (cooked != null) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    l.recipesCookedOn(DateFormat('d MMM').format(cooked!.toLocal())),
-                    style: AppText.small.copyWith(fontSize: 12.5),
-                  ),
-                ],
               ],
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExcludeSemantics(
+                    child: Text(
+                      r.name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.cardValue.copyWith(fontSize: 14, height: 1.25),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  ExcludeSemantics(
+                    child: Row(
+                      children: [
+                        Icon(
+                          match.complete ? Icons.check_circle : Icons.info_outline,
+                          size: 14,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(have, style: AppText.small.copyWith(fontSize: 11.5, color: AppColors.primary)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (r.isMine || match.usesExpiring > 0) ...[
+                    const SizedBox(height: 4),
+                    ExcludeSemantics(
+                      child: Text(
+                        r.isMine ? l.myRecipeBadge : l.recipesUsesExpiring(match.usesExpiring),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.small.copyWith(fontSize: 11),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
