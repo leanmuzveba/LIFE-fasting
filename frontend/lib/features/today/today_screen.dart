@@ -10,6 +10,7 @@ import '../../core/l10n.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ruva_kit.dart';
+import '../../core/widgets/sheet.dart';
 import '../../domain/food.dart';
 import '../../domain/hydration.dart';
 import '../../domain/steps.dart';
@@ -109,7 +110,8 @@ class _StepsCard extends ConsumerWidget {
     final height = ref.watch(bodyProfileProvider).value?.heightCm;
     final n = NumberFormat.decimalPattern();
     final muted = AppText.small.copyWith(color: onForestMuted, fontSize: 13);
-    final progress = (state.steps / dailyStepGoal).clamp(0.0, 1.0);
+    final goal = ref.watch(stepGoalProvider).value ?? dailyStepGoal;
+    final progress = (state.steps / goal).clamp(0.0, 1.0);
 
     return ForestCard(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 22),
@@ -123,10 +125,19 @@ class _StepsCard extends ConsumerWidget {
               const Icon(Icons.route_outlined, size: 15, color: AppColors.accent),
               const SizedBox(width: 6),
               Text(l.homeKm(stepsToKm(state.steps, heightCm: height).toStringAsFixed(1)), style: muted),
-              const SizedBox(width: 16),
-              const Icon(Icons.flag_outlined, size: 15, color: AppColors.accent),
-              const SizedBox(width: 6),
-              Text(l.homeStepGoal(n.format(dailyStepGoal)), style: muted),
+              const SizedBox(width: 8),
+              TextButton.icon(
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(48, 40),
+                  textStyle: muted,
+                ),
+                onPressed: () => showAppSheet<void>(context, (_) => _GoalSheet(goal: goal)),
+                icon: const Icon(Icons.flag_outlined, size: 15, color: AppColors.accent),
+                label: Text(l.homeStepGoal(n.format(goal)), style: muted),
+              ),
+              const Icon(Icons.edit_outlined, size: 13, color: onForestMuted),
             ],
           ),
           const SizedBox(height: 18),
@@ -333,4 +344,44 @@ class _MetricRow extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// Change the daily steps goal (500-step steps).
+class _GoalSheet extends ConsumerStatefulWidget {
+  const _GoalSheet({required this.goal});
+  final int goal;
+
+  @override
+  ConsumerState<_GoalSheet> createState() => _GoalSheetState();
+}
+
+class _GoalSheetState extends ConsumerState<_GoalSheet> {
+  late int _goal = widget.goal;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final n = NumberFormat.decimalPattern();
+    return Gap16Column(
+      children: [
+        Semantics(header: true, child: Text(l.homeStepGoalTitle, style: AppText.title)),
+        ValueStepper(
+          large: true,
+          label: n.format(_goal),
+          minusTooltip: l.addFoodLess,
+          plusTooltip: l.addFoodMore,
+          onMinus: _goal > minStepGoal ? () => setState(() => _goal -= 500) : null,
+          onPlus: _goal < maxStepGoal ? () => setState(() => _goal += 500) : null,
+        ),
+        PrimaryButton(
+          label: l.save,
+          onPressed: () async {
+            await ref.read(settingsRepositoryProvider).saveStepGoal(_goal);
+            ref.invalidate(stepGoalProvider);
+            if (context.mounted) Navigator.pop(context);
+          },
+        ),
+      ],
+    );
+  }
 }

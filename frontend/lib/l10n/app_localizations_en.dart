@@ -2215,5 +2215,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get homeStepGoalTitle => 'Daily steps goal';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

@@ -239,5 +239,17 @@ void main() {
     steps.readingsController.add(8240);
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Today’s steps: 3,240, 32% of goal'), findsOneWidget);
+
+    // Change the goal: 10,000 → 8,000.
+    await tester.tap(find.text('Goal 10,000'));
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 4; i++) {
+      await tester.tap(find.byTooltip('Less'));
+      await tester.pump();
+    }
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.text('Goal 8,000'), findsOneWidget);
+    expect(find.bySemanticsLabel('Today’s steps: 3,240, 41% of goal'), findsOneWidget);
   });
 }

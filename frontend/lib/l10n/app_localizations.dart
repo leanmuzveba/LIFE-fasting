@@ -3853,6 +3853,12 @@ abstract class AppLocalizations {
   /// **'{have}/{total} ingredients'**
   String recipesHaveShort(int have, int total);
 
+  /// No description provided for @homeStepGoalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily steps goal'**
+  String get homeStepGoalTitle;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

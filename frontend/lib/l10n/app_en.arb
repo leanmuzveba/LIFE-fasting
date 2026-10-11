@@ -747,5 +747,6 @@
   "@recipesHiding": {"placeholders": {"list": {"type": "String"}}},
   "recipesHaveShort": "{have}/{total} ingredients",
   "@recipesHaveShort": {"placeholders": {"have": {"type": "int"}, "total": {"type": "int"}}},
+  "homeStepGoalTitle": "Daily steps goal",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

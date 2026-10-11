@@ -1,7 +1,8 @@
 // Steps today from Android's hardware step counter, which only reports a
 // running total since the phone last booted.
 
-const dailyStepGoal = 10000;
+const dailyStepGoal = 10000; // default; changeable on the home steps card
+const minStepGoal = 1000, maxStepGoal = 50000;
 
 /// What we remember between readings (stored on the phone).
 class StepBook {

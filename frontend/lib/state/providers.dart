@@ -849,6 +849,12 @@ class StepsState {
   final bool unavailable;
 }
 
+/// Daily steps goal (you can change it on the home steps card).
+final stepGoalProvider = FutureProvider<int>(
+  (ref) async =>
+      ((await ref.watch(settingsRepositoryProvider).stepGoal()) ?? dailyStepGoal).clamp(minStepGoal, maxStepGoal),
+);
+
 final todayStepsProvider = StreamProvider<StepsState>((ref) async* {
   final counter = ref.watch(stepCounterProvider);
   final repo = ref.watch(settingsRepositoryProvider);

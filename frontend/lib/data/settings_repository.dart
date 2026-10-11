@@ -35,6 +35,13 @@ class SettingsRepository {
     );
   }
 
+  Future<int?> stepGoal() async => int.tryParse(
+    '${(await _db.query('settings', where: 'key = ?', whereArgs: ['steps.goal'])).firstOrNull?['value']}',
+  );
+
+  Future<void> saveStepGoal(int goal) =>
+      _db.insert('settings', {'key': 'steps.goal', 'value': '$goal'}, conflictAlgorithm: ConflictAlgorithm.replace);
+
   /// Step-counter bookkeeping (see domain/steps.dart).
   Future<Map<String, dynamic>?> stepBook() async {
     final v = (await _db.query('settings', where: 'key = ?', whereArgs: ['steps.book'])).firstOrNull?['value'];
