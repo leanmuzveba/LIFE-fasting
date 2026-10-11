@@ -33,7 +33,7 @@ class AppShell extends ConsumerStatefulWidget {
   ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends ConsumerState<AppShell> {
+class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver {
   static const _nutritionTab = 2;
   int _tab = 0;
   bool _menuOpen = false;
@@ -43,6 +43,19 @@ class _AppShellState extends ConsumerState<AppShell> {
     super.initState();
     // Re-apply scheduled reminders on launch (also corrects DST drift).
     ref.read(launchSyncProvider);
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  /// Back in the app: pick up anything your watch synced meanwhile.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) ref.read(watchActionsProvider).refresh();
   }
 
   void _go(int i) => setState(() => _tab = i);
@@ -139,6 +152,7 @@ class _AppShellState extends ConsumerState<AppShell> {
               onOpenTimer: _openTimer,
               onOpenWater: () => _push(const ActivityWaterScreen()),
               onOpenNutrition: () => _go(_nutritionTab),
+              onOpenActivity: () => _push(const ActivityWaterScreen(initialTab: 1)),
             ),
             const HistoryScreen(),
             const FoodDiaryScreen(),

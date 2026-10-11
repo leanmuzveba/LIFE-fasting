@@ -3943,6 +3943,114 @@ abstract class AppLocalizations {
   /// **'Save {meal} as a recipe'**
   String diarySaveRecipe(String meal);
 
+  /// No description provided for @homeBurned.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories burned'**
+  String get homeBurned;
+
+  /// No description provided for @homeBurnedSub.
+  ///
+  /// In en, this message translates to:
+  /// **'From your watch · active calories'**
+  String get homeBurnedSub;
+
+  /// No description provided for @watchSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get watchSection;
+
+  /// No description provided for @watchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect your watch'**
+  String get watchTitle;
+
+  /// No description provided for @watchOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected'**
+  String get watchOff;
+
+  /// No description provided for @watchLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get watchLinked;
+
+  /// No description provided for @watchNeedsPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs permission'**
+  String get watchNeedsPermission;
+
+  /// No description provided for @watchUnavailableShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Connect needed'**
+  String get watchUnavailableShort;
+
+  /// No description provided for @watchIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'RUVA can read the workouts, calories burned and steps your watch records, through Android’s Health Connect.'**
+  String get watchIntro;
+
+  /// No description provided for @watchSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Xiaomi watch? First open Mi Fitness → Profile → Settings → Health Connect and allow it to share exercise, calories and steps. Then tap Connect below.'**
+  String get watchSteps;
+
+  /// No description provided for @watchUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Connect isn’t installed on this phone yet.'**
+  String get watchUnavailable;
+
+  /// No description provided for @watchInstall.
+  ///
+  /// In en, this message translates to:
+  /// **'Install Health Connect'**
+  String get watchInstall;
+
+  /// No description provided for @watchConnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect'**
+  String get watchConnect;
+
+  /// No description provided for @watchConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch connected'**
+  String get watchConnected;
+
+  /// No description provided for @watchDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'RUVA wasn’t given access. You can allow it in Health Connect any time.'**
+  String get watchDenied;
+
+  /// No description provided for @watchLinkedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected — RUVA reads your watch data when you open the app.'**
+  String get watchLinkedBody;
+
+  /// No description provided for @watchDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop reading watch data'**
+  String get watchDisconnect;
+
+  /// No description provided for @watchPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.'**
+  String get watchPrivacy;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

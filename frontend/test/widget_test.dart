@@ -27,6 +27,9 @@ FakeMealPhotoApi? mealPhoto;
 /// Fake hardware step counter (permission + readings).
 late FakeStepCounter steps;
 
+/// Fake Health Connect (watch data).
+late FakeHealthSource watch;
+
 /// Boots the real app on an in-memory database with a fake clock.
 
 Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = AgeEligibility.adult}) async {
@@ -40,6 +43,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   scannedBarcode = null;
   mealPhoto = FakeMealPhotoApi();
   steps = FakeStepCounter();
+  watch = FakeHealthSource();
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
@@ -50,6 +54,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
       barcodeScannerProvider.overrideWithValue((_) async => scannedBarcode),
       mealPhotoApiProvider.overrideWith((ref) async => mealPhoto),
       stepCounterProvider.overrideWithValue(steps),
+      healthSourceProvider.overrideWithValue(watch),
       mealPhotoPickerProvider.overrideWithValue((_) async => onePixelPng),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {

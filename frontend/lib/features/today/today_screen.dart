@@ -20,7 +20,14 @@ import '../ring/fasting_ring.dart' show FastingRing;
 /// Home dashboard (RUVA design): steps, then today's calories, hours fasted
 /// and water. Logging happens from the centre + button.
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key, required this.onOpenTimer, required this.onOpenWater, required this.onOpenNutrition});
+  const HomeScreen({
+    super.key,
+    required this.onOpenTimer,
+    required this.onOpenWater,
+    required this.onOpenNutrition,
+    required this.onOpenActivity,
+  });
+  final VoidCallback onOpenActivity;
   final VoidCallback onOpenTimer;
   final VoidCallback onOpenWater;
   final VoidCallback onOpenNutrition;
@@ -95,6 +102,17 @@ class HomeScreen extends ConsumerWidget {
           progress: (water / settings.waterGoalMl).clamp(0.0, 1.0),
           onTap: onOpenWater,
         ),
+        if (ref.watch(watchCaloriesTodayProvider).value case final burned?) ...[
+          const SizedBox(height: 12),
+          _MetricRow(
+            icon: Icons.watch_outlined,
+            label: l.homeBurned,
+            value: n.format(burned.round()),
+            unit: 'kcal',
+            sub: l.homeBurnedSub,
+            onTap: onOpenActivity,
+          ),
+        ],
       ],
     );
   }

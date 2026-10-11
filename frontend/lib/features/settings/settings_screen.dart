@@ -132,6 +132,23 @@ class SettingsScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 26),
+        _SectionLabel(l.watchSection),
+        _Group(
+          children: [
+            _NavRow(
+              icon: Icons.watch_outlined,
+              title: l.watchTitle,
+              value: switch (ref.watch(watchStatusProvider).value) {
+                WatchStatus.linked => l.watchLinked,
+                WatchStatus.needsPermission => l.watchNeedsPermission,
+                WatchStatus.unavailable => l.watchUnavailableShort,
+                _ => l.watchOff,
+              },
+              onTap: () => showAppSheet<void>(context, (_) => const _WatchSheet()),
+            ),
+          ],
+        ),
+        const SizedBox(height: 26),
         _SectionLabel(l.settingsRemindersOptional),
         _Group(
           children: [
@@ -443,6 +460,52 @@ class _PhotoKeySheetState extends ConsumerState<_PhotoKeySheet> {
         ),
         PrimaryButton(label: l.save, onPressed: () => _set(_key.text)),
         if (own) TextButton(onPressed: () => _set(null), child: Text(l.settingsPhotoKeyClear)),
+      ],
+    );
+  }
+}
+
+/// Connect a watch through Health Connect (Mi Fitness for Xiaomi watches).
+class _WatchSheet extends ConsumerWidget {
+  const _WatchSheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final status = ref.watch(watchStatusProvider).value ?? WatchStatus.off;
+    final actions = ref.read(watchActionsProvider);
+    return Gap16Column(
+      children: [
+        Semantics(header: true, child: Text(l.watchTitle, style: AppText.title)),
+        Text(l.watchIntro, style: AppText.body),
+        Text(l.watchSteps, style: AppText.small.copyWith(fontSize: 13.5)),
+        if (status == WatchStatus.unavailable) ...[
+          Text(l.watchUnavailable, style: AppText.small.copyWith(color: AppColors.errorText)),
+          PrimaryButton(label: l.watchInstall, onPressed: () => ref.read(healthSourceProvider).install()),
+        ] else if (status == WatchStatus.linked) ...[
+          Text(l.watchLinkedBody, style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
+          TextButton(
+            onPressed: () async {
+              await actions.disconnect();
+              if (context.mounted) Navigator.pop(context);
+            },
+            child: Text(l.watchDisconnect),
+          ),
+        ] else
+          PrimaryButton(
+            label: l.watchConnect,
+            onPressed: () async {
+              final result = await actions.connect();
+              if (!context.mounted) return;
+              if (result == WatchStatus.linked) {
+                Navigator.pop(context);
+                showRuvaSnack(context, l.watchConnected);
+              } else if (result == WatchStatus.needsPermission) {
+                showRuvaSnack(context, l.watchDenied);
+              }
+            },
+          ),
+        Text(l.watchPrivacy, style: AppText.small.copyWith(fontSize: 12)),
       ],
     );
   }

@@ -10,6 +10,7 @@ import '../data/activity_repository.dart';
 import '../data/body_repository.dart';
 import '../data/food_facts_api.dart';
 import '../data/food_repository.dart';
+import '../data/health_source.dart';
 import '../data/hydration_repository.dart';
 import '../data/meal_photo_api.dart';
 import '../data/kitchen_repository.dart';
@@ -895,3 +896,65 @@ final todayStepsProvider = StreamProvider<StepsState>((ref) async* {
     yield const StepsState(unavailable: true);
   }
 });
+
+// --- Watch via Health Connect (read-only) -------------------------------------------
+
+final healthSourceProvider = Provider((ref) => HealthSource());
+
+enum WatchStatus { off, unavailable, needsPermission, linked }
+
+/// Whether you've connected your watch (opt-in) and RUVA can still read it.
+final watchStatusProvider = FutureProvider<WatchStatus>((ref) async {
+  final linked = await ref.watch(settingsRepositoryProvider).flag('watch.linked');
+  final hc = ref.watch(healthSourceProvider);
+  try {
+    if (!await hc.available()) return WatchStatus.unavailable;
+    if (!linked) return WatchStatus.off;
+    return await hc.connected() ? WatchStatus.linked : WatchStatus.needsPermission;
+  } catch (_) {
+    return WatchStatus.unavailable;
+  }
+});
+
+/// Today's active calories from your watch, or null when not connected / no data.
+final watchCaloriesTodayProvider = FutureProvider<double?>((ref) async {
+  if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return null;
+  final now = ref.read(clockProvider)().toLocal();
+  try {
+    return await ref.watch(healthSourceProvider).caloriesBurned(DateTime(now.year, now.month, now.day), now);
+  } catch (_) {
+    return null;
+  }
+});
+
+class WatchActions {
+  WatchActions(this._ref);
+  final Ref _ref;
+
+  /// Asks Health Connect for read access; returns the resulting status.
+  Future<WatchStatus> connect() async {
+    final hc = _ref.read(healthSourceProvider);
+    if (!await hc.available()) {
+      refresh();
+      return WatchStatus.unavailable;
+    }
+    final ok = await hc.connect();
+    await _ref.read(settingsRepositoryProvider).setFlag('watch.linked', ok);
+    refresh();
+    return ok ? WatchStatus.linked : WatchStatus.needsPermission;
+  }
+
+  /// Stops reading (permissions can be fully revoked in Health Connect).
+  Future<void> disconnect() async {
+    await _ref.read(settingsRepositoryProvider).setFlag('watch.linked', false);
+    refresh();
+  }
+
+  /// Re-reads watch data (on app resume and after connecting).
+  void refresh() {
+    _ref.invalidate(watchStatusProvider);
+    _ref.invalidate(watchCaloriesTodayProvider);
+  }
+}
+
+final watchActionsProvider = Provider(WatchActions.new);

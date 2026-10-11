@@ -35,6 +35,13 @@ class SettingsRepository {
     );
   }
 
+  /// A simple on/off preference stored on the phone.
+  Future<bool> flag(String name) async =>
+      (await _db.query('settings', where: 'key = ?', whereArgs: [name])).firstOrNull?['value'] == '1';
+
+  Future<void> setFlag(String name, bool on) =>
+      _db.insert('settings', {'key': name, 'value': on ? '1' : '0'}, conflictAlgorithm: ConflictAlgorithm.replace);
+
   Future<int?> stepGoal() async => int.tryParse(
     '${(await _db.query('settings', where: 'key = ?', whereArgs: ['steps.goal'])).firstOrNull?['value']}',
   );

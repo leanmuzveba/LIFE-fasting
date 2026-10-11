@@ -1,5 +1,6 @@
 package com.leanmuzveba.life_fasting
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+// FragmentActivity: Health Connect's permission screen needs registerForActivityResult.
+class MainActivity : FlutterFragmentActivity()

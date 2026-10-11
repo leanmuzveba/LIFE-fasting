@@ -2272,5 +2272,62 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get homeBurned => 'Calories burned';
+
+  @override
+  String get homeBurnedSub => 'From your watch · active calories';
+
+  @override
+  String get watchSection => 'Watch';
+
+  @override
+  String get watchTitle => 'Connect your watch';
+
+  @override
+  String get watchOff => 'Not connected';
+
+  @override
+  String get watchLinked => 'Connected';
+
+  @override
+  String get watchNeedsPermission => 'Needs permission';
+
+  @override
+  String get watchUnavailableShort => 'Health Connect needed';
+
+  @override
+  String get watchIntro =>
+      'RUVA can read the workouts, calories burned and steps your watch records, through Android’s Health Connect.';
+
+  @override
+  String get watchSteps =>
+      'Xiaomi watch? First open Mi Fitness → Profile → Settings → Health Connect and allow it to share exercise, calories and steps. Then tap Connect below.';
+
+  @override
+  String get watchUnavailable => 'Health Connect isn’t installed on this phone yet.';
+
+  @override
+  String get watchInstall => 'Install Health Connect';
+
+  @override
+  String get watchConnect => 'Connect';
+
+  @override
+  String get watchConnected => 'Watch connected';
+
+  @override
+  String get watchDenied => 'RUVA wasn’t given access. You can allow it in Health Connect any time.';
+
+  @override
+  String get watchLinkedBody => 'Connected — RUVA reads your watch data when you open the app.';
+
+  @override
+  String get watchDisconnect => 'Stop reading watch data';
+
+  @override
+  String get watchPrivacy =>
+      'Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

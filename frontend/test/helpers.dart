@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:life_fasting/data/app_database.dart';
 import 'package:life_fasting/data/food_facts_api.dart';
+import 'package:life_fasting/data/health_source.dart';
 import 'package:life_fasting/data/meal_photo_api.dart';
 import 'package:life_fasting/domain/kitchen.dart';
 import 'package:life_fasting/domain/meal_estimate.dart';
@@ -183,4 +184,29 @@ class FakeStepCounter extends StepCounter {
 
   @override
   Stream<int> readings() => readingsController.stream;
+}
+
+/// Health Connect stand-in: availability, permission and canned readings.
+class FakeHealthSource extends HealthSource {
+  bool isAvailable = true;
+  bool grants = true;
+  bool granted = false;
+  double? calories;
+  int? stepCount;
+  List<WatchWorkout> workoutList = const [];
+
+  @override
+  Future<bool> available() async => isAvailable;
+  @override
+  Future<void> install() async {}
+  @override
+  Future<bool> connect() async => granted = grants;
+  @override
+  Future<bool> connected() async => granted;
+  @override
+  Future<int?> steps(DateTime from, DateTime to) async => stepCount;
+  @override
+  Future<double?> caloriesBurned(DateTime from, DateTime to) async => calories;
+  @override
+  Future<List<WatchWorkout>> workouts(DateTime from, DateTime to) async => workoutList;
 }
