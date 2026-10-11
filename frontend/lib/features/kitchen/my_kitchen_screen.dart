@@ -246,28 +246,24 @@ class _MyKitchenScreenState extends ConsumerState<MyKitchenScreen> {
                           ],
                         ),
                         const SizedBox(height: 10),
-                        Wrap(
-                          spacing: 4,
+                        Row(
                           children: [
-                            TextButton.icon(
-                              style: TextButton.styleFrom(
-                                foregroundColor: AppColors.accent,
-                                minimumSize: const Size(48, 48),
+                            Expanded(
+                              child: _PillAction(
+                                icon: Icons.fact_check_outlined,
+                                label: l.kitchenStartReview,
+                                onTap: () =>
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute<void>(builder: (_) => const KitchenReviewScreen())),
                               ),
-                              onPressed: () =>
-                                  Navigator.of(context)
-                                      .push(MaterialPageRoute<void>(builder: (_) => const KitchenReviewScreen())),
-                              icon: const Icon(Icons.fact_check_outlined, size: 20),
-                              label: Text(l.kitchenStartReview),
                             ),
-                            TextButton.icon(
-                              style: TextButton.styleFrom(
-                                foregroundColor: AppColors.accent,
-                                minimumSize: const Size(48, 48),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: _PillAction(
+                                icon: Icons.shopping_cart_outlined,
+                                label: l.shoppingTitle,
+                                onTap: () => showShoppingList(context),
                               ),
-                              onPressed: () => showShoppingList(context),
-                              icon: const Icon(Icons.shopping_cart_outlined, size: 20),
-                              label: Text(l.shoppingTitle),
                             ),
                           ],
                         ),
@@ -445,4 +441,27 @@ class _KitchenItemCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Small lime-outlined pill on the forest card (48 px tap area).
+class _PillAction extends StatelessWidget {
+  const _PillAction({required this.icon, required this.label, required this.onTap});
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => TextButton.icon(
+    style: TextButton.styleFrom(
+      foregroundColor: AppColors.accent,
+      backgroundColor: const Color(0x1AFFFFFF),
+      shape: const StadiumBorder(side: BorderSide(color: Color(0x40B9F36C))),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      minimumSize: const Size(0, 36),
+      textStyle: AppText.link.copyWith(fontSize: 12.5),
+    ),
+    onPressed: onTap,
+    icon: Icon(icon, size: 16),
+    label: FittedBox(fit: BoxFit.scaleDown, child: Text(label, maxLines: 1)),
+  );
 }
