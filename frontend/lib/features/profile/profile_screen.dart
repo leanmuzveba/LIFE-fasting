@@ -328,6 +328,7 @@ class _Numbers extends StatelessWidget {
                 ),
               );
             }(),
+            if (adult) ...[const SizedBox(height: 12), _BmiBar(value: bmi(w.weightKg, h))],
             const SizedBox(height: 10),
             if (!adult)
               Text(l.bodyUnder18, style: white)
@@ -656,4 +657,83 @@ class _WeightChart extends CustomPainter {
 
   @override
   bool shouldRepaint(_WeightChart old) => old.values != values;
+}
+
+/// Underweight · healthy · overweight bands (BMI 15–35 shown) with a marker
+/// for your BMI. Labelled, so colour isn't the only cue.
+class _BmiBar extends StatelessWidget {
+  const _BmiBar({required this.value});
+  final double value;
+
+  static const _lo = 15.0, _hi = 35.0;
+  static const _under = Color(0xFFF2A93B), _healthy = Color(0xFF9BD84B), _over = Color(0xFFFF9B85);
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final label = AppText.small.copyWith(fontSize: 11.5, color: onForestMuted);
+    return ExcludeSemantics(
+      child: Column(
+        children: [
+          LayoutBuilder(
+            builder: (context, c) {
+              final x = (value.clamp(_lo, _hi) - _lo) / (_hi - _lo) * c.maxWidth;
+              return SizedBox(
+                height: 26,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 8,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(99),
+                        child: Row(
+                          children: [
+                            for (final (flex, color) in [(35, _under), (65, _healthy), (100, _over)])
+                              Expanded(
+                                flex: flex,
+                                child: Container(height: 10, color: color),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: x - 3,
+                      top: 0,
+                      child: Container(
+                        width: 6,
+                        height: 26,
+                        decoration: BoxDecoration(
+                          color: AppColors.white,
+                          borderRadius: BorderRadius.circular(3),
+                          boxShadow: const [BoxShadow(color: Color(0x55000000), blurRadius: 3)],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Expanded(flex: 35, child: Text(l.bmiBandUnder, style: label)),
+              Expanded(
+                flex: 65,
+                child: Text(l.bmiBandHealthy, textAlign: TextAlign.center, style: label),
+              ),
+              Expanded(
+                flex: 100,
+                child: Text(l.bmiBandOver, textAlign: TextAlign.end, style: label),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

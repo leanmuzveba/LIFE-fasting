@@ -748,5 +748,8 @@
   "recipesHaveShort": "{have}/{total} ingredients",
   "@recipesHaveShort": {"placeholders": {"have": {"type": "int"}, "total": {"type": "int"}}},
   "homeStepGoalTitle": "Daily steps goal",
+  "bmiBandUnder": "Under",
+  "bmiBandHealthy": "Healthy 18.5–25",
+  "bmiBandOver": "Over",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

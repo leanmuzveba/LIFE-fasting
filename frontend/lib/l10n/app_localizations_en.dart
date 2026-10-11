@@ -2218,5 +2218,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStepGoalTitle => 'Daily steps goal';
 
   @override
+  String get bmiBandUnder => 'Under';
+
+  @override
+  String get bmiBandHealthy => 'Healthy 18.5–25';
+
+  @override
+  String get bmiBandOver => 'Over';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

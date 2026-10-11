@@ -3859,6 +3859,24 @@ abstract class AppLocalizations {
   /// **'Daily steps goal'**
   String get homeStepGoalTitle;
 
+  /// No description provided for @bmiBandUnder.
+  ///
+  /// In en, this message translates to:
+  /// **'Under'**
+  String get bmiBandUnder;
+
+  /// No description provided for @bmiBandHealthy.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy 18.5–25'**
+  String get bmiBandHealthy;
+
+  /// No description provided for @bmiBandOver.
+  ///
+  /// In en, this message translates to:
+  /// **'Over'**
+  String get bmiBandOver;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:
