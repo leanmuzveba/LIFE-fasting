@@ -784,5 +784,6 @@
   "watchDisconnect": "Stop reading watch data",
   "watchPrivacy": "Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.",
   "activityFromWatch": "From your watch",
+  "homeStepsWatch": "watch",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

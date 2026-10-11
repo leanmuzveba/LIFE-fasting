@@ -125,7 +125,11 @@ class _StepsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
-    final state = ref.watch(todayStepsProvider).value ?? const StepsState();
+    final watchSteps = ref.watch(watchStepsTodayProvider).value;
+    // The watch counts the whole day; the phone sensor only since you opened the app.
+    final state = watchSteps != null
+        ? StepsState(steps: watchSteps)
+        : ref.watch(todayStepsProvider).value ?? const StepsState();
     final height = ref.watch(bodyProfileProvider).value?.heightCm;
     final n = NumberFormat.decimalPattern();
     final muted = AppText.small.copyWith(color: onForestMuted, fontSize: 13);
@@ -143,7 +147,17 @@ class _StepsCard extends ConsumerWidget {
             children: [
               const Icon(Icons.route_outlined, size: 15, color: AppColors.accent),
               const SizedBox(width: 6),
-              Text(l.homeKm(stepsToKm(state.steps, heightCm: height).toStringAsFixed(1)), style: muted),
+              Flexible(
+                child: Text(
+                  [
+                    l.homeKm(stepsToKm(state.steps, heightCm: height).toStringAsFixed(1)),
+                    if (watchSteps != null) l.homeStepsWatch,
+                  ].join(' · '),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: muted,
+                ),
+              ),
               const SizedBox(width: 8),
               TextButton.icon(
                 style: TextButton.styleFrom(

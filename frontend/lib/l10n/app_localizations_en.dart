@@ -2332,5 +2332,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activityFromWatch => 'From your watch';
 
   @override
+  String get homeStepsWatch => 'watch';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

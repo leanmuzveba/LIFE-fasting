@@ -927,6 +927,17 @@ final watchCaloriesTodayProvider = FutureProvider<double?>((ref) async {
   }
 });
 
+/// Today's steps from your watch (full day), or null when not connected.
+final watchStepsTodayProvider = FutureProvider<int?>((ref) async {
+  if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return null;
+  final now = ref.read(clockProvider)().toLocal();
+  try {
+    return await ref.watch(healthSourceProvider).steps(DateTime(now.year, now.month, now.day), now);
+  } catch (_) {
+    return null;
+  }
+});
+
 /// Imports the last week's watch workouts into Activity (once each).
 /// Returns how many were new.
 final watchSyncProvider = FutureProvider<int>((ref) async {
@@ -986,6 +997,7 @@ class WatchActions {
     _ref.invalidate(watchStatusProvider);
     _ref.invalidate(watchCaloriesTodayProvider);
     _ref.invalidate(watchSyncProvider);
+    _ref.invalidate(watchStepsTodayProvider);
   }
 }
 

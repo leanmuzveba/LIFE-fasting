@@ -4057,6 +4057,12 @@ abstract class AppLocalizations {
   /// **'From your watch'**
   String get activityFromWatch;
 
+  /// No description provided for @homeStepsWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'watch'**
+  String get homeStepsWatch;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

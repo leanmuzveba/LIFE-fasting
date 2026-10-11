@@ -31,6 +31,14 @@ void main() {
     await tester.tap(find.bySemanticsLabel('Home').last);
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel(RegExp(r'^Calories burned: 312 kcal')), findsOneWidget);
+
+    // Steps: the watch's whole-day count replaces the phone sensor's.
+    watch.stepCount = 8421;
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    c.read(watchActionsProvider).refresh();
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Today’s steps: 8,421, 84% of goal'), findsOneWidget);
+    expect(find.textContaining('· watch'), findsOneWidget);
   });
 
   testWidgets('declined permission or no Health Connect: clear messages', (tester) async {
