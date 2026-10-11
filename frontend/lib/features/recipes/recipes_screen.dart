@@ -155,6 +155,7 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                     SearchField(
                       hint: l.recipesSearch,
                       controller: _search,
+                      dense: true,
                       onChanged: (v) {
                         if (v.trim().isEmpty && _query.isNotEmpty) setState(() => _query = '');
                       },
@@ -168,7 +169,12 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                 label: l.recipesShow,
                 children: [
                   for (final s in _Show.values)
-                    RuvaChip(label: _showLabel(l, s), selected: _show == s, onTap: () => setState(() => _show = s)),
+                    RuvaChip(
+                      dense: true,
+                      label: _showLabel(l, s),
+                      selected: _show == s,
+                      onTap: () => setState(() => _show = s),
+                    ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -177,6 +183,7 @@ class _RecipesScreenState extends ConsumerState<RecipesScreen> {
                 children: [
                   for (final d in DietPreference.values)
                     RuvaChip(
+                      dense: true,
                       label: d == DietPreference.none ? l.recipesDietAny : dietLabel(l, d),
                       selected: diet == d,
                       onTap: () => setState(() => _diet = d),
@@ -263,7 +270,7 @@ class _FilterRow extends StatelessWidget {
     children: [
       Padding(
         padding: const EdgeInsets.only(left: 20, right: 4),
-        child: Text('$label:', style: AppText.body.copyWith(fontWeight: FontWeight.w600, fontSize: 14)),
+        child: Text('$label:', style: AppText.body.copyWith(fontWeight: FontWeight.w600, fontSize: 13)),
       ),
       Expanded(
         child: ChipRow(padding: const EdgeInsets.only(left: 8, right: 20), children: children),

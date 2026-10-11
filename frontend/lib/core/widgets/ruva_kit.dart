@@ -86,6 +86,7 @@ class RuvaChip extends StatelessWidget {
     this.icon,
     this.outlined = false,
     this.trailingCheck = false,
+    this.dense = false,
   });
 
   final String label;
@@ -94,6 +95,7 @@ class RuvaChip extends StatelessWidget {
   final IconData? icon;
   final bool outlined;
   final bool trailingCheck;
+  final bool dense; // 32 px pill (still a 48 px tap area)
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +111,7 @@ class RuvaChip extends StatelessWidget {
         behavior: HitTestBehavior.translucent,
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          padding: EdgeInsets.symmetric(vertical: dense ? 8 : 4),
           child: Material(
             color: bg,
             shape: StadiumBorder(
@@ -119,9 +121,9 @@ class RuvaChip extends StatelessWidget {
               customBorder: const StadiumBorder(),
               onTap: onTap,
               child: ConstrainedBox(
-                constraints: const BoxConstraints(minHeight: 40),
+                constraints: BoxConstraints(minHeight: dense ? 32 : 40),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: EdgeInsets.symmetric(horizontal: dense ? 10 : 12),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -143,7 +145,11 @@ class RuvaChip extends StatelessWidget {
                           fit: BoxFit.scaleDown,
                           child: Text(
                             label,
-                            style: AppText.body.copyWith(fontSize: 13, fontWeight: FontWeight.w500, color: fg),
+                            style: AppText.body.copyWith(
+                              fontSize: dense ? 12 : 13,
+                              fontWeight: FontWeight.w500,
+                              color: fg,
+                            ),
                           ),
                         ),
                       ),
@@ -404,8 +410,16 @@ class RuvaTextField extends StatelessWidget {
 
 /// Pill search field.
 class SearchField extends StatelessWidget {
-  const SearchField({super.key, required this.hint, this.onChanged, this.controller, this.onSubmitted});
+  const SearchField({
+    super.key,
+    required this.hint,
+    this.onChanged,
+    this.controller,
+    this.onSubmitted,
+    this.dense = false,
+  });
   final String hint;
+  final bool dense;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final TextEditingController? controller;
@@ -416,11 +430,12 @@ class SearchField extends StatelessWidget {
     onChanged: onChanged,
     onSubmitted: onSubmitted,
     textInputAction: onSubmitted == null ? null : TextInputAction.search,
-    style: AppText.body,
+    style: dense ? AppText.body.copyWith(fontSize: 14) : AppText.body,
     decoration: InputDecoration(
       hintText: hint,
-      hintStyle: AppText.body.copyWith(color: AppColors.textSecondary),
-      prefixIcon: const Icon(Icons.search, color: AppColors.primary),
+      hintStyle: AppText.body.copyWith(color: AppColors.textSecondary, fontSize: dense ? 14 : null),
+      isDense: dense,
+      prefixIcon: Icon(Icons.search, color: AppColors.primary, size: dense ? 20 : null),
       filled: true,
       fillColor: AppColors.lime200,
       contentPadding: const EdgeInsets.symmetric(vertical: 10),
