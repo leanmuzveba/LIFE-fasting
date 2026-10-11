@@ -435,13 +435,14 @@ class ActivityCard extends StatelessWidget {
     final detail = [
       l.activityMinutes(a.minutes),
       if (a.intensity != null) intensityLabel(l, a.intensity!).toLowerCase(),
+      if (a.kcal != null) '${a.kcal!.round()} kcal',
       '${formatShortDay(a.startedAt)} ${formatClock(a.startedAt, use24h: use24h)}',
     ].join(' · ');
     return RuvaCard(
       padding: const EdgeInsets.all(16),
       onTap: () => showAppSheet<void>(context, (_) => ActivityForm(entry: a)),
       child: Semantics(
-        label: '${activityLabel(l, a.type)}, $detail. ${l.edit}',
+        label: '${activityLabel(l, a.type)}, $detail${a.fromWatch ? ', ${l.activityFromWatch}' : ''}. ${l.edit}',
         excludeSemantics: true,
         child: Row(
           children: [
@@ -458,6 +459,17 @@ class ActivityCard extends StatelessWidget {
                 children: [
                   Text(activityLabel(l, a.type), style: AppText.cardValue.copyWith(fontSize: 15)),
                   Text(detail, style: AppText.small),
+                  if (a.fromWatch)
+                    Row(
+                      children: [
+                        const Icon(Icons.watch_outlined, size: 14, color: AppColors.primary),
+                        const SizedBox(width: 4),
+                        Text(
+                          l.activityFromWatch,
+                          style: AppText.small.copyWith(fontSize: 12, color: AppColors.primary),
+                        ),
+                      ],
+                    ),
                   if (a.notes.isNotEmpty)
                     Text(a.notes, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.small),
                 ],

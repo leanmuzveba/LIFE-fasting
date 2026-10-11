@@ -25,6 +25,7 @@ abstract final class AppDatabase {
     _v9Body,
     _v10MyRecipes,
     _v11RecipePhotos,
+    _v12WatchWorkouts,
   ];
 
   static int get latestVersion => migrations.length;
@@ -50,6 +51,16 @@ abstract final class AppDatabase {
         onCreate: (db, _) => run(db, 0),
         onUpgrade: (db, from, _) => run(db, from),
       ),
+    );
+  }
+
+  /// Version 12 — workouts imported from a watch (Health Connect).
+  static Future<void> _v12WatchWorkouts(DatabaseExecutor db) async {
+    await db.execute('ALTER TABLE activity_entries ADD COLUMN external_id TEXT'); // Health Connect record id
+    await db.execute('ALTER TABLE activity_entries ADD COLUMN kcal REAL');
+    await db.execute('ALTER TABLE activity_entries ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0');
+    await db.execute(
+      'CREATE UNIQUE INDEX activity_external ON activity_entries (external_id) WHERE external_id IS NOT NULL',
     );
   }
 

@@ -14,6 +14,8 @@ class ActivityEntry {
     this.notes = '',
     required this.createdAt,
     required this.updatedAt,
+    this.externalId,
+    this.kcal,
   });
 
   final int? id;
@@ -24,6 +26,10 @@ class ActivityEntry {
   final String notes;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? externalId; // set when imported from your watch
+  final double? kcal; // calories burned, when the watch reports them
+
+  bool get fromWatch => externalId != null;
 
   ActivityEntry copyWith({
     int? id,
@@ -42,6 +48,8 @@ class ActivityEntry {
     notes: notes ?? this.notes,
     createdAt: createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    externalId: externalId,
+    kcal: kcal,
   );
 }
 

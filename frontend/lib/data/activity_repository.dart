@@ -17,6 +17,8 @@ class ActivityRepository {
     'notes': e.notes,
     'created_at': _ms(e.createdAt),
     'updated_at': _ms(e.updatedAt),
+    'external_id': e.externalId,
+    'kcal': e.kcal,
   };
 
   static ActivityEntry _fromRow(Map<String, Object?> r) => ActivityEntry(
@@ -28,6 +30,8 @@ class ActivityRepository {
     notes: (r['notes'] as String?) ?? '',
     createdAt: _dt(r['created_at']! as int),
     updatedAt: _dt(r['updated_at']! as int),
+    externalId: r['external_id'] as String?,
+    kcal: (r['kcal'] as num?)?.toDouble(),
   );
 
   Future<ActivityEntry> insert(ActivityEntry e) async =>
@@ -35,21 +39,39 @@ class ActivityRepository {
 
   Future<void> update(ActivityEntry e) => _db.update('activity_entries', _toRow(e), where: 'id = ?', whereArgs: [e.id]);
 
-  Future<void> delete(int id) => _db.delete('activity_entries', where: 'id = ?', whereArgs: [id]);
+  /// Deletes your own entry; a watch workout is hidden instead so the next
+  /// sync doesn't bring it back.
+  Future<void> delete(ActivityEntry e) => e.fromWatch
+      ? _db.update('activity_entries', {'hidden': 1}, where: 'id = ?', whereArgs: [e.id])
+      : _db.delete('activity_entries', where: 'id = ?', whereArgs: [e.id]);
+
+  /// Adds watch workouts not seen before; returns how many were new.
+  Future<int> importWatch(Iterable<ActivityEntry> entries) async {
+    var added = 0;
+    for (final e in entries) {
+      final id = await _db.insert('activity_entries', _toRow(e), conflictAlgorithm: ConflictAlgorithm.ignore);
+      if (id > 0) added++;
+    }
+    return added;
+  }
 
   /// Entries with `from <= startedAt < to`, newest first.
   Future<List<ActivityEntry>> between(DateTime from, DateTime to) async => (await _db.query(
     'activity_entries',
-    where: 'started_at >= ? AND started_at < ?',
+    where: 'hidden = 0 AND started_at >= ? AND started_at < ?',
     whereArgs: [_ms(from), _ms(to)],
     orderBy: 'started_at DESC',
   )).map(_fromRow).toList();
 
-  Future<List<ActivityEntry>> recent({int limit = 20}) async =>
-      (await _db.query('activity_entries', orderBy: 'started_at DESC', limit: limit)).map(_fromRow).toList();
+  Future<List<ActivityEntry>> recent({int limit = 20}) async => (await _db.query(
+    'activity_entries',
+    where: 'hidden = 0',
+    orderBy: 'started_at DESC',
+    limit: limit,
+  )).map(_fromRow).toList();
 
   Future<List<ActivityEntry>> all() async =>
-      (await _db.query('activity_entries', orderBy: 'started_at')).map(_fromRow).toList();
+      (await _db.query('activity_entries', where: 'hidden = 0', orderBy: 'started_at')).map(_fromRow).toList();
 
   Future<void> deleteAll() => _db.delete('activity_entries');
 }

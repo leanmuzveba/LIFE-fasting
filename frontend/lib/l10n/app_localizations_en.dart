@@ -2329,5 +2329,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.';
 
   @override
+  String get activityFromWatch => 'From your watch';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

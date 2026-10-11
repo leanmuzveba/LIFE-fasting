@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:life_fasting/data/health_source.dart';
+import 'package:life_fasting/domain/activity.dart';
+import 'package:life_fasting/state/providers.dart';
 
 import '../widget_test.dart' show pumpApp, watch;
 
@@ -42,5 +46,44 @@ void main() {
     await tester.tap(find.text('Connect'));
     await tester.pumpAndSettle();
     expect(find.text('Install Health Connect'), findsOneWidget);
+  });
+
+  testWidgets('watch workouts import once into Activity; deleting keeps them gone', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 2400);
+    watch.workoutList = [
+      WatchWorkout(
+        id: 'hc-run-1',
+        type: ActivityType.run,
+        start: DateTime(2026, 10, 3, 18),
+        end: DateTime(2026, 10, 3, 18, 32),
+        kcal: 281.6,
+      ),
+    ];
+    await _openWatchSheet(tester);
+    await tester.tap(find.text('Connect'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Home').last);
+    await tester.pumpAndSettle();
+
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    final repo = c.read(activityRepositoryProvider);
+    expect((await repo.all()).single.kcal, closeTo(281.6, 0.01));
+
+    // A second sync (e.g. returning to the app) adds nothing new.
+    c.read(watchActionsProvider).refresh();
+    await tester.pumpAndSettle();
+    expect(await repo.all(), hasLength(1));
+
+    await tester.tap(find.byTooltip('Quick add'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Log activity'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp(r'^Run, 32 min · 282 kcal.*From your watch')), findsOneWidget);
+
+    await repo.delete((await repo.all()).single);
+    c.read(watchActionsProvider).refresh();
+    await tester.pumpAndSettle();
+    expect(await repo.all(), isEmpty, reason: 'hidden, not re-imported');
   });
 }

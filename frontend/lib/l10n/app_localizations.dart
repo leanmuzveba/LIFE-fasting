@@ -4051,6 +4051,12 @@ abstract class AppLocalizations {
   /// **'Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.'**
   String get watchPrivacy;
 
+  /// No description provided for @activityFromWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'From your watch'**
+  String get activityFromWatch;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

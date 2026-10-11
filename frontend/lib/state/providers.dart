@@ -377,7 +377,7 @@ class ActivityActions {
   }
 
   Future<void> delete(ActivityEntry e) async {
-    await _repo.delete(e.id!);
+    await _repo.delete(e);
     _refresh();
   }
 }
@@ -927,6 +927,37 @@ final watchCaloriesTodayProvider = FutureProvider<double?>((ref) async {
   }
 });
 
+/// Imports the last week's watch workouts into Activity (once each).
+/// Returns how many were new.
+final watchSyncProvider = FutureProvider<int>((ref) async {
+  if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return 0;
+  final now = ref.read(clockProvider)().toUtc();
+  final List<WatchWorkout> workouts;
+  try {
+    workouts = await ref.watch(healthSourceProvider).workouts(now.subtract(const Duration(days: 7)), now);
+  } catch (_) {
+    return 0;
+  }
+  final added = await ref.read(activityRepositoryProvider).importWatch([
+    for (final w in workouts)
+      ActivityEntry(
+        type: w.type,
+        startedAt: w.start.toUtc(),
+        minutes: w.end.difference(w.start).inMinutes.clamp(minActivityMinutes, maxActivityMinutes),
+        kcal: w.kcal,
+        externalId: w.id,
+        createdAt: now,
+        updatedAt: now,
+      ),
+  ]);
+  if (added > 0) {
+    ref.invalidate(activityDayProvider);
+    ref.invalidate(recentActivitiesProvider);
+    ref.invalidate(daySummariesProvider);
+  }
+  return added;
+});
+
 class WatchActions {
   WatchActions(this._ref);
   final Ref _ref;
@@ -954,6 +985,7 @@ class WatchActions {
   void refresh() {
     _ref.invalidate(watchStatusProvider);
     _ref.invalidate(watchCaloriesTodayProvider);
+    _ref.invalidate(watchSyncProvider);
   }
 }
 

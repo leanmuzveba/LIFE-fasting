@@ -48,6 +48,7 @@ class HomeScreen extends ConsumerWidget {
         : l.greetingEvening;
     final name = settings.userName.trim().split(RegExp(r'\s+')).first;
 
+    ref.watch(watchSyncProvider); // pulls in new watch workouts (no-op when not connected)
     final food = ref.watch(diaryDayProvider(today)).value ?? const <FoodEntry>[];
     final kcal = DayTotals(food).sum[Nutrient.energy] ?? 0;
     final water = (ref.watch(hydrationDayProvider(today)).value ?? const <HydrationEntry>[]).fold(
