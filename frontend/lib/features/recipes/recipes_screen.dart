@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -341,8 +343,9 @@ class _Note extends StatelessWidget {
 
 /// Recipe photo with a calm fallback (offline or no image).
 class RecipeImage extends StatelessWidget {
-  const RecipeImage({super.key, required this.url, required this.height, this.preview = true});
+  const RecipeImage({super.key, required this.url, required this.height, this.preview = true, this.bytes});
   final String? url;
+  final Uint8List? bytes; // your own photo wins over the URL
   final double height;
   final bool preview;
 
@@ -359,6 +362,15 @@ class RecipeImage extends StatelessWidget {
       ),
       child: const Center(child: Icon(Icons.soup_kitchen_outlined, size: 52, color: Color(0x40135D44))),
     );
+    if (bytes != null) {
+      return Image.memory(
+        bytes!,
+        height: height,
+        width: double.infinity,
+        fit: BoxFit.cover,
+        excludeFromSemantics: true,
+      );
+    }
     if (url == null) return fallback;
     return Image.network(
       preview ? '$url/preview' : url!,
@@ -398,7 +410,7 @@ class _RecipeCard extends StatelessWidget {
           children: [
             Stack(
               children: [
-                RecipeImage(url: r.thumb, height: 96),
+                RecipeImage(url: r.thumb, bytes: r.image, height: 96),
                 Positioned(
                   top: 0,
                   right: 0,

@@ -2,6 +2,9 @@
 // kitchen with simple, explainable rules. No invented times, servings or
 // nutrition — TheMealDB doesn't provide them, so RUVA says so.
 
+import 'dart:typed_data';
+
+import 'food.dart';
 import 'kitchen.dart';
 import 'profile.dart';
 
@@ -23,6 +26,8 @@ class Recipe {
     this.source,
     this.minutes,
     this.servings,
+    this.image,
+    this.nutrients = const {},
   });
 
   final String id;
@@ -35,6 +40,8 @@ class Recipe {
   final String? source;
   final int? minutes; // only your own recipes have these
   final int? servings;
+  final Uint8List? image; // your own photo (your recipes only)
+  final Nutrients nutrients; // per serving; empty = unavailable
 
   /// Created by you (stored on this phone), not from TheMealDB.
   bool get isMine => id.startsWith('mine:');

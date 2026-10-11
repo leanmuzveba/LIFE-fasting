@@ -3907,6 +3907,42 @@ abstract class AppLocalizations {
   /// **'Logged before'**
   String get addFoodLoggedBefore;
 
+  /// No description provided for @recipePerServing.
+  ///
+  /// In en, this message translates to:
+  /// **'Per serving'**
+  String get recipePerServing;
+
+  /// No description provided for @myRecipeNutrition.
+  ///
+  /// In en, this message translates to:
+  /// **'Nutrition per serving · optional'**
+  String get myRecipeNutrition;
+
+  /// No description provided for @myRecipeTakePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get myRecipeTakePhoto;
+
+  /// No description provided for @myRecipeRemovePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get myRecipeRemovePhoto;
+
+  /// No description provided for @myRecipePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe photo'**
+  String get myRecipePhoto;
+
+  /// No description provided for @diarySaveRecipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {meal} as a recipe'**
+  String diarySaveRecipe(String meal);
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

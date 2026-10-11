@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:sqflite/sqflite.dart';
 
+import '../domain/food.dart';
 import '../domain/recipe.dart';
 
 /// TheMealDB JSON API (free developer key "1"). Only ingredient names and
@@ -126,6 +128,11 @@ class MyRecipeRepository {
             RecipeIngredient(i[0] as String, i[1] as String),
         ],
         steps: [for (final s in jsonDecode(r['steps']! as String) as List<dynamic>) s as String],
+        image: r['image'] as Uint8List?,
+        nutrients: {
+          for (final e in (jsonDecode((r['nutrients'] as String?) ?? '{}') as Map<String, dynamic>).entries)
+            ?Nutrient.values.asNameMap()[e.key]: (e.value as num).toDouble(),
+        },
       ),
   ];
 
@@ -141,6 +148,8 @@ class MyRecipeRepository {
         for (final i in r.ingredients) [i.name.trim(), i.measure.trim()],
       ]),
       'steps': jsonEncode([for (final s in r.steps) s.trim()]),
+      'image': r.image,
+      'nutrients': jsonEncode({for (final e in r.nutrients.entries) e.key.name: e.value}),
       'updated_at': now,
     };
     final id = _rowId(r.id);

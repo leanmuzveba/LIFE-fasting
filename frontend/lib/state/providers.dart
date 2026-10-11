@@ -776,7 +776,7 @@ class RecipeActions {
         name: r.name,
         foodKey: 'recipe:${r.id}',
         portion: servingLabel,
-        nutrients: const {}, // TheMealDB has no nutrition: shown as unavailable
+        nutrients: r.nutrients, // per serving for your recipes; TheMealDB has none
       ),
     );
     _ref.invalidate(diaryDayProvider);

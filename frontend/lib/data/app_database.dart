@@ -24,6 +24,7 @@ abstract final class AppDatabase {
     _v8Packaged,
     _v9Body,
     _v10MyRecipes,
+    _v11RecipePhotos,
   ];
 
   static int get latestVersion => migrations.length;
@@ -50,6 +51,12 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 11 — your recipe's photo and nutrition per serving.
+  static Future<void> _v11RecipePhotos(DatabaseExecutor db) async {
+    await db.execute('ALTER TABLE my_recipes ADD COLUMN image BLOB'); // JPEG, ≤1024 px
+    await db.execute("ALTER TABLE my_recipes ADD COLUMN nutrients TEXT NOT NULL DEFAULT '{}'"); // JSON per serving
   }
 
   /// Version 10 — recipes you create (PRD v1.2 §5).

@@ -11,7 +11,9 @@ import '../../core/widgets/sheet.dart';
 import '../../domain/food.dart';
 import '../../state/providers.dart';
 import '../kitchen/my_kitchen_screen.dart';
+import '../recipes/recipe_form_screen.dart';
 import '../recipes/recipes_screen.dart';
+import '../../domain/recipe.dart';
 import 'add_food_screen.dart';
 import 'meal_photo_screen.dart';
 import 'food_labels.dart';
@@ -392,6 +394,28 @@ class _MealCard extends ConsumerWidget {
           Row(
             children: [
               Expanded(child: Semantics(header: true, child: MonoLabel(name))),
+              if (entries.isNotEmpty)
+                IconButton(
+                  tooltip: l.diarySaveRecipe(name),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => RecipeFormScreen(
+                        existing: Recipe(
+                          id: 'mine:',
+                          name: '',
+                          category: name,
+                          servings: 1,
+                          ingredients: [
+                            for (final e in entries)
+                              RecipeIngredient(e.name, formatPortion(e.portion, e.grams, e.unit)),
+                          ],
+                          nutrients: DayTotals(entries).sum,
+                        ),
+                      ),
+                    ),
+                  ),
+                  icon: const Icon(Icons.bookmark_add_outlined, color: AppColors.primary, size: 22),
+                ),
               if (entries.isNotEmpty)
                 IconButton(
                   tooltip: l.diaryCopyMeal(name),

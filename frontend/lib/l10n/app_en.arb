@@ -758,5 +758,12 @@
   "diaryCopied": "{count, plural, =1{Copied to {day}} other{{count} items copied to {day}}}",
   "@diaryCopied": {"placeholders": {"count": {"type": "int"}, "day": {"type": "String"}}},
   "addFoodLoggedBefore": "Logged before",
+  "recipePerServing": "Per serving",
+  "myRecipeNutrition": "Nutrition per serving · optional",
+  "myRecipeTakePhoto": "Take photo",
+  "myRecipeRemovePhoto": "Remove",
+  "myRecipePhoto": "Recipe photo",
+  "diarySaveRecipe": "Save {meal} as a recipe",
+  "@diarySaveRecipe": {"placeholders": {"meal": {"type": "String"}}},
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

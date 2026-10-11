@@ -118,7 +118,12 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               children: [
                 Stack(
                   children: [
-                    RecipeImage(url: r.thumb, height: 300 + MediaQuery.paddingOf(context).top, preview: false),
+                    RecipeImage(
+                      url: r.thumb,
+                      bytes: r.image,
+                      height: 300 + MediaQuery.paddingOf(context).top,
+                      preview: false,
+                    ),
                     Positioned(
                       left: 16,
                       top: MediaQuery.paddingOf(context).top + 12,
@@ -301,15 +306,52 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                l.recipeNutrition,
-                                style: AppText.title.copyWith(fontSize: 15, color: AppColors.white),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      l.recipeNutrition,
+                                      style: AppText.title.copyWith(fontSize: 15, color: AppColors.white),
+                                    ),
+                                  ),
+                                  if (r.nutrients.isNotEmpty)
+                                    MonoLabel(l.recipePerServing, color: onForestMuted, size: 9),
+                                ],
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                l.recipeNutritionNone,
-                                style: AppText.body.copyWith(fontSize: 13.5, color: onForestMuted),
-                              ),
+                              const SizedBox(height: 10),
+                              if (r.nutrients.isEmpty)
+                                Text(
+                                  l.recipeNutritionNone,
+                                  style: AppText.body.copyWith(fontSize: 13.5, color: onForestMuted),
+                                )
+                              else
+                                Wrap(
+                                  spacing: 18,
+                                  runSpacing: 10,
+                                  children: [
+                                    for (final n in Nutrient.macros)
+                                      Semantics(
+                                        container: true,
+                                        label:
+                                            '${nutrientLabel(l, n)}: ${r.nutrients[n] == null ? l.nutrientUnavailable : '${formatNutrient(r.nutrients[n]!)} ${n.unit}'}',
+                                        excludeSemantics: true,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              r.nutrients[n] == null ? '—' : formatNutrient(r.nutrients[n]!),
+                                              style: AppText.title.copyWith(fontSize: 20, color: AppColors.white),
+                                            ),
+                                            MonoLabel(
+                                              '${nutrientLabel(l, n)} · ${n.unit}',
+                                              color: AppColors.accent,
+                                              size: 9,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                ),
                             ],
                           ),
                         ),

@@ -2252,5 +2252,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get addFoodLoggedBefore => 'Logged before';
 
   @override
+  String get recipePerServing => 'Per serving';
+
+  @override
+  String get myRecipeNutrition => 'Nutrition per serving · optional';
+
+  @override
+  String get myRecipeTakePhoto => 'Take photo';
+
+  @override
+  String get myRecipeRemovePhoto => 'Remove';
+
+  @override
+  String get myRecipePhoto => 'Recipe photo';
+
+  @override
+  String diarySaveRecipe(String meal) {
+    return 'Save $meal as a recipe';
+  }
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }
