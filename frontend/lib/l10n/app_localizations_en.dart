@@ -2275,7 +2275,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeBurned => 'Calories burned';
 
   @override
-  String get homeBurnedSub => 'From your watch · active calories';
+  String get homeBurnedSub => 'From your watch';
 
   @override
   String get watchSection => 'Watch';
@@ -2333,6 +2333,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeStepsWatch => 'watch';
+
+  @override
+  String get homeBurnedNone => 'Connected · nothing synced from your watch yet today';
+
+  @override
+  String watchToday(int steps, int kcal) {
+    return 'Today from Health Connect: $steps steps · $kcal kcal';
+  }
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';

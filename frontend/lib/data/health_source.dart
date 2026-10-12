@@ -68,16 +68,21 @@ class HealthSource {
     return _health.getTotalStepsInInterval(from, to);
   }
 
-  /// Active calories (movement only, not resting) between [from] and [to].
+  /// Calories burned between [from] and [to]: active calories if the watch
+  /// app writes them, else its "total" calories (Mi Fitness's exclude resting
+  /// energy), else the sum of its workouts. Null when there's no data at all.
+  // ponytail: apps that write true total (incl. resting) calories would show
+  // more than activity alone; fine for Mi Fitness, revisit for other watches.
   Future<double?> caloriesBurned(DateTime from, DateTime to) async {
     await _init();
-    final points = await _health.getHealthDataFromTypes(
-      types: const [HealthDataType.ACTIVE_ENERGY_BURNED],
-      startTime: from,
-      endTime: to,
-    );
-    if (points.isEmpty) return null;
-    return points.fold<double>(0, (a, p) => a + ((p.value as NumericHealthValue).numericValue.toDouble()));
+    for (final type in const [HealthDataType.ACTIVE_ENERGY_BURNED, HealthDataType.TOTAL_CALORIES_BURNED]) {
+      final points = await _health.getHealthDataFromTypes(types: [type], startTime: from, endTime: to);
+      if (points.isNotEmpty) {
+        return points.fold<double>(0, (a, p) => a + (p.value as NumericHealthValue).numericValue.toDouble());
+      }
+    }
+    final fromWorkouts = (await workouts(from, to)).fold<double>(0, (a, w) => a + (w.kcal ?? 0));
+    return fromWorkouts > 0 ? fromWorkouts : null;
   }
 
   Future<List<WatchWorkout>> workouts(DateTime from, DateTime to) async {

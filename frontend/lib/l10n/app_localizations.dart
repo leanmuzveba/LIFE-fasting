@@ -3952,7 +3952,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeBurnedSub.
   ///
   /// In en, this message translates to:
-  /// **'From your watch · active calories'**
+  /// **'From your watch'**
   String get homeBurnedSub;
 
   /// No description provided for @watchSection.
@@ -4062,6 +4062,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'watch'**
   String get homeStepsWatch;
+
+  /// No description provided for @homeBurnedNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected · nothing synced from your watch yet today'**
+  String get homeBurnedNone;
+
+  /// No description provided for @watchToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today from Health Connect: {steps} steps · {kcal} kcal'**
+  String watchToday(int steps, int kcal);
 
   /// No description provided for @notifDailyBody.
   ///

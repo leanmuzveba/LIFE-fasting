@@ -766,7 +766,7 @@
   "diarySaveRecipe": "Save {meal} as a recipe",
   "@diarySaveRecipe": {"placeholders": {"meal": {"type": "String"}}},
   "homeBurned": "Calories burned",
-  "homeBurnedSub": "From your watch · active calories",
+  "homeBurnedSub": "From your watch",
   "watchSection": "Watch",
   "watchTitle": "Connect your watch",
   "watchOff": "Not connected",
@@ -785,5 +785,8 @@
   "watchPrivacy": "Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.",
   "activityFromWatch": "From your watch",
   "homeStepsWatch": "watch",
+  "homeBurnedNone": "Connected · nothing synced from your watch yet today",
+  "watchToday": "Today from Health Connect: {steps} steps · {kcal} kcal",
+  "@watchToday": {"placeholders": {"steps": {"type": "int"}, "kcal": {"type": "int"}}},
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

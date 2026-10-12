@@ -916,14 +916,15 @@ final watchStatusProvider = FutureProvider<WatchStatus>((ref) async {
   }
 });
 
-/// Today's active calories from your watch, or null when not connected / no data.
+/// Today's calories burned from your watch: null when not connected, 0 when
+/// connected but nothing has synced yet (so the row still shows).
 final watchCaloriesTodayProvider = FutureProvider<double?>((ref) async {
   if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return null;
   final now = ref.read(clockProvider)().toLocal();
   try {
-    return await ref.watch(healthSourceProvider).caloriesBurned(DateTime(now.year, now.month, now.day), now);
+    return await ref.watch(healthSourceProvider).caloriesBurned(DateTime(now.year, now.month, now.day), now) ?? 0;
   } catch (_) {
-    return null;
+    return 0;
   }
 });
 

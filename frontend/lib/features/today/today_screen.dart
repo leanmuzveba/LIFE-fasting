@@ -110,7 +110,7 @@ class HomeScreen extends ConsumerWidget {
             label: l.homeBurned,
             value: n.format(burned.round()),
             unit: 'kcal',
-            sub: l.homeBurnedSub,
+            sub: burned == 0 ? l.homeBurnedNone : l.homeBurnedSub,
             onTap: onOpenActivity,
           ),
         ],

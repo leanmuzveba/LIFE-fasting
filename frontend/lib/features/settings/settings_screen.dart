@@ -484,6 +484,13 @@ class _WatchSheet extends ConsumerWidget {
           PrimaryButton(label: l.watchInstall, onPressed: () => ref.read(healthSourceProvider).install()),
         ] else if (status == WatchStatus.linked) ...[
           Text(l.watchLinkedBody, style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
+          Text(
+            l.watchToday(
+              ref.watch(watchStepsTodayProvider).value ?? 0,
+              (ref.watch(watchCaloriesTodayProvider).value ?? 0).round(),
+            ),
+            style: AppText.small,
+          ),
           TextButton(
             onPressed: () async {
               await actions.disconnect();

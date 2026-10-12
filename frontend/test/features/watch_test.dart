@@ -41,6 +41,21 @@ void main() {
     expect(find.textContaining('· watch'), findsOneWidget);
   });
 
+  testWidgets('connected but nothing synced yet: the row still shows, saying so', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 2400);
+    watch.calories = null;
+    await _openWatchSheet(tester);
+    await tester.tap(find.text('Connect'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('Home').last);
+    await tester.pumpAndSettle();
+    expect(
+      find.bySemanticsLabel('Calories burned: 0 kcal. Connected · nothing synced from your watch yet today'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('declined permission or no Health Connect: clear messages', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 2400);
