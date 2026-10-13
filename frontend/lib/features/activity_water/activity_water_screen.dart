@@ -443,7 +443,9 @@ class ActivityCard extends StatelessWidget {
       onTap: () => showAppSheet<void>(context, (_) => ActivityForm(entry: a)),
       child: Semantics(
         container: true,
-        label: '${activityLabel(l, a.type)}, $detail${a.fromWatch ? ', ${l.activityFromWatch}' : ''}. ${l.edit}',
+        label:
+            '${activityLabel(l, a.type)}, $detail${a.fromWatch ? ', ${l.activityFromWatch}' : ''}'
+            '${a.exercises.isEmpty ? '' : '. ${a.exercises.join(', ')}'}. ${l.edit}',
         excludeSemantics: true,
         child: Row(
           children: [
@@ -471,6 +473,8 @@ class ActivityCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                  if (a.exercises.isNotEmpty)
+                    Text(a.exercises.join(' · '), style: AppText.small.copyWith(color: AppColors.primary)),
                   if (a.notes.isNotEmpty)
                     Text(a.notes, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.small),
                 ],
@@ -496,6 +500,7 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
   late ActivityType _type = widget.entry?.type ?? ActivityType.walk;
   late int _minutes = widget.entry?.minutes ?? 30;
   late Intensity? _intensity = widget.entry?.intensity;
+  late List<Exercise> _exercises = widget.entry?.exercises ?? const [];
   late final _notes = TextEditingController(text: widget.entry?.notes ?? '');
   // Your own calories figure (optional); otherwise the MET estimate is saved.
   late final _kcal = TextEditingController();
@@ -538,6 +543,7 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
       updatedAt: now,
       externalId: e?.externalId,
       kcal: double.tryParse(_kcal.text.trim()) ?? _shownEstimate,
+      exercises: _exercises,
     );
     if (!await ref.read(activityActionsProvider).save(entry)) {
       setState(() => _error = l.activityFutureError);
@@ -552,8 +558,18 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
         _notes.clear();
         _kcal.clear();
         _when = null;
+        _exercises = const [];
       });
     }
+  }
+
+  Future<void> _addExercise() async {
+    final used = [
+      for (final a in ref.read(recentActivitiesProvider).value ?? const <ActivityEntry>[])
+        for (final x in a.exercises) x.name,
+    ];
+    final x = await showAppSheet<Exercise>(context, (_) => _ExerciseSheet(suggestions: {...used, ...commonExercises}));
+    if (x != null) setState(() => _exercises = [..._exercises, x]);
   }
 
   /// Latest weigh-in (null when none or weight tracking is off).
@@ -662,6 +678,30 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
             ],
           ],
         ),
+        if (_type == ActivityType.strength || _type == ActivityType.other || _exercises.isNotEmpty) ...[
+          const SizedBox(height: 18),
+          MonoLabel(l.activityExercises),
+          const SizedBox(height: 6),
+          for (final (i, x) in _exercises.indexed)
+            Row(
+              children: [
+                Expanded(child: Text('$x', style: AppText.body.copyWith(fontSize: 14))),
+                IconButton(
+                  tooltip: l.exerciseRemove(x.name),
+                  icon: const Icon(Icons.close, size: 18, color: AppColors.muted),
+                  onPressed: () => setState(() => _exercises = [..._exercises]..removeAt(i)),
+                ),
+              ],
+            ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: _addExercise,
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l.activityAddExercise),
+            ),
+          ),
+        ],
         const SizedBox(height: 12),
         Semantics(
           container: true,
@@ -723,6 +763,75 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
             style: TextButton.styleFrom(foregroundColor: AppColors.errorText),
             child: Text(l.delete),
           ),
+      ],
+    );
+  }
+}
+
+/// Name an exercise (suggestions filter as you type), then sets and reps.
+class _ExerciseSheet extends StatefulWidget {
+  const _ExerciseSheet({required this.suggestions});
+  final Set<String> suggestions;
+
+  @override
+  State<_ExerciseSheet> createState() => _ExerciseSheetState();
+}
+
+class _ExerciseSheetState extends State<_ExerciseSheet> {
+  final _name = TextEditingController();
+  int _sets = 3, _reps = 10;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final q = _name.text.trim().toLowerCase();
+    final matches = widget.suggestions.where((s) => s.toLowerCase().contains(q) && s.toLowerCase() != q).take(8);
+    return Gap16Column(
+      children: [
+        Semantics(header: true, child: Text(l.exerciseTitle, style: AppText.title)),
+        RuvaTextField(controller: _name, label: l.exerciseName, autofocus: true, onChanged: (_) => setState(() {})),
+        if (matches.isNotEmpty)
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (final m in matches)
+                RuvaChip(
+                  label: m,
+                  selected: false,
+                  dense: true,
+                  outlined: true,
+                  onTap: () => setState(() => _name.text = m),
+                ),
+            ],
+          ),
+        ValueStepper(
+          label: l.exerciseSets(_sets),
+          minusTooltip: l.exerciseFewerSets,
+          plusTooltip: l.exerciseMoreSets,
+          onMinus: _sets > 1 ? () => setState(() => _sets--) : null,
+          onPlus: _sets < 20 ? () => setState(() => _sets++) : null,
+        ),
+        ValueStepper(
+          label: l.exerciseReps(_reps),
+          minusTooltip: l.exerciseFewerReps,
+          plusTooltip: l.exerciseMoreReps,
+          onMinus: _reps > 1 ? () => setState(() => _reps -= _reps > 20 ? 5 : 1) : null,
+          onPlus: _reps < 300 ? () => setState(() => _reps += _reps >= 20 ? 5 : 1) : null, // 5s past 20 (plank holds)
+        ),
+        Text(l.exerciseRepsHint, style: AppText.small),
+        PrimaryButton(
+          label: l.exerciseAdd,
+          onPressed: q.isEmpty
+              ? null
+              : () => Navigator.pop(context, Exercise(_name.text.trim(), sets: _sets, reps: _reps)),
+        ),
       ],
     );
   }

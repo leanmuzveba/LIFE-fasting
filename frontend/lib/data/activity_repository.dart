@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:sqflite/sqflite.dart';
 
 import '../domain/activity.dart';
@@ -19,6 +21,7 @@ class ActivityRepository {
     'updated_at': _ms(e.updatedAt),
     'external_id': e.externalId,
     'kcal': e.kcal,
+    'exercises': jsonEncode([for (final x in e.exercises) x.toJson()]),
   };
 
   static ActivityEntry _fromRow(Map<String, Object?> r) => ActivityEntry(
@@ -32,6 +35,10 @@ class ActivityRepository {
     updatedAt: _dt(r['updated_at']! as int),
     externalId: r['external_id'] as String?,
     kcal: (r['kcal'] as num?)?.toDouble(),
+    exercises: [
+      for (final j in jsonDecode((r['exercises'] as String?) ?? '[]') as List)
+        Exercise.fromJson(j as Map<String, dynamic>),
+    ],
   );
 
   Future<ActivityEntry> insert(ActivityEntry e) async =>

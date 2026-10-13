@@ -2394,5 +2394,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeBurnedBoth => 'Watch + activities you logged';
 
   @override
+  String get activityExercises => 'Exercises (optional)';
+
+  @override
+  String get activityAddExercise => 'Add exercise';
+
+  @override
+  String get exerciseTitle => 'Exercise';
+
+  @override
+  String get exerciseName => 'Name, e.g. crunches';
+
+  @override
+  String exerciseSets(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n sets', one: '1 set');
+    return '$_temp0';
+  }
+
+  @override
+  String exerciseReps(int n) {
+    return '$n reps';
+  }
+
+  @override
+  String get exerciseRepsHint => 'For holds like plank, count seconds as reps.';
+
+  @override
+  String get exerciseFewerSets => '1 set less';
+
+  @override
+  String get exerciseMoreSets => '1 set more';
+
+  @override
+  String get exerciseFewerReps => '1 rep less';
+
+  @override
+  String get exerciseMoreReps => '1 rep more';
+
+  @override
+  String get exerciseAdd => 'Add';
+
+  @override
+  String exerciseRemove(String name) {
+    return 'Remove $name';
+  }
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

@@ -16,6 +16,7 @@ class ActivityEntry {
     required this.updatedAt,
     this.externalId,
     this.kcal,
+    this.exercises = const [],
   });
 
   final int? id;
@@ -28,6 +29,7 @@ class ActivityEntry {
   final DateTime updatedAt;
   final String? externalId; // set when imported from your watch
   final double? kcal; // calories burned, when the watch reports them
+  final List<Exercise> exercises; // gym moves done, e.g. crunches 3 × 15
 
   bool get fromWatch => externalId != null;
 
@@ -39,6 +41,7 @@ class ActivityEntry {
     Intensity? Function()? intensity,
     String? notes,
     DateTime? updatedAt,
+    List<Exercise>? exercises,
   }) => ActivityEntry(
     id: id ?? this.id,
     type: type ?? this.type,
@@ -50,8 +53,54 @@ class ActivityEntry {
     updatedAt: updatedAt ?? this.updatedAt,
     externalId: externalId,
     kcal: kcal,
+    exercises: exercises ?? this.exercises,
   );
 }
+
+/// One exercise in a workout: sets × reps (or seconds, for holds like plank).
+class Exercise {
+  const Exercise(this.name, {this.sets = 3, this.reps = 10});
+  final String name;
+  final int sets;
+  final int reps;
+
+  Map<String, Object> toJson() => {'name': name, 'sets': sets, 'reps': reps};
+  factory Exercise.fromJson(Map<String, dynamic> j) =>
+      Exercise(j['name'] as String, sets: j['sets'] as int, reps: j['reps'] as int);
+
+  @override
+  String toString() => '$name $sets × $reps';
+}
+
+/// Suggestions when naming an exercise; ones you've used before come first.
+const commonExercises = [
+  'Crunches',
+  'Leg raises',
+  'Plank',
+  'Sit-ups',
+  'Bicycle crunches',
+  'Russian twists',
+  'Mountain climbers',
+  'Push-ups',
+  'Squats',
+  'Lunges',
+  'Burpees',
+  'Jumping jacks',
+  'Glute bridges',
+  'Hip thrusts',
+  'Deadlift',
+  'Bench press',
+  'Shoulder press',
+  'Bicep curls',
+  'Tricep dips',
+  'Pull-ups',
+  'Lat pulldown',
+  'Seated row',
+  'Leg press',
+  'Leg curls',
+  'Leg extensions',
+  'Calf raises',
+];
 
 const minActivityMinutes = 1;
 const maxActivityMinutes = 600;

@@ -96,4 +96,44 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Calories burned: 378 kcal. From activities you logged · estimated'), findsOneWidget);
   });
+
+  testWidgets('a gym session lists its exercises: sets × reps', (tester) async {
+    await pumpApp(tester);
+    await _openActivity(tester);
+    expect(find.text('Add exercise'), findsNothing); // walk: no exercises
+    await _scrollTo(tester, find.bySemanticsLabel('Strength'));
+    await tester.tap(find.bySemanticsLabel('Strength'));
+    await tester.pump();
+
+    await _scrollTo(tester, find.text('Add exercise'));
+    await tester.tap(find.text('Add exercise'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, 'cru');
+    await tester.pump();
+    await tester.tap(find.text('Crunches'));
+    for (var i = 0; i < 5; i++) {
+      await tester.tap(find.byTooltip('1 rep more'));
+    }
+    await tester.tap(find.text('Add'));
+    await tester.pumpAndSettle();
+    expect(find.text('Crunches 3 × 15'), findsOneWidget);
+
+    await tester.tap(find.text('Add exercise'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, 'Leg raises');
+    await tester.pump();
+    await tester.tap(find.byTooltip('1 set less'));
+    await tester.tap(find.text('Add'));
+    await tester.pumpAndSettle();
+
+    await _scrollTo(tester, find.text('Log activity'));
+    await tester.tap(find.text('Log activity'));
+    await tester.pumpAndSettle();
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    expect((await c.read(activityRepositoryProvider).all()).single.exercises.map((x) => '$x'), [
+      'Crunches 3 × 15',
+      'Leg raises 2 × 10',
+    ]);
+    expect(find.bySemanticsLabel(RegExp(r'Crunches 3 × 15, Leg raises 2 × 10')), findsOneWidget);
+  });
 }

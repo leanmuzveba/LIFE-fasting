@@ -26,6 +26,7 @@ abstract final class AppDatabase {
     _v10MyRecipes,
     _v11RecipePhotos,
     _v12WatchWorkouts,
+    _v13Exercises,
   ];
 
   static int get latestVersion => migrations.length;
@@ -53,6 +54,10 @@ abstract final class AppDatabase {
       ),
     );
   }
+
+  /// Version 13 — gym exercises in an activity (JSON list of name/sets/reps).
+  static Future<void> _v13Exercises(DatabaseExecutor db) =>
+      db.execute("ALTER TABLE activity_entries ADD COLUMN exercises TEXT NOT NULL DEFAULT '[]'");
 
   /// Version 12 — workouts imported from a watch (Health Connect).
   static Future<void> _v12WatchWorkouts(DatabaseExecutor db) async {

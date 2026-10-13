@@ -4159,6 +4159,84 @@ abstract class AppLocalizations {
   /// **'Watch + activities you logged'**
   String get homeBurnedBoth;
 
+  /// No description provided for @activityExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises (optional)'**
+  String get activityExercises;
+
+  /// No description provided for @activityAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise'**
+  String get activityAddExercise;
+
+  /// No description provided for @exerciseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get exerciseTitle;
+
+  /// No description provided for @exerciseName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, e.g. crunches'**
+  String get exerciseName;
+
+  /// No description provided for @exerciseSets.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 set} other{{n} sets}}'**
+  String exerciseSets(int n);
+
+  /// No description provided for @exerciseReps.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} reps'**
+  String exerciseReps(int n);
+
+  /// No description provided for @exerciseRepsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For holds like plank, count seconds as reps.'**
+  String get exerciseRepsHint;
+
+  /// No description provided for @exerciseFewerSets.
+  ///
+  /// In en, this message translates to:
+  /// **'1 set less'**
+  String get exerciseFewerSets;
+
+  /// No description provided for @exerciseMoreSets.
+  ///
+  /// In en, this message translates to:
+  /// **'1 set more'**
+  String get exerciseMoreSets;
+
+  /// No description provided for @exerciseFewerReps.
+  ///
+  /// In en, this message translates to:
+  /// **'1 rep less'**
+  String get exerciseFewerReps;
+
+  /// No description provided for @exerciseMoreReps.
+  ///
+  /// In en, this message translates to:
+  /// **'1 rep more'**
+  String get exerciseMoreReps;
+
+  /// No description provided for @exerciseAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get exerciseAdd;
+
+  /// No description provided for @exerciseRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String exerciseRemove(String name);
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:
