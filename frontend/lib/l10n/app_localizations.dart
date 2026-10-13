@@ -4069,11 +4069,47 @@ abstract class AppLocalizations {
   /// **'Connected · nothing synced from your watch yet today'**
   String get homeBurnedNone;
 
-  /// No description provided for @watchToday.
+  /// No description provided for @watchFromApps.
   ///
   /// In en, this message translates to:
-  /// **'Today from Health Connect: {steps} steps · {kcal} kcal'**
-  String watchToday(int steps, int kcal);
+  /// **'Today in Health Connect, by app'**
+  String get watchFromApps;
+
+  /// No description provided for @watchNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing from today yet. Open Mi Fitness and let it sync, then tap Refresh.'**
+  String get watchNoData;
+
+  /// No description provided for @watchAppSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} steps'**
+  String watchAppSteps(int count);
+
+  /// No description provided for @watchAppActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{kcal} active kcal'**
+  String watchAppActive(int kcal);
+
+  /// No description provided for @watchAppTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{kcal} total kcal'**
+  String watchAppTotal(int kcal);
+
+  /// No description provided for @watchUsedNote.
+  ///
+  /// In en, this message translates to:
+  /// **'✓ is the app RUVA uses (Mi Fitness when present), so nothing is counted twice. Mi Fitness shares data with Health Connect when it syncs, so RUVA can lag behind your watch face until then.'**
+  String get watchUsedNote;
+
+  /// No description provided for @watchRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get watchRefresh;
 
   /// No description provided for @notifDailyBody.
   ///

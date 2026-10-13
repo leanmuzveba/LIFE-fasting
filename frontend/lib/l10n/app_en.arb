@@ -786,7 +786,15 @@
   "activityFromWatch": "From your watch",
   "homeStepsWatch": "watch",
   "homeBurnedNone": "Connected · nothing synced from your watch yet today",
-  "watchToday": "Today from Health Connect: {steps} steps · {kcal} kcal",
-  "@watchToday": {"placeholders": {"steps": {"type": "int"}, "kcal": {"type": "int"}}},
+  "watchFromApps": "Today in Health Connect, by app",
+  "watchNoData": "Nothing from today yet. Open Mi Fitness and let it sync, then tap Refresh.",
+  "watchAppSteps": "{count} steps",
+  "@watchAppSteps": {"placeholders": {"count": {"type": "int"}}},
+  "watchAppActive": "{kcal} active kcal",
+  "@watchAppActive": {"placeholders": {"kcal": {"type": "int"}}},
+  "watchAppTotal": "{kcal} total kcal",
+  "@watchAppTotal": {"placeholders": {"kcal": {"type": "int"}}},
+  "watchUsedNote": "✓ is the app RUVA uses (Mi Fitness when present), so nothing is counted twice. Mi Fitness shares data with Health Connect when it syncs, so RUVA can lag behind your watch face until then.",
+  "watchRefresh": "Refresh",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

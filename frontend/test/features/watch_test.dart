@@ -16,6 +16,30 @@ Future<void> _openWatchSheet(WidgetTester tester) async {
 }
 
 void main() {
+  test('reads one app only: Mi Fitness when present, else the one with most data', () {
+    expect(preferredSource({'com.google.android.apps.fitness': 9000, 'com.mi.health': 6200}), 'com.mi.health');
+    expect(
+      preferredSource({'com.sec.android.app.shealth': 4100, 'com.google.android.apps.fitness': 5200}),
+      'com.google.android.apps.fitness',
+    );
+    expect(preferredSource({}), isNull);
+  });
+
+  testWidgets('Settings → Watch lists what each app wrote, marking the one used', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 2400);
+    watch.apps = const [
+      SourceTotals(name: 'Mi Fitness', steps: 6240, activeKcal: 312, used: true),
+      SourceTotals(name: 'Google Fit', steps: 6511),
+    ];
+    await _openWatchSheet(tester);
+    await tester.tap(find.text('Connect'));
+    await tester.pumpAndSettle();
+    await _openWatchSheet(tester);
+    expect(find.text('✓ Mi Fitness · 6240 steps · 312 active kcal'), findsOneWidget);
+    expect(find.text('Google Fit · 6511 steps'), findsOneWidget);
+  });
+
   testWidgets('connect a watch: calories burned appear on Home', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 2400);

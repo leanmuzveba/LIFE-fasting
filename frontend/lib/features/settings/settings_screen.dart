@@ -10,6 +10,7 @@ import '../../core/widgets/pill_button.dart';
 import '../../core/widgets/ruva_kit.dart';
 import '../../core/widgets/ruva_logo.dart';
 import '../../core/widgets/sheet.dart';
+import '../../data/health_source.dart' show SourceTotals;
 import '../../domain/settings.dart';
 import '../kitchen/kitchen_review_screen.dart';
 import '../profile/profile_screen.dart';
@@ -484,12 +485,27 @@ class _WatchSheet extends ConsumerWidget {
           PrimaryButton(label: l.watchInstall, onPressed: () => ref.read(healthSourceProvider).install()),
         ] else if (status == WatchStatus.linked) ...[
           Text(l.watchLinkedBody, style: AppText.body.copyWith(fontWeight: FontWeight.w600)),
-          Text(
-            l.watchToday(
-              ref.watch(watchStepsTodayProvider).value ?? 0,
-              (ref.watch(watchCaloriesTodayProvider).value ?? 0).round(),
-            ),
-            style: AppText.small,
+          MonoLabel(l.watchFromApps),
+          if (ref.watch(watchBreakdownProvider).value ?? const <SourceTotals>[] case final apps)
+            if (apps.isEmpty)
+              Text(l.watchNoData, style: AppText.small)
+            else
+              for (final a in apps)
+                Text(
+                  [
+                    '${a.used ? '✓ ' : ''}${a.name}',
+                    if (a.steps != null) l.watchAppSteps(a.steps!),
+                    if (a.activeKcal != null) l.watchAppActive(a.activeKcal!),
+                    if (a.totalKcal != null) l.watchAppTotal(a.totalKcal!),
+                  ].join(' · '),
+                  style: AppText.small.copyWith(fontSize: 13, fontWeight: a.used ? FontWeight.w600 : FontWeight.w400),
+                ),
+          Text(l.watchUsedNote, style: AppText.small.copyWith(fontSize: 12)),
+          TextButton.icon(
+            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+            onPressed: actions.refresh,
+            icon: const Icon(Icons.refresh),
+            label: Text(l.watchRefresh),
           ),
           TextButton(
             onPressed: () async {

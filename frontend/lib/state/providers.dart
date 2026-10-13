@@ -928,6 +928,17 @@ final watchCaloriesTodayProvider = FutureProvider<double?>((ref) async {
   }
 });
 
+/// What each health app wrote today (troubleshooting in Settings → Watch).
+final watchBreakdownProvider = FutureProvider<List<SourceTotals>>((ref) async {
+  if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return const [];
+  final now = ref.read(clockProvider)().toLocal();
+  try {
+    return await ref.watch(healthSourceProvider).breakdown(DateTime(now.year, now.month, now.day), now);
+  } catch (_) {
+    return const [];
+  }
+});
+
 /// Today's steps from your watch (full day), or null when not connected.
 final watchStepsTodayProvider = FutureProvider<int?>((ref) async {
   if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return null;
@@ -999,6 +1010,7 @@ class WatchActions {
     _ref.invalidate(watchCaloriesTodayProvider);
     _ref.invalidate(watchSyncProvider);
     _ref.invalidate(watchStepsTodayProvider);
+    _ref.invalidate(watchBreakdownProvider);
   }
 }
 

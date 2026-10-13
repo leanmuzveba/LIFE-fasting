@@ -2338,9 +2338,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeBurnedNone => 'Connected · nothing synced from your watch yet today';
 
   @override
-  String watchToday(int steps, int kcal) {
-    return 'Today from Health Connect: $steps steps · $kcal kcal';
+  String get watchFromApps => 'Today in Health Connect, by app';
+
+  @override
+  String get watchNoData => 'Nothing from today yet. Open Mi Fitness and let it sync, then tap Refresh.';
+
+  @override
+  String watchAppSteps(int count) {
+    return '$count steps';
   }
+
+  @override
+  String watchAppActive(int kcal) {
+    return '$kcal active kcal';
+  }
+
+  @override
+  String watchAppTotal(int kcal) {
+    return '$kcal total kcal';
+  }
+
+  @override
+  String get watchUsedNote =>
+      '✓ is the app RUVA uses (Mi Fitness when present), so nothing is counted twice. Mi Fitness shares data with Health Connect when it syncs, so RUVA can lag behind your watch face until then.';
+
+  @override
+  String get watchRefresh => 'Refresh';
 
   @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
