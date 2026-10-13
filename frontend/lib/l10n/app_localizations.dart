@@ -4123,6 +4123,42 @@ abstract class AppLocalizations {
   /// **'Update'**
   String get updateNow;
 
+  /// No description provided for @activityKcalEstimate.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {kcal} kcal burned (est.) · at {kg} kg'**
+  String activityKcalEstimate(int kcal, String kg);
+
+  /// No description provided for @activityKcalNeedWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your weight in Profile to estimate calories burned.'**
+  String get activityKcalNeedWeight;
+
+  /// No description provided for @activityKcalWatch.
+  ///
+  /// In en, this message translates to:
+  /// **'{kcal} kcal burned · from your watch'**
+  String activityKcalWatch(int kcal);
+
+  /// No description provided for @activityKcalOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories burned · optional, if you know them'**
+  String get activityKcalOwn;
+
+  /// No description provided for @homeBurnedLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'From activities you logged · estimated'**
+  String get homeBurnedLogged;
+
+  /// No description provided for @homeBurnedBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch + activities you logged'**
+  String get homeBurnedBoth;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

@@ -2372,5 +2372,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateNow => 'Update';
 
   @override
+  String activityKcalEstimate(int kcal, String kg) {
+    return '≈ $kcal kcal burned (est.) · at $kg kg';
+  }
+
+  @override
+  String get activityKcalNeedWeight => 'Add your weight in Profile to estimate calories burned.';
+
+  @override
+  String activityKcalWatch(int kcal) {
+    return '$kcal kcal burned · from your watch';
+  }
+
+  @override
+  String get activityKcalOwn => 'Calories burned · optional, if you know them';
+
+  @override
+  String get homeBurnedLogged => 'From activities you logged · estimated';
+
+  @override
+  String get homeBurnedBoth => 'Watch + activities you logged';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

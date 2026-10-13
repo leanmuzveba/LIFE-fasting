@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:life_fasting/domain/activity.dart';
+import 'package:life_fasting/domain/body.dart';
+import 'package:life_fasting/state/providers.dart';
 
 import '../widget_test.dart' show pumpApp;
 
@@ -33,8 +37,8 @@ void main() {
     expect(find.text('32 min'), findsOneWidget);
     await _scrollTo(tester, find.bySemanticsLabel('Moderate'));
     await tester.tap(find.bySemanticsLabel('Moderate'));
-    await _scrollTo(tester, find.byType(TextField));
-    await tester.enterText(find.byType(TextField), 'Easy pace');
+    await _scrollTo(tester, find.byType(TextField).last);
+    await tester.enterText(find.byType(TextField).last, 'Easy pace');
     await _scrollTo(tester, find.text('Log activity'));
     await tester.tap(find.text('Log activity'));
     await tester.pumpAndSettle();
@@ -58,5 +62,38 @@ void main() {
     await tester.tap(delete);
     await tester.pumpAndSettle();
     expect(find.text('No activities logged yet.'), findsOneWidget);
+  });
+
+  test('calories from MET: (MET − 1) × kg × hours, moderate by default', () {
+    expect(activityKcal(ActivityType.run, Intensity.moderate, 30, 72), closeTo(316.8, 0.01));
+    expect(activityKcal(ActivityType.run, null, 30, 72), closeTo(316.8, 0.01));
+    expect(activityKcal(ActivityType.walk, Intensity.light, 60, 80), closeTo(144, 0.01));
+    expect(activityKcal(ActivityType.cycle, Intensity.heavy, 45, 60), closeTo(405, 0.01));
+  });
+
+  testWidgets('logging an activity estimates calories from your weight; Home adds them up', (tester) async {
+    await pumpApp(tester);
+    await _openActivity(tester);
+    expect(find.text('Add your weight in Profile to estimate calories burned.'), findsOneWidget);
+
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    await c.read(bodyActionsProvider).addWeighIn(WeighIn(at: DateTime.utc(2026, 10, 1), weightKg: 72));
+    await tester.pumpAndSettle();
+    await _scrollTo(tester, find.bySemanticsLabel('Run'));
+    await tester.tap(find.bySemanticsLabel('Run'));
+    await tester.pump();
+    expect(find.text('≈ 317 kcal burned (est.) · at 72 kg'), findsOneWidget);
+    await _scrollTo(tester, find.bySemanticsLabel('Heavy'));
+    await tester.tap(find.bySemanticsLabel('Heavy'));
+    await tester.pump();
+    expect(find.text('≈ 378 kcal burned (est.) · at 72 kg'), findsOneWidget);
+    await _scrollTo(tester, find.text('Log activity'));
+    await tester.tap(find.text('Log activity'));
+    await tester.pumpAndSettle();
+    expect((await c.read(activityRepositoryProvider).all()).single.kcal, closeTo(378, 0.01));
+
+    await tester.tap(find.byTooltip('Back').first);
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Calories burned: 378 kcal. From activities you logged · estimated'), findsOneWidget);
   });
 }

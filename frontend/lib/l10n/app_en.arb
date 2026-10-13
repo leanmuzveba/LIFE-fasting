@@ -798,5 +798,13 @@
   "watchRefresh": "Refresh",
   "updateAvailable": "New version available",
   "updateNow": "Update",
+  "activityKcalEstimate": "≈ {kcal} kcal burned (est.) · at {kg} kg",
+  "@activityKcalEstimate": {"placeholders": {"kcal": {"type": "int"}, "kg": {"type": "String"}}},
+  "activityKcalNeedWeight": "Add your weight in Profile to estimate calories burned.",
+  "activityKcalWatch": "{kcal} kcal burned · from your watch",
+  "@activityKcalWatch": {"placeholders": {"kcal": {"type": "int"}}},
+  "activityKcalOwn": "Calories burned · optional, if you know them",
+  "homeBurnedLogged": "From activities you logged · estimated",
+  "homeBurnedBoth": "Watch + activities you logged",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

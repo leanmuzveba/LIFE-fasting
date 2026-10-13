@@ -12,6 +12,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/widgets/ruva_kit.dart';
 import '../../core/widgets/sheet.dart';
+import '../../domain/activity.dart';
 import '../../domain/food.dart';
 import '../../domain/hydration.dart';
 import '../../domain/steps.dart';
@@ -132,17 +133,31 @@ class HomeScreen extends ConsumerWidget {
           progress: (water / settings.waterGoalMl).clamp(0.0, 1.0),
           onTap: onOpenWater,
         ),
-        if (ref.watch(watchCaloriesTodayProvider).value case final burned?) ...[
-          const SizedBox(height: 12),
-          _MetricRow(
-            icon: Icons.watch_outlined,
-            label: l.homeBurned,
-            value: n.format(burned.round()),
-            unit: 'kcal',
-            sub: burned == 0 ? l.homeBurnedNone : l.homeBurnedSub,
-            onTap: onOpenActivity,
-          ),
-        ],
+        ...() {
+          // Watch calories (already include its workouts) + activities you logged yourself.
+          final watchKcal = ref.watch(watchCaloriesTodayProvider).value;
+          final logged = (ref.watch(activityDayProvider(today)).value ?? const <ActivityEntry>[])
+              .where((a) => !a.fromWatch)
+              .fold(0.0, (sum, a) => sum + (a.kcal ?? 0));
+          if (watchKcal == null && logged == 0) return const <Widget>[];
+          return [
+            const SizedBox(height: 12),
+            _MetricRow(
+              icon: watchKcal == null ? Icons.local_fire_department_outlined : Icons.watch_outlined,
+              label: l.homeBurned,
+              value: n.format(((watchKcal ?? 0) + logged).round()),
+              unit: 'kcal',
+              sub: watchKcal == null
+                  ? l.homeBurnedLogged
+                  : logged > 0
+                  ? l.homeBurnedBoth
+                  : watchKcal == 0
+                  ? l.homeBurnedNone
+                  : l.homeBurnedSub,
+              onTap: onOpenActivity,
+            ),
+          ];
+        }(),
       ],
     );
   }

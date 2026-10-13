@@ -442,6 +442,7 @@ class ActivityCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       onTap: () => showAppSheet<void>(context, (_) => ActivityForm(entry: a)),
       child: Semantics(
+        container: true,
         label: '${activityLabel(l, a.type)}, $detail${a.fromWatch ? ', ${l.activityFromWatch}' : ''}. ${l.edit}',
         excludeSemantics: true,
         child: Row(
@@ -496,12 +497,16 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
   late int _minutes = widget.entry?.minutes ?? 30;
   late Intensity? _intensity = widget.entry?.intensity;
   late final _notes = TextEditingController(text: widget.entry?.notes ?? '');
+  // Your own calories figure (optional); otherwise the MET estimate is saved.
+  late final _kcal = TextEditingController();
+  double? _shownEstimate; // what the form shows; saved unless you type your own
   late DateTime? _when = widget.entry?.startedAt.toLocal(); // null = now
   String? _error;
 
   @override
   void dispose() {
     _notes.dispose();
+    _kcal.dispose();
     super.dispose();
   }
 
@@ -531,6 +536,8 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
       notes: _notes.text,
       createdAt: e?.createdAt ?? now,
       updatedAt: now,
+      externalId: e?.externalId,
+      kcal: double.tryParse(_kcal.text.trim()) ?? _shownEstimate,
     );
     if (!await ref.read(activityActionsProvider).save(entry)) {
       setState(() => _error = l.activityFutureError);
@@ -543,15 +550,33 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
       showRuvaSnack(context, l.activityLogged(activityLabel(l, _type), _minutes));
       setState(() {
         _notes.clear();
+        _kcal.clear();
         _when = null;
       });
     }
+  }
+
+  /// Latest weigh-in (null when none or weight tracking is off).
+  double? get _weightKg {
+    if (ref.watch(bodyProfileProvider).value?.trackWeight == false) return null;
+    final w = ref.watch(weighInsProvider).value;
+    return w == null || w.isEmpty ? null : w.last.weightKg;
+  }
+
+  /// MET estimate; a watch workout keeps the watch's own figure.
+  double? _estimate() {
+    final e = widget.entry;
+    if (e != null && e.fromWatch) return e.kcal;
+    final kg = _weightKg;
+    return kg == null ? null : activityKcal(_type, _intensity, _minutes, kg);
   }
 
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     final use24h = ref.watch(settingsProvider).value?.use24HourTime ?? false;
+    final estimate = _shownEstimate = _estimate();
+    final kg = _weightKg;
     final whenLabel = _when == null ? l.today : '${formatShortDay(_when!)}, ${formatClock(_when!, use24h: use24h)}';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -636,6 +661,37 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
               ),
             ],
           ],
+        ),
+        const SizedBox(height: 12),
+        Semantics(
+          container: true,
+          liveRegion: true,
+          child: Row(
+            children: [
+              const Icon(Icons.local_fire_department_outlined, size: 18, color: AppColors.primary),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  widget.entry?.fromWatch ?? false
+                      ? l.activityKcalWatch((estimate ?? 0).round())
+                      : estimate == null
+                      ? l.activityKcalNeedWeight
+                      : l.activityKcalEstimate(
+                          estimate.round(),
+                          kg!.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), ''),
+                        ),
+                  style: AppText.small.copyWith(fontSize: 13.5, color: AppColors.primary),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 10),
+        RuvaTextField(
+          controller: _kcal,
+          label: l.activityKcalOwn,
+          hint: estimate == null ? '' : '${estimate.round()}',
+          keyboardType: TextInputType.number,
         ),
         const SizedBox(height: 18),
         MonoLabel(l.activityWhen),
