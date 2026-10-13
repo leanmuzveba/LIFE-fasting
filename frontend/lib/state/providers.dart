@@ -20,6 +20,7 @@ import '../data/review_repository.dart';
 import '../data/session_repository.dart';
 import '../data/settings_repository.dart';
 import '../data/step_counter.dart';
+import '../data/update_checker.dart';
 import '../domain/activity.dart';
 import '../domain/body.dart';
 import '../domain/fasting_session.dart';
@@ -1015,3 +1016,13 @@ class WatchActions {
 }
 
 final watchActionsProvider = Provider(WatchActions.new);
+
+// --- App updates (published to the release page by tool/release.py) ----------------
+
+final updateCheckerProvider = Provider((ref) => UpdateChecker());
+
+/// A newer release than this build, or null.
+final availableUpdateProvider = FutureProvider<AppRelease?>((ref) async {
+  final latest = await ref.watch(updateCheckerProvider).latest();
+  return latest != null && latest.build > appBuild ? latest : null;
+});

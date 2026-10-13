@@ -4111,6 +4111,18 @@ abstract class AppLocalizations {
   /// **'Refresh'**
   String get watchRefresh;
 
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'New version available'**
+  String get updateAvailable;
+
+  /// No description provided for @updateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
+  String get updateNow;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:

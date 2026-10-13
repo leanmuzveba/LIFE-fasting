@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' show DateFormat, NumberFormat;
 import 'package:permission_handler/permission_handler.dart' show openAppSettings;
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/format.dart';
 import '../../core/l10n.dart';
@@ -70,6 +71,34 @@ class HomeScreen extends ConsumerWidget {
             style: AppText.title.copyWith(fontSize: 22, height: 1.2),
           ),
         ),
+        if (ref.watch(availableUpdateProvider).value case final update?) ...[
+          const SizedBox(height: 16),
+          RuvaCard(
+            color: AppColors.lime200,
+            padding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
+            child: Row(
+              children: [
+                const Icon(Icons.system_update_outlined, color: AppColors.primary),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(l.updateAvailable, style: AppText.cardValue.copyWith(fontSize: 15)),
+                      if (update.notes.isNotEmpty)
+                        Text(update.notes, maxLines: 2, overflow: TextOverflow.ellipsis, style: AppText.small),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
+                  onPressed: () => launchUrl(Uri.parse(update.apkUrl), mode: LaunchMode.externalApplication),
+                  child: Text(l.updateNow),
+                ),
+              ],
+            ),
+          ),
+        ],
         const SizedBox(height: 22),
         const _StepsCard(),
         const SizedBox(height: 28),

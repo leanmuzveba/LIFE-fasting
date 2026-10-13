@@ -49,3 +49,9 @@ app.*.map.json
 
 # Local API keys, passed with --dart-define-from-file=secrets.json
 secrets.json
+
+# Built release files (APKs) published to Vercel by tool/release.py
+release_site/
+.vercel/
+
+.vercel

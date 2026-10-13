@@ -12,6 +12,7 @@ import 'package:life_fasting/domain/meal_estimate.dart';
 import 'package:life_fasting/data/notification_service.dart';
 import 'package:life_fasting/data/recipe_repository.dart';
 import 'package:life_fasting/data/step_counter.dart';
+import 'package:life_fasting/data/update_checker.dart';
 import 'package:life_fasting/domain/hydration.dart';
 import 'package:life_fasting/state/providers.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -212,4 +213,13 @@ class FakeHealthSource extends HealthSource {
   List<SourceTotals> apps = const [];
   @override
   Future<List<SourceTotals>> breakdown(DateTime from, DateTime to) async => apps;
+}
+
+/// Returns whatever the test sets as the latest release.
+class FakeUpdateChecker extends UpdateChecker {
+  FakeUpdateChecker(this._latest);
+  final AppRelease? Function() _latest;
+
+  @override
+  Future<AppRelease?> latest() async => _latest();
 }

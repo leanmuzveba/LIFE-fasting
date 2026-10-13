@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:life_fasting/data/update_checker.dart';
 import 'package:life_fasting/domain/settings.dart';
 import 'package:life_fasting/features/food/barcode_scanner_screen.dart';
 import 'package:life_fasting/features/food/meal_photo_screen.dart';
@@ -30,6 +31,9 @@ late FakeStepCounter steps;
 /// Fake Health Connect (watch data).
 late FakeHealthSource watch;
 
+/// What the release page reports (null = no newer version).
+AppRelease? latestRelease;
+
 /// Boots the real app on an in-memory database with a fake clock.
 
 Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = AgeEligibility.adult}) async {
@@ -44,6 +48,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   mealPhoto = FakeMealPhotoApi();
   steps = FakeStepCounter();
   watch = FakeHealthSource();
+  latestRelease = null;
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
@@ -55,6 +60,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
       mealPhotoApiProvider.overrideWith((ref) async => mealPhoto),
       stepCounterProvider.overrideWithValue(steps),
       healthSourceProvider.overrideWithValue(watch),
+      updateCheckerProvider.overrideWithValue(FakeUpdateChecker(() => latestRelease)),
       mealPhotoPickerProvider.overrideWithValue((_) async => onePixelPng),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {
@@ -256,5 +262,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Goal 8,000'), findsOneWidget);
     expect(find.bySemanticsLabel('Today’s steps: 3,240, 41% of goal'), findsOneWidget);
+  });
+
+  testWidgets('Home offers an update when a newer build is published', (tester) async {
+    await pumpApp(tester);
+    expect(find.text('New version available'), findsNothing);
+    latestRelease = const AppRelease(build: 999, apkUrl: 'https://example.com/ruva-999.apk', notes: 'Watch fixes');
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    c.invalidate(availableUpdateProvider);
+    await tester.pumpAndSettle();
+    expect(find.text('New version available'), findsOneWidget);
+    expect(find.text('Watch fixes'), findsOneWidget);
+    expect(find.text('Update'), findsOneWidget);
   });
 }

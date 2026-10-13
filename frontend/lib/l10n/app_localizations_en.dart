@@ -2366,5 +2366,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchRefresh => 'Refresh';
 
   @override
+  String get updateAvailable => 'New version available';
+
+  @override
+  String get updateNow => 'Update';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }
