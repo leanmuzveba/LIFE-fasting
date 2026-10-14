@@ -18,6 +18,7 @@ import '../../domain/hydration.dart';
 import '../../domain/steps.dart';
 import '../../state/providers.dart';
 import '../ring/fasting_ring.dart' show FastingRing;
+import 'stats_export_screen.dart';
 
 /// Home dashboard (RUVA design): steps, then today's calories, hours fasted
 /// and water. Logging happens from the centre + button.
@@ -65,12 +66,24 @@ class HomeScreen extends ConsumerWidget {
       children: [
         MonoLabel(DateFormat('EEEE · d MMM').format(now)),
         const SizedBox(height: 6),
-        Semantics(
-          header: true,
-          child: Text(
-            name.isEmpty ? greeting : l.homeGreeting(greeting, name),
-            style: AppText.title.copyWith(fontSize: 22, height: 1.2),
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Semantics(
+                header: true,
+                child: Text(
+                  name.isEmpty ? greeting : l.homeGreeting(greeting, name),
+                  style: AppText.title.copyWith(fontSize: 22, height: 1.2),
+                ),
+              ),
+            ),
+            IconButton(
+              tooltip: l.shareDayTooltip,
+              icon: const Icon(Icons.ios_share_rounded, color: AppColors.primary),
+              onPressed: () =>
+                  Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => StatsExportScreen(day: today))),
+            ),
+          ],
         ),
         if (ref.watch(availableUpdateProvider).value case final update?) ...[
           const SizedBox(height: 16),

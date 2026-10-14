@@ -824,5 +824,18 @@
   "exerciseAdd": "Add",
   "exerciseRemove": "Remove {name}",
   "@exerciseRemove": {"placeholders": {"name": {"type": "String"}}},
+  "shareDayTitle": "Share your day",
+  "shareDayTooltip": "Export the day's stats",
+  "shareDayHint": "Transparent PNG with white text — made to go over your photos and stories.",
+  "shareDayButton": "Export PNG",
+  "statSteps": "Steps",
+  "statDistance": "Distance",
+  "statBurned": "Calories burned",
+  "statExercise": "Exercise",
+  "statMore": "+{n} more",
+  "@statMore": {"placeholders": {"n": {"type": "int"}}},
+  "previousDay": "Previous day",
+  "nextDay": "Next day",
+  "pickDay": "Pick a day",
   "notifDailyBody": "Your daily reminder. Open the app to start or review a session."
 }

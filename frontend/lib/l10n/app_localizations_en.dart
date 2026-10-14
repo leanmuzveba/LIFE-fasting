@@ -2446,5 +2446,37 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get shareDayTitle => 'Share your day';
+
+  @override
+  String get shareDayTooltip => 'Export the day\'s stats';
+
+  @override
+  String get shareDayHint => 'Transparent PNG with white text — made to go over your photos and stories.';
+
+  @override
+  String get shareDayButton => 'Export PNG';
+
+  @override
+  String get statSteps => 'Steps';
+
+  @override
+  String get statDistance => 'Distance';
+
+  @override
+  String get statBurned => 'Calories burned';
+
+  @override
+  String get statExercise => 'Exercise';
+
+  @override
+  String statMore(int n) {
+    return '+$n more';
+  }
+
+  @override
+  String get pickDay => 'Pick a day';
+
+  @override
   String get notifDailyBody => 'Your daily reminder. Open the app to start or review a session.';
 }

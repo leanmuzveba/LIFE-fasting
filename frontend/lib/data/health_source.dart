@@ -91,6 +91,13 @@ class HealthSource {
     return (await _total(HealthDataType.STEPS, from, to))?.round();
   }
 
+  /// Distance walked/run (km) from your watch app, or null when none.
+  Future<double?> distanceKm(DateTime from, DateTime to) async {
+    await _init();
+    final m = await _total(HealthDataType.DISTANCE_DELTA, from, to);
+    return m == null ? null : m / 1000;
+  }
+
   /// Calories burned between [from] and [to] from your watch app: active
   /// calories if it writes them, else its "total" calories (Mi Fitness's
   /// exclude resting energy), else the sum of its workouts. Null when none.

@@ -962,6 +962,42 @@ final watchStepsTodayProvider = FutureProvider<int?>((ref) async {
   }
 });
 
+/// One day's movement, for the shareable stats image.
+class DayStats {
+  const DayStats({this.steps, this.km, this.kcal = 0, this.activities = const []});
+  final int? steps; // null when unknown (no watch and not today)
+  final double? km;
+  final double kcal; // watch + activities you logged
+  final List<ActivityEntry> activities;
+}
+
+/// Stats for any local day (key: local midnight). Past days need the watch
+/// for steps and distance; the phone's step counter only knows today.
+final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) async {
+  final now = ref.read(clockProvider)().toLocal();
+  final end = DateTime(day.year, day.month, day.day + 1);
+  final to = end.isAfter(now) ? now : end;
+  final activities = await ref.watch(activityDayProvider(day).future);
+  var kcal = activities.where((a) => !a.fromWatch).fold(0.0, (s, a) => s + (a.kcal ?? 0));
+  int? steps;
+  double? km;
+  if (await ref.watch(watchStatusProvider.future) == WatchStatus.linked) {
+    final hc = ref.watch(healthSourceProvider);
+    try {
+      steps = await hc.steps(day, to);
+      km = await hc.distanceKm(day, to);
+      kcal += await hc.caloriesBurned(day, to) ?? 0;
+    } catch (_) {}
+  }
+  if (steps == null && day == DateTime(now.year, now.month, now.day)) {
+    steps = ref.read(todayStepsProvider).value?.steps;
+  }
+  if ((km == null || km == 0) && steps != null && steps > 0) {
+    km = stepsToKm(steps, heightCm: (await ref.watch(bodyProfileProvider.future)).heightCm);
+  }
+  return DayStats(steps: steps, km: km, kcal: kcal, activities: activities);
+});
+
 /// Imports the last week's watch workouts into Activity (once each).
 /// Returns how many were new.
 final watchSyncProvider = FutureProvider<int>((ref) async {

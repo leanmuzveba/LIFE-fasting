@@ -4249,6 +4249,66 @@ abstract class AppLocalizations {
   /// **'Remove {name}'**
   String exerciseRemove(String name);
 
+  /// No description provided for @shareDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your day'**
+  String get shareDayTitle;
+
+  /// No description provided for @shareDayTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Export the day\'s stats'**
+  String get shareDayTooltip;
+
+  /// No description provided for @shareDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Transparent PNG with white text — made to go over your photos and stories.'**
+  String get shareDayHint;
+
+  /// No description provided for @shareDayButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PNG'**
+  String get shareDayButton;
+
+  /// No description provided for @statSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps'**
+  String get statSteps;
+
+  /// No description provided for @statDistance.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get statDistance;
+
+  /// No description provided for @statBurned.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories burned'**
+  String get statBurned;
+
+  /// No description provided for @statExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get statExercise;
+
+  /// No description provided for @statMore.
+  ///
+  /// In en, this message translates to:
+  /// **'+{n} more'**
+  String statMore(int n);
+
+  /// No description provided for @pickDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a day'**
+  String get pickDay;
+
   /// No description provided for @notifDailyBody.
   ///
   /// In en, this message translates to:
