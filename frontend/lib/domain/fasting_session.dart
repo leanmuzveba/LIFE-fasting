@@ -46,24 +46,27 @@ class FastingSession {
   );
 }
 
-enum SessionTimeError { startInFuture, endInFuture, endBeforeStart }
+enum SessionTimeError { startInFuture, endInFuture, endBeforeStart, overlaps }
 
 /// Validates an edited session. Returns the problem, or null when valid.
-SessionTimeError? validateSessionTimes({required DateTime start, DateTime? end, required DateTime now}) {
+/// [others] are your other fasts (the one being edited is skipped by id): an
+/// edited fast may not overlap any of them; an open fast runs until [now].
+SessionTimeError? validateSessionTimes({
+  required DateTime start,
+  DateTime? end,
+  required DateTime now,
+  int? id,
+  Iterable<FastingSession> others = const [],
+}) {
   if (start.isAfter(now)) return SessionTimeError.startInFuture;
   if (end != null) {
     if (end.isAfter(now)) return SessionTimeError.endInFuture;
     if (!end.isAfter(start)) return SessionTimeError.endBeforeStart;
   }
+  final until = end ?? now;
+  for (final o in others) {
+    if (o.id == id) continue;
+    if (start.isBefore(o.endedAt ?? now) && o.startedAt.isBefore(until)) return SessionTimeError.overlaps;
+  }
   return null;
-}
-
-/// The "Edit start time" sheet picks a clock time only. It resolves to the most
-/// recent occurrence of that time at or before [now] (local time), so 19:00
-/// picked at 07:24 means yesterday evening.
-DateTime resolveStartFromClockTime({required int hour, required int minute, required DateTime now}) {
-  final local = now.toLocal();
-  var d = DateTime(local.year, local.month, local.day, hour, minute);
-  if (d.isAfter(local)) d = DateTime(local.year, local.month, local.day - 1, hour, minute);
-  return d.toUtc();
 }

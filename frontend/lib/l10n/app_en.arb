@@ -65,6 +65,7 @@
   "errorStartInFuture": "Start time can’t be in the future.",
   "errorEndInFuture": "End time can’t be in the future.",
   "errorEndBeforeStart": "End time must be after the start time.",
+  "errorOverlaps": "That overlaps another fast in your history.",
 
   "milestoneTitle": "Milestone",
   "milestoneMarkerNote": "The position of this marker is a visual reference for elapsed time. It is not proof that anything has happened in your body, and reaching it is not a goal or a health achievement.",

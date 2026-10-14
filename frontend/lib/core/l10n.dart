@@ -14,5 +14,6 @@ extension SessionTimeErrorText on SessionTimeError {
     SessionTimeError.startInFuture => l.errorStartInFuture,
     SessionTimeError.endInFuture => l.errorEndInFuture,
     SessionTimeError.endBeforeStart => l.errorEndBeforeStart,
+    SessionTimeError.overlaps => l.errorOverlaps,
   };
 }

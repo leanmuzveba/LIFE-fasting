@@ -175,6 +175,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorEndBeforeStart => 'End time must be after the start time.';
 
   @override
+  String get errorOverlaps => 'That overlaps another fast in your history.';
+
+  @override
   String get milestoneTitle => 'Milestone';
 
   @override

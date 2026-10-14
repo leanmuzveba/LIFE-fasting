@@ -204,6 +204,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('STARTED AT'), findsOneWidget);
     expect(find.text('Will start Sun 4 Oct at 7:24 AM.'), findsOneWidget);
+    expect(find.text('Sun 4 Oct, 7:24 AM'), findsOneWidget); // date and time, any day
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
     expect(find.text('STARTED AT'), findsNothing);

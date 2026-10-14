@@ -379,6 +379,12 @@ abstract class AppLocalizations {
   /// **'End time must be after the start time.'**
   String get errorEndBeforeStart;
 
+  /// No description provided for @errorOverlaps.
+  ///
+  /// In en, this message translates to:
+  /// **'That overlaps another fast in your history.'**
+  String get errorOverlaps;
+
   /// No description provided for @milestoneTitle.
   ///
   /// In en, this message translates to:

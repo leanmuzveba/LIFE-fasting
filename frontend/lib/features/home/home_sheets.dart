@@ -145,28 +145,34 @@ Future<FastingSession?> showEndSheet(BuildContext context) => showAppSheet<Fasti
 );
 
 Future<void> showEditStartSheet(BuildContext context, {required DateTime startedAt}) =>
-    showAppSheet<void>(context, (ctx) => _EditStartSheet(initial: TimeOfDay.fromDateTime(startedAt.toLocal())));
+    showAppSheet<void>(context, (ctx) => _EditStartSheet(initial: startedAt.toLocal()));
 
 class _EditStartSheet extends ConsumerStatefulWidget {
   const _EditStartSheet({required this.initial});
-  final TimeOfDay initial;
+  final DateTime initial; // local
 
   @override
   ConsumerState<_EditStartSheet> createState() => _EditStartSheetState();
 }
 
 class _EditStartSheetState extends ConsumerState<_EditStartSheet> {
-  late TimeOfDay _time = widget.initial;
+  late DateTime _start = widget.initial;
   SessionTimeError? _error;
 
-  DateTime _resolved() =>
-      resolveStartFromClockTime(hour: _time.hour, minute: _time.minute, now: ref.read(clockProvider)());
-
+  /// Any day (e.g. yesterday) and time; saving checks it against your history.
   Future<void> _pick() async {
-    final t = await showTimePicker(context: context, initialTime: _time);
+    final now = ref.read(clockProvider)().toLocal();
+    final date = await showDatePicker(
+      context: context,
+      initialDate: _start.isAfter(now) ? now : _start,
+      firstDate: DateTime(2020),
+      lastDate: now,
+    );
+    if (date == null || !mounted) return;
+    final t = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(_start));
     if (t == null) return;
     setState(() {
-      _time = t;
+      _start = DateTime(date.year, date.month, date.day, t.hour, t.minute);
       _error = null;
     });
   }
@@ -174,8 +180,8 @@ class _EditStartSheetState extends ConsumerState<_EditStartSheet> {
   @override
   Widget build(BuildContext context) {
     final use24h = ref.watch(settingsProvider).value?.use24HourTime ?? false;
-    final start = _resolved();
-    final display = MaterialLocalizations.of(context).formatTimeOfDay(_time, alwaysUse24HourFormat: use24h);
+    final start = _start;
+    final display = '${formatShortDay(start)}, ${formatClock(start, use24h: use24h)}';
     final l = context.l10n;
     return Gap16Column(
       children: [
@@ -222,7 +228,7 @@ class _EditStartSheetState extends ConsumerState<_EditStartSheet> {
           PillButton(
             label: l.save,
             onPressed: () async {
-              final error = await ref.read(activeSessionProvider.notifier).editStart(_resolved());
+              final error = await ref.read(activeSessionProvider.notifier).editStart(_start.toUtc());
               if (!context.mounted) return;
               if (error == null) {
                 Navigator.pop(context);

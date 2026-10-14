@@ -133,17 +133,6 @@ void main() {
   });
 
   group('editing start time', () {
-    test('a clock time later than now means yesterday', () {
-      final now = DateTime(2026, 10, 4, 7, 24); // local
-      final r = resolveStartFromClockTime(hour: 19, minute: 0, now: now).toLocal();
-      expect(r, DateTime(2026, 10, 3, 19, 0));
-    });
-
-    test('a clock time earlier than now means today', () {
-      final now = DateTime(2026, 10, 4, 7, 24);
-      expect(resolveStartFromClockTime(hour: 6, minute: 5, now: now).toLocal(), DateTime(2026, 10, 4, 6, 5));
-    });
-
     test('edited start recalculates elapsed', () {
       final now = start.add(const Duration(hours: 10));
       final s = session(start).copyWith(startedAt: start.add(const Duration(hours: 2)));
@@ -156,6 +145,31 @@ void main() {
       expect(validateSessionTimes(start: start, end: start, now: now), isNotNull);
       expect(validateSessionTimes(start: start, end: now.add(const Duration(minutes: 1)), now: now), isNotNull);
       expect(validateSessionTimes(start: start, end: now, now: now), isNull);
+    });
+
+    test('an edited fast may start any earlier day, but not overlap another fast', () {
+      final now = start.add(const Duration(days: 3));
+      final earlier = session(start).copyWith(id: 1, endedAt: () => start.add(const Duration(hours: 16)));
+      final open = session(start.add(const Duration(days: 2))).copyWith(id: 2);
+      final others = [earlier, open];
+      // Move the open fast back a day: after the earlier fast ended → fine.
+      expect(validateSessionTimes(start: start.add(const Duration(days: 1)), now: now, id: 2, others: others), isNull);
+      // Back into the earlier fast → overlap.
+      expect(
+        validateSessionTimes(start: start.add(const Duration(hours: 10)), now: now, id: 2, others: others),
+        SessionTimeError.overlaps,
+      );
+      // The fast being edited never clashes with itself.
+      expect(
+        validateSessionTimes(
+          start: start,
+          end: start.add(const Duration(hours: 18)),
+          now: now,
+          id: 1,
+          others: [earlier],
+        ),
+        isNull,
+      );
     });
   });
 

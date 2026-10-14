@@ -125,7 +125,12 @@ class ActiveSessionNotifier extends AsyncNotifier<FastingSession?> {
     final s = await future;
     if (s == null) return null;
     final now = _now();
-    final error = validateSessionTimes(start: startedAt, now: now);
+    final error = validateSessionTimes(
+      start: startedAt,
+      now: now,
+      id: s.id,
+      others: await ref.read(sessionRepositoryProvider).all(),
+    );
     if (error != null) return error;
     final edited = s.copyWith(startedAt: startedAt.toUtc(), updatedAt: now);
     await _repo.update(edited);
@@ -163,7 +168,13 @@ class SessionActions {
   /// Returns a validation error, or null when saved.
   Future<SessionTimeError?> save(FastingSession edited) async {
     final now = _ref.read(clockProvider)().toUtc();
-    final error = validateSessionTimes(start: edited.startedAt, end: edited.endedAt, now: now);
+    final error = validateSessionTimes(
+      start: edited.startedAt,
+      end: edited.endedAt,
+      now: now,
+      id: edited.id,
+      others: await _ref.read(sessionRepositoryProvider).all(),
+    );
     if (error != null) return error;
     await _ref.read(sessionRepositoryProvider).update(edited.copyWith(updatedAt: now));
     _refresh();
