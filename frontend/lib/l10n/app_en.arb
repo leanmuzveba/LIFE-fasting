@@ -836,6 +836,8 @@
   "styleLime": "Lime",
   "styleForest": "Forest",
   "styleBadge": "Badge",
+  "layoutCompact": "Stats first",
+  "layoutPoster": "Route first",
   "previousDay": "Previous day",
   "nextDay": "Next day",
   "pickDay": "Pick a day",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/domain/activity.dart';
+import 'package:life_fasting/features/today/stats_export_screen.dart';
 import 'package:life_fasting/state/providers.dart';
 
 import '../widget_test.dart' show pumpApp, watch;
@@ -47,6 +48,10 @@ void main() {
     await tester.tap(find.text('Badge'));
     await tester.pump();
     expect(find.byType(Image), findsWidgets);
+    await tester.tap(find.text('Route first'));
+    await tester.pump();
+    expect(tester.widget<StatsCard>(find.byType(StatsCard)).layout, ExportLayout.poster);
+    expect(find.text('57 min'), findsOneWidget);
     expect(tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_right_rounded)).onPressed, isNull);
 
     await tester.tap(find.byTooltip('Previous day'));

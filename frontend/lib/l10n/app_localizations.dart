@@ -4321,6 +4321,18 @@ abstract class AppLocalizations {
   /// **'Badge'**
   String get styleBadge;
 
+  /// No description provided for @layoutCompact.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats first'**
+  String get layoutCompact;
+
+  /// No description provided for @layoutPoster.
+  ///
+  /// In en, this message translates to:
+  /// **'Route first'**
+  String get layoutPoster;
+
   /// No description provided for @pickDay.
   ///
   /// In en, this message translates to:

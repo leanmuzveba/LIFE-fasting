@@ -27,6 +27,7 @@ class StatsExportScreen extends ConsumerStatefulWidget {
 class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   late DateTime _day = widget.day;
   ExportStyle _style = ExportStyle.white;
+  ExportLayout _layout = ExportLayout.compact;
   final _card = GlobalKey();
   bool _busy = false;
 
@@ -117,6 +118,23 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
                 ],
               ],
             ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                for (final (i, lay) in ExportLayout.values.indexed) ...[
+                  if (i > 0) const SizedBox(width: 6),
+                  Expanded(
+                    child: RuvaChip(
+                      label: lay == ExportLayout.compact ? l.layoutCompact : l.layoutPoster,
+                      selected: lay == _layout,
+                      dense: true,
+                      outlined: true,
+                      onTap: () => setState(() => _layout = lay),
+                    ),
+                  ),
+                ],
+              ],
+            ),
             const SizedBox(height: 10),
             // Grey backdrop only in the preview, so white, lime and forest all
             // show; the exported PNG is just the card (transparent).
@@ -128,7 +146,7 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
                   ? const Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator())
                   : RepaintBoundary(
                       key: _card,
-                      child: StatsCard(day: _day, stats: stats, style: _style),
+                      child: StatsCard(day: _day, stats: stats, style: _style, layout: _layout),
                     ),
             ),
             const SizedBox(height: 16),
@@ -160,12 +178,23 @@ enum ExportStyle {
   };
 }
 
+/// compact: stats, small route, small mark. poster (your path1/path30): big
+/// route on top, stats, full-width wordmark at the bottom.
+enum ExportLayout { compact, poster }
+
 /// The exported image on a transparent background.
 class StatsCard extends StatelessWidget {
-  const StatsCard({super.key, required this.day, required this.stats, this.style = ExportStyle.white});
+  const StatsCard({
+    super.key,
+    required this.day,
+    required this.stats,
+    this.style = ExportStyle.white,
+    this.layout = ExportLayout.compact,
+  });
   final DateTime day;
   final DayStats stats;
   final ExportStyle style;
+  final ExportLayout layout;
 
   @override
   Widget build(BuildContext context) {
@@ -194,12 +223,25 @@ class StatsCard extends StatelessWidget {
       ),
     );
     final h = stats.activeMinutes ~/ 60, m = stats.activeMinutes % 60;
+    final poster = layout == ExportLayout.poster;
+    final route = SizedBox(
+      width: poster ? 220 : 150,
+      height: poster ? 160 : 110,
+      child: CustomPaint(
+        painter: _RoutePainter(seed: day.year * 400 + day.month * 32 + day.day, color: style.line),
+      ),
+    );
+    final brand = switch (style.wordmark) {
+      final c? => Image.asset('assets/brand/wordmark.png', width: poster ? 300 : 130, color: c, semanticLabel: 'RUVA'),
+      null => RuvaLogo(size: poster ? 96 : 64, semanticLabel: 'RUVA'),
+    };
 
     return SizedBox(
       width: 300,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (poster) ...[route, const SizedBox(height: 28)],
           Text(
             DateFormat('EEEE · d MMM y').format(day).toUpperCase(),
             style: const TextStyle(fontFamily: AppFonts.mono, fontSize: 12, letterSpacing: 1.2, color: white),
@@ -209,18 +251,8 @@ class StatsCard extends StatelessWidget {
           if (stats.km != null) stat(l.statDistance, '${stats.km!.toStringAsFixed(2)} km'),
           stat(l.statBurned, '${n.format(stats.kcal.round())} kcal'),
           stat(l.statActive, h > 0 ? '${h}h ${m}m' : '$m min'),
-          SizedBox(
-            width: 150,
-            height: 110,
-            child: CustomPaint(
-              painter: _RoutePainter(seed: day.year * 400 + day.month * 32 + day.day, color: style.line),
-            ),
-          ),
-          const SizedBox(height: 22),
-          if (style.wordmark case final c?)
-            Image.asset('assets/brand/wordmark.png', width: 130, color: c, semanticLabel: 'RUVA')
-          else
-            const RuvaLogo(size: 64, semanticLabel: 'RUVA'),
+          if (!poster) ...[route, const SizedBox(height: 22)] else const SizedBox(height: 10),
+          brand,
         ],
       ),
     );

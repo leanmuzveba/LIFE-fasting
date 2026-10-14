@@ -2482,6 +2482,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get styleBadge => 'Badge';
 
   @override
+  String get layoutCompact => 'Stats first';
+
+  @override
+  String get layoutPoster => 'Route first';
+
+  @override
   String get pickDay => 'Pick a day';
 
   @override
