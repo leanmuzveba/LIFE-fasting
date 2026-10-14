@@ -5,7 +5,7 @@ import 'package:life_fasting/data/notification_service.dart';
 import '../widget_test.dart' show notifications, openTimer, pumpApp, tick, quickAdd;
 
 Future<void> _openSettings(WidgetTester tester) async {
-  await tester.tap(find.bySemanticsLabel('Settings').last);
+  await tester.tap(find.bySemanticsLabel('Profile').last);
   await tester.pumpAndSettle();
 }
 

@@ -210,11 +210,19 @@ void main() {
     expect(find.text('STARTED AT'), findsNothing);
   });
 
-  testWidgets('bottom nav: Home · History · (+) · Nutrition · Settings', (tester) async {
+  testWidgets('bottom nav: Home · Activity · (+) · Nutrition · Profile; History lives in Profile', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.bySemanticsLabel('History'));
+    await tester.tap(find.bySemanticsLabel('Activity').last);
     await tester.pumpAndSettle();
     expect(find.text('Today’s steps'), findsNothing);
+    expect(find.text('Log an activity'), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel('Profile').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('History'));
+    await tester.pumpAndSettle();
+    expect(find.text('All'), findsOneWidget); // History's filter chips
+    await tester.tap(find.byTooltip('Back'));
+    await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
     await tester.pumpAndSettle();
     expect(find.text('Food Diary'), findsOneWidget);

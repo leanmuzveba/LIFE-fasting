@@ -8,7 +8,7 @@ import 'package:life_fasting/state/providers.dart';
 import '../widget_test.dart' show pumpApp, watch;
 
 Future<void> _openWatchSheet(WidgetTester tester) async {
-  await tester.tap(find.bySemanticsLabel('Settings').last);
+  await tester.tap(find.bySemanticsLabel('Profile').last);
   await tester.pumpAndSettle();
   await tester.scrollUntilVisible(find.text('Connect your watch'), 200, scrollable: find.byType(Scrollable).first);
   await tester.tap(find.text('Connect your watch'));

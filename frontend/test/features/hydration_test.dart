@@ -19,10 +19,10 @@ void main() {
     expect(find.bySemanticsLabel(RegExp(r'^Water: 1.25 L')), findsOneWidget);
   });
 
-  testWidgets('Activity & Water: ring against the goal, +200/+300/+500 quick-adds', (tester) async {
+  testWidgets('Water: ring against the goal, +200/+300/+500 quick-adds', (tester) async {
     await pumpApp(tester);
     await _openWater(tester);
-    expect(find.text('Activity & Water'), findsOneWidget);
+    expect(find.text('Water'), findsWidgets);
     expect(find.text('No water logged yet today.'), findsOneWidget);
     expect(find.text('OF 2 L GOAL'), findsOneWidget);
     await tester.tap(find.bySemanticsLabel('Add 300 ml'));
@@ -94,7 +94,7 @@ void main() {
 
   testWidgets('Imperial units show fl oz and fl oz quick-adds', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.bySemanticsLabel('Settings').last);
+    await tester.tap(find.bySemanticsLabel('Profile').last);
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel(RegExp(r'^Units, Metric')));
     await tester.pumpAndSettle();
@@ -108,7 +108,7 @@ void main() {
 
   testWidgets('water reminders are opt-in and can be turned off', (tester) async {
     await pumpApp(tester);
-    await tester.tap(find.bySemanticsLabel('Settings').last);
+    await tester.tap(find.bySemanticsLabel('Profile').last);
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Water reminders'), 200);
     await tester.ensureVisible(find.text('Water reminders'));

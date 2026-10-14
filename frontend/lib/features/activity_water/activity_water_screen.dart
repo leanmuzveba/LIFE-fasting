@@ -15,18 +15,10 @@ import '../../state/providers.dart';
 import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
 
-/// "Activity & Water" (RUVA design): today's water against a personal goal
-/// with quick-adds, and an activity log. Opened from the Today tiles.
-class ActivityWaterScreen extends StatefulWidget {
-  const ActivityWaterScreen({super.key, this.initialTab = 0});
-  final int initialTab;
-
-  @override
-  State<ActivityWaterScreen> createState() => _ActivityWaterScreenState();
-}
-
-class _ActivityWaterScreenState extends State<ActivityWaterScreen> {
-  late int _tab = widget.initialTab;
+/// Water (RUVA design): today's water against a personal goal with
+/// quick-adds. Opened from Home.
+class ActivityWaterScreen extends StatelessWidget {
+  const ActivityWaterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,65 +46,13 @@ class _ActivityWaterScreenState extends State<ActivityWaterScreen> {
             MonoLabel(l.today),
             const SizedBox(height: 4),
             Semantics(header: true, child: Text(l.awTitle, style: AppText.title.copyWith(fontSize: 26, height: 1.1))),
-            const SizedBox(height: 18),
-            _Segmented(
-              labels: [l.awWaterTab, l.awActivityTab],
-              index: _tab,
-              onChanged: (i) => setState(() => _tab = i),
-            ),
             const SizedBox(height: 22),
-            if (_tab == 0) const _WaterTab() else const _ActivityTab(),
+            const _WaterTab(),
           ],
         ),
       ),
     );
   }
-}
-
-class _Segmented extends StatelessWidget {
-  const _Segmented({required this.labels, required this.index, required this.onChanged});
-  final List<String> labels;
-  final int index;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.all(5),
-    decoration: BoxDecoration(color: AppColors.track, borderRadius: BorderRadius.circular(40)),
-    child: Row(
-      children: [
-        for (var i = 0; i < labels.length; i++)
-          Expanded(
-            child: Semantics(
-              button: true,
-              selected: i == index,
-              label: labels[i],
-              excludeSemantics: true,
-              child: GestureDetector(
-                onTap: () => onChanged(i),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  height: 48,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: i == index ? AppColors.primary : Colors.transparent,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Text(
-                    labels[i],
-                    style: AppText.link.copyWith(
-                      fontSize: 15,
-                      color: i == index ? AppColors.white : AppColors.textSecondary,
-                      fontWeight: i == index ? FontWeight.w600 : FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
-    ),
-  );
 }
 
 // --- Water -------------------------------------------------------------------
@@ -400,23 +340,34 @@ String intensityLabel(AppLocalizations l, Intensity i) => switch (i) {
   Intensity.heavy => l.intensityHeavy,
 };
 
-class _ActivityTab extends ConsumerWidget {
-  const _ActivityTab();
+/// The Activity tab: log a workout (with gym exercises) and see what you've
+/// logged or your watch recorded.
+class ActivityScreen extends ConsumerWidget {
+  const ActivityScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final recent = ref.watch(recentActivitiesProvider).value ?? const [];
     final use24h = ref.watch(settingsProvider).value?.use24HourTime ?? false;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
       children: [
+        Row(
+          children: [
+            Expanded(
+              child: Semantics(header: true, child: Text(l.navActivity, style: AppText.title.copyWith(fontSize: 24))),
+            ),
+            const RuvaLogo(size: 40, semanticLabel: null),
+          ],
+        ),
+        const SizedBox(height: 20),
+        const RuvaCard(padding: EdgeInsets.all(18), child: ActivityForm()),
+        const SizedBox(height: 26),
         MonoLabel(l.activityRecent),
         const SizedBox(height: 12),
         if (recent.isEmpty) Text(l.activityNone, style: AppText.small),
-        for (final a in recent.take(3)) ...[ActivityCard(entry: a, use24h: use24h), const SizedBox(height: 10)],
-        const SizedBox(height: 16),
-        const RuvaCard(padding: EdgeInsets.all(18), child: ActivityForm()),
+        for (final a in recent) ...[ActivityCard(entry: a, use24h: use24h), const SizedBox(height: 10)],
       ],
     );
   }

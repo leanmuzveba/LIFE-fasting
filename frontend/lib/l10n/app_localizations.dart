@@ -154,8 +154,14 @@ abstract class AppLocalizations {
   /// No description provided for @navSettings.
   ///
   /// In en, this message translates to:
-  /// **'Settings'**
+  /// **'Profile'**
   String get navSettings;
+
+  /// No description provided for @navActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get navActivity;
 
   /// No description provided for @homeSessionInProgress.
   ///
@@ -970,7 +976,7 @@ abstract class AppLocalizations {
   /// No description provided for @awTitle.
   ///
   /// In en, this message translates to:
-  /// **'Activity & Water'**
+  /// **'Water'**
   String get awTitle;
 
   /// No description provided for @awWaterTab.

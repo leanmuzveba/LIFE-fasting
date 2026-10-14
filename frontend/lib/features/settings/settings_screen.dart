@@ -13,6 +13,7 @@ import '../../core/widgets/sheet.dart';
 import '../../data/health_source.dart' show SourceTotals;
 import '../../domain/settings.dart';
 import '../kitchen/kitchen_review_screen.dart';
+import '../history/history_screen.dart';
 import '../profile/profile_screen.dart';
 import '../../state/providers.dart';
 
@@ -82,6 +83,20 @@ class SettingsScreen extends ConsumerWidget {
         _ProfileCard(
           settings: settings,
           onTap: () => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const ProfileScreen())),
+        ),
+        const SizedBox(height: 12),
+        _Group(
+          children: [
+            _NavRow(
+              icon: Icons.calendar_month_outlined,
+              title: l.navHistory,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const Scaffold(body: SafeArea(child: HistoryScreen())),
+                ),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 26),
         _SectionLabel(l.settingsPreferences),

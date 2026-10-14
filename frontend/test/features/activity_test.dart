@@ -92,7 +92,7 @@ void main() {
     await tester.pumpAndSettle();
     expect((await c.read(activityRepositoryProvider).all()).single.kcal, closeTo(378, 0.01));
 
-    await tester.tap(find.byTooltip('Back').first);
+    await tester.tap(find.bySemanticsLabel('Home').last);
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Calories burned: 378 kcal. From activities you logged · estimated'), findsOneWidget);
   });

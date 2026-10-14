@@ -76,6 +76,12 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
             children: [
               Row(
                 children: [
+                  if (ModalRoute.of(context)?.canPop ?? false)
+                    IconButton(
+                      tooltip: l.back,
+                      onPressed: () => Navigator.of(context).maybePop(),
+                      icon: const Icon(Icons.chevron_left_rounded, size: 30, color: AppColors.primary),
+                    ),
                   const RuvaLogo(size: 36, semanticLabel: null),
                   const SizedBox(width: 10),
                   Semantics(header: true, child: Text(l.navHistory, style: AppText.title.copyWith(fontSize: 26))),

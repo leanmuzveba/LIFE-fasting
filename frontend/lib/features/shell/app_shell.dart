@@ -13,7 +13,6 @@ import '../../domain/milestone.dart';
 import '../../state/providers.dart';
 import '../activity_water/activity_water_screen.dart';
 import '../food/food_diary_screen.dart';
-import '../history/history_screen.dart';
 import '../home/home_sheets.dart' show showEndSheet;
 import '../home/timer_screen.dart';
 import '../milestones/milestone_detail_screen.dart';
@@ -25,7 +24,7 @@ import '../today/today_screen.dart';
 
 enum _Quick { water, fast, food, activity, weighIn }
 
-/// Root layout: Home · History · (+) · Nutrition · Settings.
+/// Root layout: Home · Activity · (+) · Nutrition · Profile (settings + history).
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 
@@ -34,7 +33,7 @@ class AppShell extends ConsumerStatefulWidget {
 }
 
 class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver {
-  static const _nutritionTab = 2;
+  static const _activityTab = 1, _nutritionTab = 2;
   int _tab = 0;
   bool _menuOpen = false;
 
@@ -133,7 +132,7 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
       case _Quick.food:
         _go(_nutritionTab);
       case _Quick.activity:
-        await _push(const ActivityWaterScreen(initialTab: 1));
+        _go(_activityTab);
       case _Quick.weighIn:
         await _push(const ProfileScreen(openWeighIn: true));
     }
@@ -152,9 +151,9 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
               onOpenTimer: _openTimer,
               onOpenWater: () => _push(const ActivityWaterScreen()),
               onOpenNutrition: () => _go(_nutritionTab),
-              onOpenActivity: () => _push(const ActivityWaterScreen(initialTab: 1)),
+              onOpenActivity: () => _go(_activityTab),
             ),
-            const HistoryScreen(),
+            const ActivityScreen(),
             const FoodDiaryScreen(),
             SettingsScreen(onChangeTarget: () => _push(const TargetSetupScreen())),
           ],
@@ -190,9 +189,9 @@ class _BottomNav extends StatelessWidget {
     final l = context.l10n;
     final items = [
       (l.navToday, AppIcon.home),
-      (l.navHistory, AppIcon.calendar),
+      (l.navActivity, AppIcon.activity),
       (l.navNutrition, AppIcon.nutrition),
-      (l.navSettings, AppIcon.sliders),
+      (l.navSettings, AppIcon.person),
     ];
     // Labels may grow to 1.3x with system text size; the full label is always
     // read by screen readers, so the bar never overflows at larger sizes.

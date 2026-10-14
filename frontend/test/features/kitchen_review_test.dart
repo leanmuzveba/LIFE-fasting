@@ -129,7 +129,7 @@ void main() {
     tester.view.physicalSize = const Size(390, 2600);
     final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     final fake = c.read(notificationServiceProvider) as FakeNotifications;
-    await tester.tap(find.bySemanticsLabel('Settings').last);
+    await tester.tap(find.bySemanticsLabel('Profile').last);
     await tester.pumpAndSettle();
     expect(fake.scheduled.containsKey(NotificationService.monthlyReviewId), isFalse);
 

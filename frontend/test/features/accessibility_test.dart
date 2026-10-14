@@ -32,10 +32,10 @@ void main() {
     final clock = await pumpApp(tester);
     await quickAdd(tester, 'Start fast');
     await tick(tester, clock, const Duration(hours: 3));
-    await tester.tap(find.bySemanticsLabel('History'));
+    await tester.tap(find.bySemanticsLabel('Profile').last);
     await tester.pumpAndSettle();
     await _guidelines(tester);
-    await tester.tap(find.bySemanticsLabel('Settings').last);
+    await tester.tap(find.text('History'));
     await tester.pumpAndSettle();
     await _guidelines(tester);
     handle.dispose();
@@ -54,7 +54,7 @@ void main() {
       addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       await pumpApp(tester);
       expect(tester.takeException(), isNull);
-      for (final tab in ['History', 'Nutrition', 'Settings', 'Home']) {
+      for (final tab in ['Activity', 'Nutrition', 'Profile', 'Home']) {
         await tester.tap(find.bySemanticsLabel(tab).last);
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull, reason: tab);

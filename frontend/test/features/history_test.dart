@@ -15,7 +15,9 @@ Future<void> _fast(WidgetTester tester, dynamic clock, Duration d) async {
 
 Future<void> _openHistory(WidgetTester tester) async {
   tester.view.physicalSize = const Size(390, 2400); // whole page laid out
-  await tester.tap(find.bySemanticsLabel('History'));
+  await tester.tap(find.bySemanticsLabel('Profile').last);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('History'));
   await tester.pumpAndSettle();
 }
 

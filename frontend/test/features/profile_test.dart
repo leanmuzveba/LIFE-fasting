@@ -12,7 +12,7 @@ WeighIn _w(double kg, {double? waist, double? neck, double? hip}) =>
 Future<void> _openProfile(WidgetTester tester) async {
   await pumpApp(tester);
   tester.view.physicalSize = const Size(390, 3000);
-  await tester.tap(find.bySemanticsLabel('Settings').last);
+  await tester.tap(find.bySemanticsLabel('Profile').last);
   await tester.pumpAndSettle();
   await tester.tap(find.bySemanticsLabel(RegExp('Add your name')));
   await tester.pumpAndSettle();

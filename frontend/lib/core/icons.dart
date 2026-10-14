@@ -26,7 +26,9 @@ enum AppIcon {
   check('<path d="M5 12.5 10 17 19 7.5"/>'),
   info('<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.6v.1"/>'),
   chevronRight('<path d="M9 6l6 6-6 6"/>'),
-  back('<path d="M15 6l-6 6 6 6"/>');
+  back('<path d="M15 6l-6 6 6 6"/>'),
+  activity('<path d="M3 12h4l3-7 4 14 3-7h4"/>'),
+  person('<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/>');
 
   const AppIcon(this.paths);
   final String paths;

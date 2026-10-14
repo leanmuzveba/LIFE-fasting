@@ -12,7 +12,8 @@
   "navTimer": "Timer",
   "navNutrition": "Nutrition",
   "navHistory": "History",
-  "navSettings": "Settings",
+  "navSettings": "Profile",
+  "navActivity": "Activity",
 
   "homeSessionInProgress": "{date} · Session in progress",
   "@homeSessionInProgress": {"placeholders": {"date": {"type": "String"}}},
@@ -185,7 +186,7 @@
   "unitFlOz": "fl oz",
   "settingsWaterReminders": "Water reminders",
   "settingsWaterRemindersSub": "Every 2 hours, 8 AM to 8 PM",
-  "awTitle": "Activity & Water",
+  "awTitle": "Water",
   "awWaterTab": "Water",
   "awActivityTab": "Activity",
   "waterOfGoal": "of {goal} goal",

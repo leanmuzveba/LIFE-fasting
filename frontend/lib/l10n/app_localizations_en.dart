@@ -40,7 +40,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navHistory => 'History';
 
   @override
-  String get navSettings => 'Settings';
+  String get navSettings => 'Profile';
+
+  @override
+  String get navActivity => 'Activity';
 
   @override
   String homeSessionInProgress(String date) {
@@ -519,7 +522,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsWaterRemindersSub => 'Every 2 hours, 8 AM to 8 PM';
 
   @override
-  String get awTitle => 'Activity & Water';
+  String get awTitle => 'Water';
 
   @override
   String get awWaterTab => 'Water';
