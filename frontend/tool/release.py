@@ -7,6 +7,9 @@ Usage (from frontend/):  python tool/release.py "What changed"
 - Release builds carry NO API keys: the Gemini key is entered on the phone
   (Settings → Meal photo estimates) and survives updates.
 - The app reads version.json on launch and offers "New version available".
+- The version name is SERIES.NNN: NNN counts commits since the series began
+  (small changes). For a bigger release, bump SERIES and set SERIES_FROM to
+  the current commit count, so the next release is SERIES.001.
 """
 import json
 import os
@@ -15,6 +18,7 @@ import subprocess
 import sys
 
 URL = 'https://ruva-releases.vercel.app'
+SERIES, SERIES_FROM = '1.2', 76  # build 77 was 1.2.001
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 SITE = os.path.join(ROOT, 'release_site')
 
@@ -30,9 +34,10 @@ def main():
         sys.exit('Commit your changes first: the build number comes from the commit count.')
     build = int(subprocess.run(['git', 'rev-list', '--count', 'HEAD'], cwd=ROOT, capture_output=True, text=True,
                                check=True).stdout.strip())
+    version = f'{SERIES}.{build - SERIES_FROM:03d}'
 
-    run('flutter', 'build', 'apk', '--release', '--split-per-abi', f'--build-number={build}',
-        f'--dart-define=BUILD_NUMBER={build}', f'--dart-define=UPDATE_URL={URL}')
+    run('flutter', 'build', 'apk', '--release', '--split-per-abi', f'--build-name={version}', f'--build-number={build}',
+        f'--dart-define=BUILD_NUMBER={build}', f'--dart-define=VERSION_NAME={version}', f'--dart-define=UPDATE_URL={URL}')
 
     # Fresh files each time, but keep release_site/.vercel (the project link).
     os.makedirs(SITE, exist_ok=True)
@@ -43,7 +48,7 @@ def main():
     shutil.copy(os.path.join(ROOT, 'build', 'app', 'outputs', 'flutter-apk', 'app-arm64-v8a-release.apk'),
                 os.path.join(SITE, apk))
     with open(os.path.join(SITE, 'version.json'), 'w', encoding='utf-8') as f:
-        json.dump({'build': build, 'apk': apk, 'notes': notes}, f)
+        json.dump({'build': build, 'version': version, 'apk': apk, 'notes': notes}, f)
     with open(os.path.join(SITE, 'vercel.json'), 'w', encoding='utf-8') as f:
         json.dump({'headers': [
             {'source': '/(.*)', 'headers': [{'key': 'X-Robots-Tag', 'value': 'noindex'}]},
@@ -64,13 +69,13 @@ def main():
 </style></head>
 <body><main>
   <h1>RUVA</h1>
-  <p class="small">Version {build}{(' · ' + notes) if notes else ''}</p>
+  <p class="small">Version {version}{(' · ' + notes) if notes else ''}</p>
   <a class="btn" href="{apk}">Download for Android</a>
   <p class="small">Open the downloaded file and tap <b>Update</b>. Your data stays on your phone.</p>
 </main></body></html>
 ''')
     run('npx', '--yes', 'vercel', 'deploy', 'release_site', '--prod', '--yes')
-    print(f'Published build {build}: {URL}')
+    print(f'Published {version} (build {build}): {URL}')
 
 
 if __name__ == '__main__':

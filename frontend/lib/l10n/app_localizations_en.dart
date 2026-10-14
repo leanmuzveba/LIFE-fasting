@@ -2375,6 +2375,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateAvailable => 'New version available';
 
   @override
+  String appVersion(String version) {
+    return 'RUVA $version';
+  }
+
+  @override
   String get updateNow => 'Update';
 
   @override

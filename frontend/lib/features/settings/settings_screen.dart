@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/update_checker.dart' show appVersion;
 import '../../core/format.dart';
 import '../../core/l10n.dart';
 import '../../core/theme/app_theme.dart';
@@ -261,6 +262,8 @@ class SettingsScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 24),
         Text(l.settingsFooter, textAlign: TextAlign.center, style: AppText.small),
+        const SizedBox(height: 6),
+        Text(l.appVersion(appVersion), textAlign: TextAlign.center, style: AppText.small),
       ],
     );
   }

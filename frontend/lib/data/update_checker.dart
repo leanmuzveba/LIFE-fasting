@@ -5,10 +5,12 @@ import 'dart:io';
 /// tool/release.py (--dart-define). Empty/0 in development and tests.
 const appBuild = int.fromEnvironment('BUILD_NUMBER');
 const updateUrl = String.fromEnvironment('UPDATE_URL');
+const appVersion = String.fromEnvironment('VERSION_NAME', defaultValue: 'dev');
 
 class AppRelease {
-  const AppRelease({required this.build, required this.apkUrl, this.notes = ''});
+  const AppRelease({required this.build, required this.apkUrl, this.version = '', this.notes = ''});
   final int build;
+  final String version; // e.g. 1.2.002
   final String apkUrl;
   final String notes;
 }
@@ -27,6 +29,7 @@ class UpdateChecker {
       return AppRelease(
         build: j['build'] as int,
         apkUrl: '$updateUrl/${j['apk']}',
+        version: (j['version'] as String?) ?? '',
         notes: (j['notes'] as String?) ?? '',
       );
     } catch (_) {

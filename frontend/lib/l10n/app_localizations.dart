@@ -4129,6 +4129,12 @@ abstract class AppLocalizations {
   /// **'New version available'**
   String get updateAvailable;
 
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'RUVA {version}'**
+  String appVersion(String version);
+
   /// No description provided for @updateNow.
   ///
   /// In en, this message translates to:

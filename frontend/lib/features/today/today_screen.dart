@@ -98,7 +98,10 @@ class HomeScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l.updateAvailable, style: AppText.cardValue.copyWith(fontSize: 15)),
+                      Text(
+                        [l.updateAvailable, if (update.version.isNotEmpty) update.version].join(' · '),
+                        style: AppText.cardValue.copyWith(fontSize: 15),
+                      ),
                       if (update.notes.isNotEmpty)
                         Text(update.notes, maxLines: 2, overflow: TextOverflow.ellipsis, style: AppText.small),
                     ],
