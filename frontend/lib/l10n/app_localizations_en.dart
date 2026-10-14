@@ -2452,9 +2452,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shareDayTooltip => 'Export the day\'s stats';
 
   @override
-  String get shareDayHint => 'Transparent PNG with white text — made to go over your photos and stories.';
-
-  @override
   String get shareDayButton => 'Export PNG';
 
   @override
@@ -2467,12 +2464,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statBurned => 'Calories burned';
 
   @override
-  String get statExercise => 'Exercise';
+  String get statActive => 'Active time';
 
   @override
-  String statMore(int n) {
-    return '+$n more';
-  }
+  String get exportStyle => 'Style';
+
+  @override
+  String get styleWhite => 'White';
+
+  @override
+  String get styleLime => 'Lime';
+
+  @override
+  String get styleForest => 'Forest';
+
+  @override
+  String get styleBadge => 'Badge';
 
   @override
   String get pickDay => 'Pick a day';

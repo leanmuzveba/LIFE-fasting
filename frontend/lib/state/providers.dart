@@ -964,11 +964,11 @@ final watchStepsTodayProvider = FutureProvider<int?>((ref) async {
 
 /// One day's movement, for the shareable stats image.
 class DayStats {
-  const DayStats({this.steps, this.km, this.kcal = 0, this.activities = const []});
+  const DayStats({this.steps, this.km, this.kcal = 0, this.activeMinutes = 0});
   final int? steps; // null when unknown (no watch and not today)
   final double? km;
   final double kcal; // watch + activities you logged
-  final List<ActivityEntry> activities;
+  final int activeMinutes; // the watch's active time, else minutes you logged
 }
 
 /// Stats for any local day (key: local midnight). Past days need the watch
@@ -979,7 +979,7 @@ final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) as
   final to = end.isAfter(now) ? now : end;
   final activities = await ref.watch(activityDayProvider(day).future);
   var kcal = activities.where((a) => !a.fromWatch).fold(0.0, (s, a) => s + (a.kcal ?? 0));
-  int? steps;
+  int? steps, active;
   double? km;
   if (await ref.watch(watchStatusProvider.future) == WatchStatus.linked) {
     final hc = ref.watch(healthSourceProvider);
@@ -987,6 +987,7 @@ final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) as
       steps = await hc.steps(day, to);
       km = await hc.distanceKm(day, to);
       kcal += await hc.caloriesBurned(day, to) ?? 0;
+      active = await hc.activeMinutes(day, to);
     } catch (_) {}
   }
   if (steps == null && day == DateTime(now.year, now.month, now.day)) {
@@ -995,7 +996,7 @@ final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) as
   if ((km == null || km == 0) && steps != null && steps > 0) {
     km = stepsToKm(steps, heightCm: (await ref.watch(bodyProfileProvider.future)).heightCm);
   }
-  return DayStats(steps: steps, km: km, kcal: kcal, activities: activities);
+  return DayStats(steps: steps, km: km, kcal: kcal, activeMinutes: active ?? totalMinutes(activities));
 });
 
 /// Imports the last week's watch workouts into Activity (once each).

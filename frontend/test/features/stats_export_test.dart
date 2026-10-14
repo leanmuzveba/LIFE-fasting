@@ -7,7 +7,7 @@ import 'package:life_fasting/state/providers.dart';
 import '../widget_test.dart' show pumpApp, watch;
 
 void main() {
-  testWidgets('export a day: steps, distance, kcal and exercises in white; any day', (tester) async {
+  testWidgets('export a day: steps, distance, kcal and active time; styles; any day', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 2000);
     final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
@@ -15,7 +15,8 @@ void main() {
       ..granted = true
       ..stepCount = 8432
       ..km = 6.1
-      ..calories = 380;
+      ..calories = 380
+      ..active = 57;
     await c.read(settingsRepositoryProvider).setFlag('watch.linked', true);
     final t = DateTime.utc(2026, 10, 4, 5);
     await c
@@ -40,13 +41,18 @@ void main() {
     expect(find.text('8,432'), findsOneWidget);
     expect(find.text('6.10 km'), findsOneWidget);
     expect(find.text('420 kcal'), findsOneWidget); // watch 380 + logged 40
-    expect(find.text('Strength · 45 min'), findsOneWidget);
-    expect(find.text('Crunches 3 × 15'), findsOneWidget);
+    expect(find.text('Active time'), findsOneWidget);
+    expect(find.text('57 min'), findsOneWidget); // the watch's figure, not the logged 45
+    expect(find.bySemanticsLabel('RUVA'), findsWidgets); // wordmark
+    await tester.tap(find.text('Badge'));
+    await tester.pump();
+    expect(find.byType(Image), findsWidgets);
     expect(tester.widget<IconButton>(find.widgetWithIcon(IconButton, Icons.chevron_right_rounded)).onPressed, isNull);
 
     await tester.tap(find.byTooltip('Previous day'));
     await tester.pumpAndSettle();
     expect(find.text('SATURDAY · 3 OCT 2026'), findsOneWidget);
-    expect(find.text('Strength · 45 min'), findsNothing);
+    expect(find.text('420 kcal'), findsNothing); // nothing logged that day; the fake watch still says 380
+    expect(find.text('380 kcal'), findsOneWidget);
   });
 }

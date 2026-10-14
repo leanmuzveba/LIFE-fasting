@@ -209,6 +209,9 @@ class FakeHealthSource extends HealthSource {
   @override
   Future<double?> caloriesBurned(DateTime from, DateTime to) async => calories;
   double? km;
+  int? active;
+  @override
+  Future<int?> activeMinutes(DateTime from, DateTime to) async => active;
   @override
   Future<double?> distanceKm(DateTime from, DateTime to) async => km;
   @override

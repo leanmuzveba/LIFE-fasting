@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:health/health.dart';
 
 import '../domain/activity.dart';
@@ -96,6 +98,27 @@ class HealthSource {
     await _init();
     final m = await _total(HealthDataType.DISTANCE_DELTA, from, to);
     return m == null ? null : m / 1000;
+  }
+
+  /// Active time (minutes) from your watch app's step records: each record
+  /// counts its length, capped at steps ÷ 60 so slow or sparse steps don't
+  /// count as a full minute. Null when there are none.
+  // ponytail: Health Connect has no "active minutes" record, so this
+  // approximates Mi Fitness's figure; workouts without steps aren't counted.
+  Future<int?> activeMinutes(DateTime from, DateTime to) async {
+    await _init();
+    final points = _health.removeDuplicates(
+      await _health.getHealthDataFromTypes(types: const [HealthDataType.STEPS], startTime: from, endTime: to),
+    );
+    final totals = <String, double>{};
+    for (final p in points) {
+      if (p.value case final NumericHealthValue v) {
+        final minutes = math.min(p.dateTo.difference(p.dateFrom).inSeconds / 60, v.numericValue / 60);
+        totals[p.sourceId] = (totals[p.sourceId] ?? 0) + minutes;
+      }
+    }
+    final id = preferredSource(totals);
+    return id == null ? null : totals[id]!.round();
   }
 
   /// Calories burned between [from] and [to] from your watch app: active

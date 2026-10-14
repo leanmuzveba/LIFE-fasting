@@ -13,7 +13,6 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/ruva_kit.dart';
 import '../../core/widgets/ruva_logo.dart';
 import '../../state/providers.dart';
-import '../activity_water/activity_water_screen.dart' show activityLabel;
 
 /// Strava-style overlay: a day's stats in white on a transparent PNG, with a
 /// route line and the RUVA logo. Any day can be picked.
@@ -27,6 +26,7 @@ class StatsExportScreen extends ConsumerStatefulWidget {
 
 class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   late DateTime _day = widget.day;
+  ExportStyle _style = ExportStyle.white;
   final _card = GlobalKey();
   bool _busy = false;
 
@@ -100,22 +100,37 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            // Dark backdrop only in the preview, so the white text is visible;
-            // the exported PNG is just the card (transparent).
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                for (final (i, st) in ExportStyle.values.indexed) ...[
+                  if (i > 0) const SizedBox(width: 6),
+                  Expanded(
+                    child: RuvaChip(
+                      label: st.label(l),
+                      selected: st == _style,
+                      dense: true,
+                      outlined: true,
+                      onTap: () => setState(() => _style = st),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 10),
+            // Grey backdrop only in the preview, so white, lime and forest all
+            // show; the exported PNG is just the card (transparent).
             Container(
-              decoration: BoxDecoration(color: AppColors.primaryDark, borderRadius: BorderRadius.circular(24)),
+              decoration: BoxDecoration(color: const Color(0xFF5C6660), borderRadius: BorderRadius.circular(24)),
               padding: const EdgeInsets.symmetric(vertical: 24),
               alignment: Alignment.center,
               child: stats == null
                   ? const Padding(padding: EdgeInsets.all(48), child: CircularProgressIndicator())
                   : RepaintBoundary(
                       key: _card,
-                      child: StatsCard(day: _day, stats: stats),
+                      child: StatsCard(day: _day, stats: stats, style: _style),
                     ),
             ),
-            const SizedBox(height: 12),
-            Text(l.shareDayHint, textAlign: TextAlign.center, style: AppText.small),
             const SizedBox(height: 16),
             PrimaryButton(label: l.shareDayButton, onPressed: stats == null || _busy ? null : _export),
           ],
@@ -125,11 +140,32 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   }
 }
 
-/// The exported image: white text and line on a transparent background.
+/// Looks for the exported image (after your reference PNGs). Stats are
+/// always white; the route line and brand mark change.
+enum ExportStyle {
+  white(Colors.white, Colors.white),
+  lime(AppColors.accent, AppColors.primary), // lime route, forest wordmark
+  forest(AppColors.primary, AppColors.accent), // forest route, lime wordmark
+  badge(AppColors.primary, null); // forest route, round RUVA logo
+
+  const ExportStyle(this.line, this.wordmark);
+  final Color line;
+  final Color? wordmark; // null: the round logo instead
+
+  String label(AppLocalizations l) => switch (this) {
+    white => l.styleWhite,
+    lime => l.styleLime,
+    forest => l.styleForest,
+    badge => l.styleBadge,
+  };
+}
+
+/// The exported image on a transparent background.
 class StatsCard extends StatelessWidget {
-  const StatsCard({super.key, required this.day, required this.stats});
+  const StatsCard({super.key, required this.day, required this.stats, this.style = ExportStyle.white});
   final DateTime day;
   final DayStats stats;
+  final ExportStyle style;
 
   @override
   Widget build(BuildContext context) {
@@ -157,15 +193,7 @@ class StatsCard extends StatelessWidget {
         ],
       ),
     );
-
-    final workouts = stats.activities.reversed.toList(); // oldest first
-    final lines = [
-      for (final a in workouts) ...[
-        '${activityLabel(l, a.type)} · ${l.activityMinutes(a.minutes)}',
-        for (final x in a.exercises) '$x',
-      ],
-    ];
-    const maxLines = 5;
+    final h = stats.activeMinutes ~/ 60, m = stats.activeMinutes % 60;
 
     return SizedBox(
       width: 300,
@@ -180,43 +208,19 @@ class StatsCard extends StatelessWidget {
           if (stats.steps != null) stat(l.statSteps, n.format(stats.steps)),
           if (stats.km != null) stat(l.statDistance, '${stats.km!.toStringAsFixed(2)} km'),
           stat(l.statBurned, '${n.format(stats.kcal.round())} kcal'),
-          if (lines.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 18),
-              child: Column(
-                children: [
-                  Text(
-                    l.statExercise,
-                    style: const TextStyle(fontFamily: AppFonts.body, fontSize: 14, color: white),
-                  ),
-                  const SizedBox(height: 2),
-                  for (final line in lines.take(maxLines))
-                    Text(
-                      line,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontFamily: AppFonts.display,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 17,
-                        height: 1.35,
-                        color: white,
-                      ),
-                    ),
-                  if (lines.length > maxLines)
-                    Text(
-                      l.statMore(lines.length - maxLines),
-                      style: const TextStyle(fontFamily: AppFonts.body, fontSize: 14, color: white),
-                    ),
-                ],
-              ),
-            ),
+          stat(l.statActive, h > 0 ? '${h}h ${m}m' : '$m min'),
           SizedBox(
             width: 150,
             height: 110,
-            child: CustomPaint(painter: _RoutePainter(seed: day.year * 400 + day.month * 32 + day.day)),
+            child: CustomPaint(
+              painter: _RoutePainter(seed: day.year * 400 + day.month * 32 + day.day, color: style.line),
+            ),
           ),
           const SizedBox(height: 22),
-          const RuvaLogo(size: 64, semanticLabel: 'RUVA'),
+          if (style.wordmark case final c?)
+            Image.asset('assets/brand/wordmark.png', width: 130, color: c, semanticLabel: 'RUVA')
+          else
+            const RuvaLogo(size: 64, semanticLabel: 'RUVA'),
         ],
       ),
     );
@@ -227,8 +231,9 @@ class StatsCard extends StatelessWidget {
 // ponytail: decorative, not your real route — RUVA doesn't record GPS. Read
 // Health Connect exercise routes if a real map line is wanted.
 class _RoutePainter extends CustomPainter {
-  _RoutePainter({required this.seed});
+  _RoutePainter({required this.seed, required this.color});
   final int seed;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -254,7 +259,7 @@ class _RoutePainter extends CustomPainter {
     canvas.drawPath(
       path,
       Paint()
-        ..color = Colors.white
+        ..color = color
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4
         ..strokeCap = StrokeCap.round
@@ -263,5 +268,5 @@ class _RoutePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_RoutePainter old) => old.seed != seed;
+  bool shouldRepaint(_RoutePainter old) => old.seed != seed || old.color != color;
 }

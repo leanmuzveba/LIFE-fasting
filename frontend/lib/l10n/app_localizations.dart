@@ -4261,12 +4261,6 @@ abstract class AppLocalizations {
   /// **'Export the day\'s stats'**
   String get shareDayTooltip;
 
-  /// No description provided for @shareDayHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Transparent PNG with white text — made to go over your photos and stories.'**
-  String get shareDayHint;
-
   /// No description provided for @shareDayButton.
   ///
   /// In en, this message translates to:
@@ -4291,17 +4285,41 @@ abstract class AppLocalizations {
   /// **'Calories burned'**
   String get statBurned;
 
-  /// No description provided for @statExercise.
+  /// No description provided for @statActive.
   ///
   /// In en, this message translates to:
-  /// **'Exercise'**
-  String get statExercise;
+  /// **'Active time'**
+  String get statActive;
 
-  /// No description provided for @statMore.
+  /// No description provided for @exportStyle.
   ///
   /// In en, this message translates to:
-  /// **'+{n} more'**
-  String statMore(int n);
+  /// **'Style'**
+  String get exportStyle;
+
+  /// No description provided for @styleWhite.
+  ///
+  /// In en, this message translates to:
+  /// **'White'**
+  String get styleWhite;
+
+  /// No description provided for @styleLime.
+  ///
+  /// In en, this message translates to:
+  /// **'Lime'**
+  String get styleLime;
+
+  /// No description provided for @styleForest.
+  ///
+  /// In en, this message translates to:
+  /// **'Forest'**
+  String get styleForest;
+
+  /// No description provided for @styleBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Badge'**
+  String get styleBadge;
 
   /// No description provided for @pickDay.
   ///
