@@ -925,6 +925,30 @@ abstract class AppLocalizations {
   /// **'{amount} at {time}. Edit'**
   String waterEntrySemantics(String amount, String time);
 
+  /// No description provided for @mealExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export a meal'**
+  String get mealExportTitle;
+
+  /// No description provided for @mealExportTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Export a meal\'s nutrition'**
+  String get mealExportTooltip;
+
+  /// No description provided for @mealExportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing logged for {meal} on this day.'**
+  String mealExportEmpty(String meal);
+
+  /// No description provided for @mealExportMore.
+  ///
+  /// In en, this message translates to:
+  /// **'+ {count} more'**
+  String mealExportMore(int count);
+
   /// No description provided for @previousDay.
   ///
   /// In en, this message translates to:
@@ -3948,6 +3972,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recipe photo'**
   String get myRecipePhoto;
+
+  /// No description provided for @recipeAiTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let RUVA write it'**
+  String get recipeAiTitle;
+
+  /// No description provided for @recipeAiBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo of the plate above and/or describe what you made and how. Gemini fills in the name, ingredients, steps and nutrition per serving. It\'s an estimate, so check it before saving.'**
+  String get recipeAiBody;
+
+  /// No description provided for @recipeAiDescribe.
+  ///
+  /// In en, this message translates to:
+  /// **'What you made · optional'**
+  String get recipeAiDescribe;
+
+  /// No description provided for @recipeAiHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Fried 2 eggs in 1 tsp butter, 2 slices brown toast, half an avocado'**
+  String get recipeAiHint;
+
+  /// No description provided for @recipeAiGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the recipe'**
+  String get recipeAiGenerate;
+
+  /// No description provided for @recipeAiWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Writing your recipe…'**
+  String get recipeAiWorking;
+
+  /// No description provided for @recipeAiNeedInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo or describe the meal first.'**
+  String get recipeAiNeedInput;
+
+  /// No description provided for @recipeAiFilled.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe filled in. Check it, then save.'**
+  String get recipeAiFilled;
 
   /// No description provided for @diarySaveRecipe.
   ///

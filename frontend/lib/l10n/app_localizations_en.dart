@@ -498,6 +498,22 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get mealExportTitle => 'Export a meal';
+
+  @override
+  String get mealExportTooltip => 'Export a meal\'s nutrition';
+
+  @override
+  String mealExportEmpty(String meal) {
+    return 'Nothing logged for $meal on this day.';
+  }
+
+  @override
+  String mealExportMore(int count) {
+    return '+ $count more';
+  }
+
+  @override
   String get previousDay => 'Previous day';
 
   @override
@@ -2271,6 +2287,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get myRecipePhoto => 'Recipe photo';
+
+  @override
+  String get recipeAiTitle => 'Let RUVA write it';
+
+  @override
+  String get recipeAiBody =>
+      'Add a photo of the plate above and/or describe what you made and how. Gemini fills in the name, ingredients, steps and nutrition per serving. It\'s an estimate, so check it before saving.';
+
+  @override
+  String get recipeAiDescribe => 'What you made · optional';
+
+  @override
+  String get recipeAiHint => 'e.g. Fried 2 eggs in 1 tsp butter, 2 slices brown toast, half an avocado';
+
+  @override
+  String get recipeAiGenerate => 'Write the recipe';
+
+  @override
+  String get recipeAiWorking => 'Writing your recipe…';
+
+  @override
+  String get recipeAiNeedInput => 'Add a photo or describe the meal first.';
+
+  @override
+  String get recipeAiFilled => 'Recipe filled in. Check it, then save.';
 
   @override
   String diarySaveRecipe(String meal) {

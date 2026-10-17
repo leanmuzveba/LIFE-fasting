@@ -15,6 +15,7 @@ import '../recipes/recipe_form_screen.dart';
 import '../recipes/recipes_screen.dart';
 import '../../domain/recipe.dart';
 import 'add_food_screen.dart';
+import 'meal_export_screen.dart';
 import 'meal_photo_screen.dart';
 import 'food_labels.dart';
 
@@ -99,7 +100,13 @@ class _FoodDiaryScreenState extends ConsumerState<FoodDiaryScreen> {
               eyebrow: l.navNutrition,
               title: l.diaryTitle,
               centered: true,
-              trailing: const RuvaLogo(size: 34, semanticLabel: null),
+              leading: const Padding(padding: EdgeInsets.only(left: 8), child: RuvaLogo(size: 34, semanticLabel: null)),
+              trailing: IconButton(
+                tooltip: l.mealExportTooltip,
+                onPressed: () =>
+                    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => MealExportScreen(day: day))),
+                icon: const Icon(Icons.ios_share_rounded, color: AppColors.primary),
+              ),
             ),
             const SizedBox(height: 8),
             Center(

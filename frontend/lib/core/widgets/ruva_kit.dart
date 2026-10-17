@@ -456,6 +456,7 @@ class ScreenHeader extends StatelessWidget {
     this.eyebrow,
     this.subtitle,
     this.trailing,
+    this.leading,
     this.centered = false,
     this.large = false,
   });
@@ -464,6 +465,7 @@ class ScreenHeader extends StatelessWidget {
   final String? eyebrow;
   final String? subtitle;
   final Widget? trailing;
+  final Widget? leading; // shown where Back goes when there's nothing to go back to
   final bool centered;
   final bool large;
 
@@ -497,7 +499,7 @@ class ScreenHeader extends StatelessWidget {
                     onPressed: () => Navigator.of(context).maybePop(),
                     icon: const Icon(Icons.chevron_left_rounded, size: 30, color: AppColors.primary),
                   )
-                : null,
+                : leading,
           ),
           Expanded(child: centered ? Center(child: block) : block),
           SizedBox(width: 48, child: trailing),
