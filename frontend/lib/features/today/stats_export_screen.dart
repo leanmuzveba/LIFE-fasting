@@ -46,15 +46,7 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   Future<void> _export() async {
     setState(() => _busy = true);
     try {
-      final boundary = _card.currentContext!.findRenderObject()! as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: 3); // ~1080 px wide
-      final png = (await image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-      final name = 'ruva-${DateFormat('yyyy-MM-dd').format(_day)}.png';
-      await SharePlus.instance.share(
-        ShareParams(
-          files: [XFile.fromData(png, mimeType: 'image/png', name: name)],
-        ),
-      );
+      await sharePng(_card, 'ruva-${DateFormat('yyyy-MM-dd').format(_day)}.png');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -158,6 +150,19 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   }
 }
 
+/// Renders the [RepaintBoundary] under [key] to a transparent PNG and opens
+/// the share sheet.
+Future<void> sharePng(GlobalKey key, String name) async {
+  final boundary = key.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+  final image = await boundary.toImage(pixelRatio: 3); // ~1080 px wide
+  final png = (await image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+  await SharePlus.instance.share(
+    ShareParams(
+      files: [XFile.fromData(png, mimeType: 'image/png', name: name)],
+    ),
+  );
+}
+
 /// Looks for the exported image (after your reference PNGs). Stats are
 /// always white; the route line and brand mark change.
 enum ExportStyle {
@@ -169,6 +174,12 @@ enum ExportStyle {
   const ExportStyle(this.line, this.wordmark);
   final Color line;
   final Color? wordmark; // null: the round logo instead
+
+  /// The RUVA wordmark tinted for this style, or the round logo.
+  Widget mark({required double wordmark, required double logo}) => switch (this.wordmark) {
+    final c? => Image.asset('assets/brand/wordmark.png', width: wordmark, color: c, semanticLabel: 'RUVA'),
+    null => RuvaLogo(size: logo, semanticLabel: 'RUVA'),
+  };
 
   String label(AppLocalizations l) => switch (this) {
     white => l.styleWhite,
@@ -231,10 +242,7 @@ class StatsCard extends StatelessWidget {
         painter: _RoutePainter(seed: day.year * 400 + day.month * 32 + day.day, color: style.line),
       ),
     );
-    final brand = switch (style.wordmark) {
-      final c? => Image.asset('assets/brand/wordmark.png', width: poster ? 300 : 130, color: c, semanticLabel: 'RUVA'),
-      null => RuvaLogo(size: poster ? 96 : 64, semanticLabel: 'RUVA'),
-    };
+    final brand = style.mark(wordmark: poster ? 300 : 130, logo: poster ? 96 : 64);
 
     return SizedBox(
       width: 300,
@@ -244,7 +252,7 @@ class StatsCard extends StatelessWidget {
           if (poster) ...[route, const SizedBox(height: 28)],
           Text(
             DateFormat('EEEE · d MMM y').format(day).toUpperCase(),
-            style: const TextStyle(fontFamily: AppFonts.mono, fontSize: 12, letterSpacing: 1.2, color: white),
+            style: const TextStyle(fontFamily: AppFonts.mono, fontSize: 14, letterSpacing: 1.2, color: white),
           ),
           const SizedBox(height: 18),
           if (stats.steps != null) stat(l.statSteps, n.format(stats.steps)),
