@@ -9,6 +9,7 @@ import 'package:life_fasting/data/health_source.dart';
 import 'package:life_fasting/data/meal_photo_api.dart';
 import 'package:life_fasting/domain/kitchen.dart';
 import 'package:life_fasting/domain/meal_estimate.dart';
+import 'package:life_fasting/domain/recipe.dart';
 import 'package:life_fasting/data/notification_service.dart';
 import 'package:life_fasting/data/recipe_repository.dart';
 import 'package:life_fasting/data/step_counter.dart';
@@ -162,6 +163,16 @@ class FakeMealPhotoApi extends MealPhotoApi {
   }
 
   List<SpottedItem> groceriesReply = const [];
+  Recipe? recipeReply;
+  String? lastRecipeText;
+
+  @override
+  Future<Recipe?> recipe({Uint8List? jpeg, String text = ''}) async {
+    calls++;
+    lastRecipeText = text;
+    if (error != null) throw error!;
+    return recipeReply;
+  }
 
   @override
   Future<List<SpottedItem>> groceries(Uint8List jpeg) async {

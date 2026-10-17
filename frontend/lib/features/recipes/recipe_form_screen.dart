@@ -13,11 +13,14 @@ import '../../core/widgets/sheet.dart';
 import '../../domain/food.dart';
 import '../../domain/recipe.dart';
 import '../food/food_labels.dart';
+import '../../data/meal_photo_api.dart' show MealPhotoKeyException;
 import '../food/meal_photo_screen.dart' show mealPhotoPickerProvider;
 import '../../state/providers.dart';
+import 'recipe_detail_screen.dart';
 
 /// Write or edit your own recipe: name, optional type/time/servings,
-/// ingredient rows (matched against My Kitchen) and steps.
+/// ingredient rows (matched against My Kitchen) and steps. A new recipe can
+/// be written by Gemini from a plate photo and/or your description.
 class RecipeFormScreen extends ConsumerStatefulWidget {
   const RecipeFormScreen({super.key, this.existing});
   final Recipe? existing;
@@ -56,10 +59,64 @@ class _RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
       ),
   };
   String? _error;
+  final _describe = TextEditingController();
+  bool _generating = false, _generated = false;
+  String? _aiError;
+
+  bool get _isNew => _e == null || _e.id == 'mine:';
+
+  Future<void> _generate() async {
+    final l = context.l10n;
+    if (_image == null && _describe.text.trim().isEmpty) return setState(() => _aiError = l.recipeAiNeedInput);
+    setState(() {
+      _generating = true;
+      _aiError = null;
+    });
+    String? error;
+    try {
+      final api = await ref.read(mealPhotoApiProvider.future);
+      final r = api == null ? null : await api.recipe(jpeg: _image, text: _describe.text);
+      if (!mounted) return;
+      if (api == null) {
+        error = l.photoNoKey;
+      } else if (r == null) {
+        error = l.photoNotFood;
+      } else {
+        String num(double v) => v.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '');
+        _name.text = r.name;
+        _category.text = r.category;
+        _minutes.text = r.minutes?.toString() ?? '';
+        _servings.text = r.servings?.toString() ?? '';
+        _steps.text = r.steps.join('\n');
+        for (final row in _rows) {
+          row.dispose();
+        }
+        _rows
+          ..clear()
+          ..addAll([for (final i in r.ingredients) _Row(i.name, i.measure)]);
+        if (_rows.isEmpty) _rows.add(_Row());
+        for (final e in _values.entries) {
+          e.value.text = r.nutrients[e.key] == null ? '' : num(r.nutrients[e.key]!);
+        }
+        _generated = true;
+        showRuvaSnack(context, l.recipeAiFilled);
+      }
+    } on MealPhotoKeyException {
+      error = l.photoKeyError;
+    } catch (_) {
+      error = l.photoOffline;
+    }
+    if (mounted) {
+      setState(() {
+        _generating = false;
+        _aiError = error;
+      });
+    }
+  }
 
   @override
   void dispose() {
-    for (final c in [_name, _category, _minutes, _servings, _steps, ..._values.values]) {
+    for (final c in [_describe, _name, _category, _minutes, _servings, _steps, ..._values.values]) {
       c.dispose();
     }
     for (final r in _rows) {
@@ -80,7 +137,7 @@ class _RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
       final v? when v > 0 => v,
       _ => null,
     };
-    await ref
+    final id = await ref
         .read(recipeActionsProvider)
         .saveMine(
           Recipe(
@@ -103,7 +160,12 @@ class _RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
         );
     if (!mounted) return;
     showRuvaSnack(context, l.myRecipeSaved(_name.text.trim()));
-    Navigator.of(context).pop();
+    // A generated recipe opens straight away, so it's one tap to log it.
+    final saved = _generated ? (await ref.read(myRecipesProvider.future)).where((r) => r.id == id).firstOrNull : null;
+    if (!mounted) return;
+    if (saved == null) return Navigator.of(context).pop();
+    await Navigator.of(context)
+        .pushReplacement(MaterialPageRoute<void>(builder: (_) => RecipeDetailScreen(recipe: saved)));
   }
 
   @override
@@ -128,6 +190,35 @@ class _RecipeFormScreenState extends ConsumerState<RecipeFormScreen> {
                     },
                     onRemove: () => setState(() => _image = null),
                   ),
+                  if (_isNew)
+                    RuvaCard(
+                      color: AppColors.lime200,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          MonoLabel(l.recipeAiTitle),
+                          const SizedBox(height: 4),
+                          Text(l.recipeAiBody, style: AppText.small),
+                          const SizedBox(height: 10),
+                          RuvaTextField(
+                            controller: _describe,
+                            label: l.recipeAiDescribe,
+                            hint: l.recipeAiHint,
+                            maxLines: 5,
+                          ),
+                          const SizedBox(height: 10),
+                          PrimaryButton(
+                            label: _generating ? l.recipeAiWorking : l.recipeAiGenerate,
+                            icon: Icons.auto_awesome_outlined,
+                            onPressed: _generating ? null : _generate,
+                          ),
+                          if (_aiError != null) ...[
+                            const SizedBox(height: 8),
+                            Text(_aiError!, style: AppText.small.copyWith(color: AppColors.errorText)),
+                          ],
+                        ],
+                      ),
+                    ),
                   RuvaTextField(controller: _name, label: l.myRecipeName, bold: true),
                   RuvaTextField(controller: _category, label: l.myRecipeCategory, hint: l.myRecipeCategoryHint),
                   Row(

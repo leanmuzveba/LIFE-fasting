@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import '../domain/food.dart';
 import '../domain/kitchen.dart';
 import '../domain/meal_estimate.dart';
+import '../domain/recipe.dart';
 
 /// The key and model can't be used (wrong/expired key, quota, blocked).
 class MealPhotoKeyException implements Exception {
@@ -100,6 +101,59 @@ class MealPhotoApi {
   Future<List<SpottedItem>> groceries(Uint8List jpeg) async =>
       parseGroceries(await _withFallback((m) => _ask(m, jpeg, _groceryPrompt, _grocerySchema)));
 
+  static const _recipePrompt =
+      'You are helping someone save a home-cooked meal as a recipe. From the photo of the plate and/or their own '
+      'description, write the recipe: a short plain name, a type (e.g. Breakfast, Main, Side, Dessert, Drink), '
+      'total minutes, how many servings it makes, each ingredient with an amount (metric, e.g. "200 g", "1 tbsp"), '
+      'and clear numbered-order steps without the numbers. When they describe what they did, keep their '
+      'ingredients, amounts and method; only fill gaps. Estimate energy (kcal), protein, carbohydrate, fat and '
+      'fibre in grams for ONE serving. If there is neither food nor a meal description, set is_food to false.';
+
+  static const _recipeSchema = {
+    'type': 'OBJECT',
+    'properties': {
+      'is_food': {'type': 'BOOLEAN'},
+      'name': {'type': 'STRING'},
+      'category': {'type': 'STRING'},
+      'minutes': {'type': 'NUMBER'},
+      'servings': {'type': 'NUMBER'},
+      'ingredients': {
+        'type': 'ARRAY',
+        'items': {
+          'type': 'OBJECT',
+          'properties': {
+            'name': {'type': 'STRING'},
+            'amount': {'type': 'STRING'},
+          },
+          'required': ['name', 'amount'],
+        },
+      },
+      'steps': {
+        'type': 'ARRAY',
+        'items': {'type': 'STRING'},
+      },
+      'kcal': {'type': 'NUMBER'},
+      'protein_g': {'type': 'NUMBER'},
+      'carbs_g': {'type': 'NUMBER'},
+      'fat_g': {'type': 'NUMBER'},
+      'fibre_g': {'type': 'NUMBER'},
+    },
+    'required': ['is_food', 'name', 'ingredients', 'steps'],
+  };
+
+  /// A draft recipe (nutrition per serving) from a plate photo and/or what
+  /// you typed; null when it isn't food. Not saved until you save the form.
+  Future<Recipe?> recipe({Uint8List? jpeg, String text = ''}) async => parseRecipeDraft(
+    await _withFallback(
+      (m) => _ask(
+        m,
+        jpeg,
+        text.trim().isEmpty ? _recipePrompt : '$_recipePrompt\n\nTheir description:\n$text',
+        _recipeSchema,
+      ),
+    ),
+  );
+
   Future<Map<String, dynamic>> _withFallback(Future<Map<String, dynamic>> Function(String model) call) async {
     Object? last;
     for (final model in models) {
@@ -114,7 +168,7 @@ class MealPhotoApi {
     throw last ?? const HttpException('No model available');
   }
 
-  Future<Map<String, dynamic>> _ask(String model, Uint8List jpeg, String prompt, Map<String, Object> schema) async {
+  Future<Map<String, dynamic>> _ask(String model, Uint8List? jpeg, String prompt, Map<String, Object> schema) async {
     final client = HttpClient()..connectionTimeout = const Duration(seconds: 15);
     try {
       final req = await client.postUrl(
@@ -129,9 +183,10 @@ class MealPhotoApi {
             'contents': [
               {
                 'parts': [
-                  {
-                    'inline_data': {'mime_type': 'image/jpeg', 'data': base64Encode(jpeg)},
-                  },
+                  if (jpeg != null)
+                    {
+                      'inline_data': {'mime_type': 'image/jpeg', 'data': base64Encode(jpeg)},
+                    },
                   {'text': prompt},
                 ],
               },
@@ -177,6 +232,37 @@ MealEstimate parseMealEstimate(Map<String, dynamic> j) {
             },
           ),
     ],
+  );
+}
+
+/// Parses a generated recipe; null when it isn't food or has no name.
+Recipe? parseRecipeDraft(Map<String, dynamic> j) {
+  double? n(Object? v) => v is num && v >= 0 ? v.toDouble() : null;
+  int? whole(Object? v) => v is num && v >= 1 ? v.round() : null;
+  final name = '${j['name'] ?? ''}'.trim();
+  if (j['is_food'] == false || name.isEmpty) return null;
+  return Recipe(
+    id: 'mine:',
+    name: name,
+    category: '${j['category'] ?? ''}'.trim(),
+    minutes: whole(j['minutes']),
+    servings: whole(j['servings']),
+    ingredients: [
+      for (final i in (j['ingredients'] as List? ?? const []).cast<Map<String, dynamic>>())
+        if ('${i['name'] ?? ''}'.trim().isNotEmpty)
+          RecipeIngredient('${i['name']}'.trim(), '${i['amount'] ?? ''}'.trim()),
+    ],
+    steps: [
+      for (final s in (j['steps'] as List? ?? const []))
+        if ('$s'.trim().isNotEmpty) '$s'.trim(),
+    ],
+    nutrients: {
+      Nutrient.energy: ?n(j['kcal']),
+      Nutrient.protein: ?n(j['protein_g']),
+      Nutrient.carbs: ?n(j['carbs_g']),
+      Nutrient.fat: ?n(j['fat_g']),
+      Nutrient.fibre: ?n(j['fibre_g']),
+    },
   );
 }
 

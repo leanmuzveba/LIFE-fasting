@@ -276,7 +276,12 @@ void main() {
   testWidgets('Home offers an update when a newer build is published', (tester) async {
     await pumpApp(tester);
     expect(find.text('New version available'), findsNothing);
-    latestRelease = const AppRelease(build: 999, apkUrl: 'https://example.com/ruva-999.apk', version: '1.2.999', notes: 'Watch fixes');
+    latestRelease = const AppRelease(
+      build: 999,
+      apkUrl: 'https://example.com/ruva-999.apk',
+      version: '1.2.999',
+      notes: 'Watch fixes',
+    );
     final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
     c.invalidate(availableUpdateProvider);
     await tester.pumpAndSettle();

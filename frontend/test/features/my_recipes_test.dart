@@ -6,7 +6,7 @@ import 'package:life_fasting/domain/kitchen.dart';
 import 'package:life_fasting/domain/recipe.dart';
 import 'package:life_fasting/state/providers.dart';
 
-import '../widget_test.dart' show pumpApp, recipeApi;
+import '../widget_test.dart' show mealPhoto, pumpApp, recipeApi;
 
 final _t = DateTime.utc(2026, 10, 1);
 
@@ -42,16 +42,16 @@ void main() {
     expect(find.text('Give the recipe a name.'), findsOneWidget);
 
     final f = find.byType(TextField);
-    await tester.enterText(f.at(0), 'Gogo’s eggs');
-    await tester.enterText(f.at(2), '15'); // minutes
-    await tester.enterText(f.at(3), '2'); // servings
-    await tester.enterText(f.at(4), 'Eggs');
-    await tester.enterText(f.at(5), '4');
+    await tester.enterText(f.at(1), 'Gogo’s eggs');
+    await tester.enterText(f.at(3), '15'); // minutes
+    await tester.enterText(f.at(4), '2'); // servings
+    await tester.enterText(f.at(5), 'Eggs');
+    await tester.enterText(f.at(6), '4');
     await tester.tap(find.text('Add ingredient'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).at(6), 'Tomatoes');
-    await tester.enterText(find.byType(TextField).at(7), '2');
-    await tester.enterText(find.byType(TextField).at(8), 'Whisk the eggs.\n\nCook gently.');
+    await tester.enterText(find.byType(TextField).at(7), 'Tomatoes');
+    await tester.enterText(find.byType(TextField).at(8), '2');
+    await tester.enterText(find.byType(TextField).at(9), 'Whisk the eggs.\n\nCook gently.');
     await tester.tap(find.text('Save recipe'));
     await tester.pumpAndSettle();
 
@@ -128,7 +128,7 @@ void main() {
     expect(find.widgetWithText(TextField, '200 ml'), findsOneWidget);
     await tester.tap(find.text('Choose from gallery'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).first, 'Morning oats');
+    await tester.enterText(find.byType(TextField).at(1), 'Morning oats');
     await tester.ensureVisible(find.text('Save recipe'));
     await tester.tap(find.text('Save recipe'));
     await tester.pumpAndSettle();
@@ -143,5 +143,47 @@ void main() {
     await c.read(recipeActionsProvider).logToDiary(r, Meal.lunch, DateTime(2026, 10, 4, 12), servingLabel: '1 serving');
     final lunch = (await c.read(foodRepositoryProvider).forDay(DateTime(2026, 10, 4))).last;
     expect(lunch.nutrients[Nutrient.protein], closeTo(12.9, 0.001));
+  });
+
+  testWidgets('a new recipe is written from a photo or description, saved, then opens to log', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 3200);
+    mealPhoto!.recipeReply = const Recipe(
+      id: 'mine:',
+      name: 'Egg and avocado toast',
+      category: 'Breakfast',
+      minutes: 10,
+      servings: 1,
+      ingredients: [RecipeIngredient('Eggs', '2'), RecipeIngredient('Brown bread', '2 slices')],
+      steps: ['Fry the eggs.', 'Toast the bread.'],
+      nutrients: {Nutrient.energy: 480, Nutrient.protein: 22},
+    );
+    await tester.tap(find.bySemanticsLabel('Nutrition').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Recipes'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('New recipe'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Write the recipe'));
+    await tester.pumpAndSettle();
+    expect(find.text('Add a photo or describe the meal first.'), findsOneWidget);
+    expect(mealPhoto!.calls, 0);
+
+    await tester.enterText(find.byType(TextField).first, 'Fried 2 eggs, 2 slices brown toast');
+    await tester.tap(find.text('Write the recipe'));
+    await tester.pumpAndSettle();
+    expect(mealPhoto!.lastRecipeText, 'Fried 2 eggs, 2 slices brown toast');
+    expect(find.text('Egg and avocado toast'), findsOneWidget); // in the name field
+    expect(find.text('Brown bread'), findsOneWidget);
+    expect(find.text('480'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Save recipe'));
+    await tester.tap(find.text('Save recipe'));
+    await tester.pumpAndSettle();
+    expect(find.text('Log to Food Diary'), findsOneWidget); // the saved recipe, ready to log
+    final mine = await ProviderScope.containerOf(tester.element(find.byType(Scaffold).first))
+        .read(myRecipesProvider.future);
+    expect(mine.single.nutrients[Nutrient.energy], 480);
   });
 }
