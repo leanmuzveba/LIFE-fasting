@@ -990,8 +990,10 @@ final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) as
       active = await hc.activeMinutes(day, to);
     } catch (_) {}
   }
-  if (steps == null && day == DateTime(now.year, now.month, now.day)) {
-    steps = ref.read(todayStepsProvider).value?.steps;
+  if (day == DateTime(now.year, now.month, now.day)) {
+    // Same as the home card: the higher of watch and phone.
+    final phone = ref.read(todayStepsProvider).value?.steps;
+    if (phone != null && phone > (steps ?? -1)) (steps, km) = (phone, null);
   }
   if ((km == null || km == 0) && steps != null && steps > 0) {
     km = stepsToKm(steps, heightCm: (await ref.watch(bodyProfileProvider.future)).heightCm);
