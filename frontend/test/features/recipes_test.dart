@@ -65,6 +65,16 @@ void main() {
     expect(rankMatches([b, a]).first, same(a));
   });
 
+  test('substitutions: a fresh kitchen alternative stands in for a missing ingredient', () {
+    const butter = RecipeIngredient('Butter', '50g');
+    expect(substituteFor(butter, [_k('Olive oil')], _today)?.name, 'Olive oil');
+    // Expired alternatives are skipped in favour of the next one.
+    final kitchen = [_k('Olive oil', expires: DateTime(2026, 10, 1)), _k('Margarine')];
+    expect(substituteFor(butter, kitchen, _today)?.name, 'Margarine');
+    expect(substituteFor(butter, [_k('Milk')], _today), isNull); // nothing suitable
+    expect(substituteFor(const RecipeIngredient('Saffron', ''), [_k('Olive oil')], _today), isNull); // no known swap
+  });
+
   test('allergens and diets are judged from ingredient names', () {
     expect(allergensIn(_r(['Peanut Butter', 'Bread'])), {Allergen.peanuts, Allergen.dairy, Allergen.gluten});
     expect(allergensIn(_r(['Nutmeg', 'Coconut Milk'])).contains(Allergen.treeNuts), isFalse);
