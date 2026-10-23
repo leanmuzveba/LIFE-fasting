@@ -1,69 +1,72 @@
 # RUVA
 
-A calm, offline-first intermittent fasting tracker for Android and iOS, built with Flutter. Inspired by the discontinued LIFE Fasting app, it centres on a large circular timer with milestone markers and a light-blue interface.
+A calm, offline-first personal wellness app for Android (iOS project included), built with Flutter. It grew out of the Fasting Companion app: the circular fasting timer is still the centrepiece, and food, kitchen, recipes, activity, water and body measurements sit around it.
 
-> **Not a medical device.** Milestone times are general educational estimates. The app cannot detect ketosis, autophagy or any other metabolic state. Talk to a qualified healthcare professional before changing your eating patterns.
+> **Not a medical device.** Milestone times and nutrition values are general estimates. The app cannot detect ketosis, fat burning or any other metabolic state, and BMI is shown with its limitations. Talk to a qualified healthcare professional before changing your eating patterns.
 
-## Features (MVP)
+## Features
 
-- **Circular progress ring** showing elapsed time (HH:MM:SS), planned target, remaining time and estimated end time
-- **Milestone markers** around the ring; tap one for a short explanation with an uncertainty disclaimer
-- **Session history** in a list and a calendar, with edit and delete
-- **Opt-in local notifications** using neutral wording, with no pressure to extend a fast
-- **Safety onboarding** with an adult eligibility check: users under 18 get no active fasting plans
-- **Offline-first**: all data stays on the device
+- **Fasting timer**: circular ring with fat-burning (yellow) and ketosis (red) milestone markers you can tap for an explanation. Elapsed time comes from saved timestamps, so it survives restarts
+- **Home dashboard**: fasting ring, water, steps and food tiles, plus a day summary you can export as an image
+- **Food diary**: breakfast, lunch, dinner and snacks; search the bundled USDA food list, scan barcodes (Open Food Facts), save foods, or estimate a meal from a photo (camera or gallery, Gemini, reviewed before saving). Export a meal's calories and macros as a PNG
+- **My Kitchen**: ingredient inventory with categories, quantities, units, expiry and low-stock flags, grocery-photo import, and a monthly review that updates stock without wiping it
+- **Recipes**: TheMealDB recipes matched to your kitchen, showing available and missing ingredients, with allergy and diet filters, servings, substitutions, a shopping list, mark as cooked, and log to diary. You can write your own recipes or let Gemini draft one from a photo or description
+- **Activity and water**: workouts, steps (the higher of the phone pedometer and Health Connect/watch), and water entries with reminders
+- **Profile**: optional height, weigh-ins with a chart, body measurements, and BMI with its caveats. Weight tracking can be switched off, and under-18s get no adult classifications or fasting plans
+- **History**: fasting sessions in a list and calendar, plus food, activity, water and measurement history
+- **Privacy**: all data stays on the phone in SQLite. You can delete everything from Settings
 
 ## Repository structure
 
 ```
 LIFE-fasting/
-├── frontend/   Flutter (Dart) mobile app for Android and iOS
-├── backend/    Reserved; none is needed for the MVP (see backend/README.md)
-└── docs/       Product requirements and design documentation
+├── frontend/   Flutter app (see frontend/README.md)
+│   ├── tool/release.py   builds the APK and publishes it
+│   └── release_site/     generated download page (deployed, not hand-edited)
+├── backend/    Unused; the app needs no server (see backend/README.md)
+└── docs/       PRDs (original + RUVA v1.2), Phase 0 audit, brand assets
 ```
 
 ## Tech stack
 
 | Layer | Choice |
 |---|---|
-| UI | Flutter / Dart |
-| State management | Provider, Riverpod or Bloc (to be chosen) |
-| Timer logic | Pure Dart domain service; elapsed time is derived from stored UTC timestamps |
-| Ring rendering | `CustomPainter` |
-| Local storage | SQLite (or Isar/Hive after evaluation) |
-| Notifications | Local notification plugin |
+| UI | Flutter / Dart, Material 3, `CustomPainter` ring |
+| State | Riverpod 3 (no code generation) |
+| Storage | sqflite, database `life_fasting.db` with tested migrations |
+| Notifications | `flutter_local_notifications` |
+| Health | `health` (Health Connect), `pedometer` |
+| Online (optional) | TheMealDB, Open Food Facts, Google Gemini |
 
-## Design tokens
+## Brand
 
-| Token | Value |
-|---|---|
-| Primary sky blue | `#65BFE8` |
-| Deep blue | `#246B8E` |
-| Pale blue | `#EAF7FC` |
-| Background | `#F5FBFE` |
-| Ring track | `#D8EDF6` |
-| Body text | `#203443` |
-| Secondary text | `#526775` |
-
-These colours are approximations and will be confirmed against reference imagery.
+Forest `#135D44`, lime `#B9F36C`, mint `#F6FCEF`, ink `#1A2A20`. Fonts are Lexend, DM Sans and JetBrains Mono (OFL, bundled). Tokens live in `frontend/lib/core/theme/tokens.dart`, and the full guide is `docs/BRANDING/Ruva_Brand_Guide.pdf`.
 
 ## Getting started
-
-The Flutter app hasn't been scaffolded yet. Once it is:
 
 ```bash
 cd frontend
 flutter pub get
 flutter run
+flutter test
 ```
 
-## Documentation
+Photo estimates and AI recipes need a Gemini API key, entered on the phone in **Settings → Meal photo estimates**. Release builds never include a key.
 
-- [Product Requirements Document](docs/Intermittent_Fasting_Companion_PRD.txt)
+## Releasing
+
+Commit first, then from `frontend/`:
+
+```bash
+python tool/release.py "What changed"
+```
+
+This builds an arm64 APK (build number = git commit count) and deploys it to https://ruva-releases.vercel.app. The installed app checks `version.json` on launch and offers the update on Home.
 
 ## Principles
 
-- Persisted timestamps are the source of truth for the timer, never the displayed counter
-- Neutral copy: no streaks, no guilt, and users can end a session at any time
-- No proprietary LIFE Fasting assets, icons, code or branding are used
+- Saved timestamps are the source of truth for the timer, never the displayed counter
+- Neutral copy: no streaks, no guilt, and you can end a fast at any time
+- Estimates are labelled as estimates. Charts only show recorded data
+- Package id `com.leanmuzveba.life_fasting` and the database name stay unchanged so existing data survives
 - Accessible: WCAG AA contrast, screen-reader labels, scalable text, and state is never shown by colour alone
