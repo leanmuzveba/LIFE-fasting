@@ -9,12 +9,14 @@ import 'package:life_fasting/state/providers.dart';
 import '../widget_test.dart' as app show mealPhoto;
 import '../widget_test.dart' show pumpApp;
 
-Future<void> _openPhoto(WidgetTester tester) async {
+Future<void> _openPhoto(WidgetTester tester, {String source = 'Take photo'}) async {
   await tester.tap(find.bySemanticsLabel('Nutrition').last);
   await tester.pumpAndSettle();
   await tester.tap(find.byTooltip('Add to Lunch'));
   await tester.pumpAndSettle();
   await tester.tap(find.text('Snap a meal photo'));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(source));
   await tester.pumpAndSettle();
 }
 
@@ -76,6 +78,29 @@ void main() {
     expect(find.bySemanticsLabel('Energy: 513 kcal, Estimated'), findsOneWidget);
   });
 
+  testWidgets('asks camera or gallery first; a gallery photo is estimated too', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 3000);
+    app.mealPhoto!.reply = const MealEstimate(
+      isFood: true,
+      items: [EstimatedItem(name: 'Pap', grams: 250, nutrients: {Nutrient.energy: 280})],
+    );
+    await tester.tap(find.bySemanticsLabel('Nutrition').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('Add to Lunch'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Snap a meal photo'));
+    await tester.pumpAndSettle();
+    expect(find.text('Take photo'), findsOneWidget);
+    expect(find.text('Choose from gallery'), findsOneWidget);
+    expect(find.text('1 item found'.toUpperCase()), findsNothing);
+
+    await tester.tap(find.text('Choose from gallery'));
+    await tester.pumpAndSettle();
+    expect(find.text('1 item found'.toUpperCase()), findsOneWidget);
+    expect(find.text('Retake'), findsOneWidget);
+  });
+
   testWidgets('no key, a bad key, or not food: clear messages, nothing saved', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 3000);
@@ -90,6 +115,8 @@ void main() {
     await tester.tap(find.byTooltip('Add to Lunch'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Snap a meal photo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Take photo'));
     await tester.pumpAndSettle();
     expect(find.textContaining('didn’t accept the API key'), findsOneWidget);
     expect(await c.read(foodRepositoryProvider).forDay(DateTime(2026, 10, 4)), isEmpty);

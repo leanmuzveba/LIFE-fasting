@@ -3049,6 +3049,12 @@ abstract class AppLocalizations {
   /// **'photo estimate'**
   String get photoLabel;
 
+  /// No description provided for @photoTake.
+  ///
+  /// In en, this message translates to:
+  /// **'Take photo'**
+  String get photoTake;
+
   /// No description provided for @photoRetake.
   ///
   /// In en, this message translates to:

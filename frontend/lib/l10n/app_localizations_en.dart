@@ -1743,6 +1743,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get photoLabel => 'photo estimate';
 
   @override
+  String get photoTake => 'Take photo';
+
+  @override
   String get photoRetake => 'Retake';
 
   @override

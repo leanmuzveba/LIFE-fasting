@@ -46,12 +46,6 @@ class _MealPhotoScreenState extends ConsumerState<MealPhotoScreen> {
   String? _error;
   late Meal _meal = widget.meal;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _take(ImageSource.camera));
-  }
-
   Future<void> _take(ImageSource source) async {
     final l = context.l10n;
     setState(() => _phase = _Phase.picking);
@@ -64,9 +58,8 @@ class _MealPhotoScreenState extends ConsumerState<MealPhotoScreen> {
     }
     if (!mounted) return;
     if (bytes == null) {
-      // Cancelled: leave if nothing was taken yet, else keep the last photo.
-      if (_photo == null) Navigator.of(context).pop();
-      setState(() => _phase = _items.isEmpty ? _Phase.failed : _Phase.review);
+      // Cancelled: back to the choice, or keep the last photo.
+      setState(() => _phase = _photo == null ? _Phase.picking : (_items.isEmpty ? _Phase.failed : _Phase.review));
       return;
     }
     setState(() {
@@ -177,7 +170,7 @@ class _MealPhotoScreenState extends ConsumerState<MealPhotoScreen> {
                           style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                           onPressed: () => _take(ImageSource.camera),
                           icon: const Icon(Icons.photo_camera_outlined),
-                          label: Text(l.photoRetake),
+                          label: Text(_photo == null ? l.photoTake : l.photoRetake),
                         ),
                         TextButton.icon(
                           style: TextButton.styleFrom(minimumSize: const Size(48, 48)),

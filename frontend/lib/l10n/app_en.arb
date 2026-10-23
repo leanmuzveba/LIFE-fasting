@@ -589,6 +589,7 @@
   "photoLogged": "{count, plural, =1{1 item added to {meal}} other{{count} items added to {meal}}}",
   "@photoLogged": {"placeholders": {"count": {"type": "int"}, "meal": {"type": "String"}}},
   "photoLabel": "photo estimate",
+  "photoTake": "Take photo",
   "photoRetake": "Retake",
   "photoGallery": "Choose from gallery",
   "photoNotFood": "No food was recognised in that photo. Try again with the whole plate in view.",
