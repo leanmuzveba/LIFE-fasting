@@ -7,7 +7,7 @@ import '../../core/theme/app_theme.dart';
 import '../../core/widgets/ruva_kit.dart';
 import '../../domain/food.dart';
 import '../../state/providers.dart';
-import '../today/stats_export_screen.dart' show ExportStyle, sharePng;
+import '../today/stats_export_screen.dart' show ExportDate, ExportStyle, sharePng;
 import 'food_labels.dart';
 
 /// One meal's calories, macros and foods in white on a transparent PNG.
@@ -126,10 +126,7 @@ class MealCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            DateFormat('EEEE · d MMM y').format(day).toUpperCase(),
-            style: const TextStyle(fontFamily: AppFonts.mono, fontSize: 14, letterSpacing: 1.2, color: white),
-          ),
+          ExportDate(day),
           const SizedBox(height: 6),
           Text(mealLabel(l, meal), style: big(28)),
           const SizedBox(height: 18),

@@ -38,7 +38,7 @@ void main() {
 
     await tester.tap(find.byTooltip("Export the day's stats"));
     await tester.pumpAndSettle();
-    expect(find.text('SUNDAY · 4 OCT 2026'), findsOneWidget);
+    expect(find.text('Sunday\n4 Oct 2026'), findsOneWidget);
     expect(find.text('8,432'), findsOneWidget);
     expect(find.text('6.10 km'), findsOneWidget);
     expect(find.text('420 kcal'), findsOneWidget); // watch 380 + logged 40
@@ -56,7 +56,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Previous day'));
     await tester.pumpAndSettle();
-    expect(find.text('SATURDAY · 3 OCT 2026'), findsOneWidget);
+    expect(find.text('Saturday\n3 Oct 2026'), findsOneWidget);
     expect(find.text('420 kcal'), findsNothing); // nothing logged that day; the fake watch still says 380
     expect(find.text('380 kcal'), findsOneWidget);
   });

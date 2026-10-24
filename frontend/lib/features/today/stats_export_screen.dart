@@ -163,6 +163,25 @@ Future<void> sharePng(GlobalKey key, String name) async {
   );
 }
 
+/// The day on an exported image, as large as its stats: weekday, then date.
+class ExportDate extends StatelessWidget {
+  const ExportDate(this.day, {super.key});
+  final DateTime day;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    '${DateFormat('EEEE').format(day)}\n${DateFormat('d MMM y').format(day)}',
+    textAlign: TextAlign.center,
+    style: const TextStyle(
+      fontFamily: AppFonts.display,
+      fontWeight: FontWeight.w700,
+      fontSize: 34,
+      height: 1.15,
+      color: Colors.white,
+    ),
+  );
+}
+
 /// Looks for the exported image (after your reference PNGs). Stats are
 /// always white; the route line and brand mark change.
 enum ExportStyle {
@@ -250,10 +269,7 @@ class StatsCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (poster) ...[route, const SizedBox(height: 28)],
-          Text(
-            DateFormat('EEEE · d MMM y').format(day).toUpperCase(),
-            style: const TextStyle(fontFamily: AppFonts.mono, fontSize: 14, letterSpacing: 1.2, color: white),
-          ),
+          ExportDate(day),
           const SizedBox(height: 18),
           if (stats.steps != null) stat(l.statSteps, n.format(stats.steps)),
           if (stats.km != null) stat(l.statDistance, '${stats.km!.toStringAsFixed(2)} km'),
