@@ -2534,7 +2534,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get layoutCompact => 'Stats first';
 
   @override
-  String get layoutPoster => 'Route first';
+  String get layoutPoster => 'Icon first';
 
   @override
   String get pickDay => 'Pick a day';

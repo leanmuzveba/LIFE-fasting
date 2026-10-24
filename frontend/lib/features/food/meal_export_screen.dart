@@ -156,7 +156,7 @@ class MealCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 18),
-          Container(width: 120, height: 3, color: style.line),
+          Icon(foodIcon(day, meal), size: 56, color: style.line),
           const SizedBox(height: 14),
           for (final e in entries.take(shown))
             Padding(
@@ -177,3 +177,17 @@ class MealCard extends StatelessWidget {
     );
   }
 }
+
+/// A food icon for the exported image, different by day and meal.
+IconData foodIcon(DateTime day, Meal meal) => const [
+  Icons.restaurant_rounded,
+  Icons.lunch_dining_rounded,
+  Icons.ramen_dining_rounded,
+  Icons.rice_bowl_rounded,
+  Icons.egg_alt_rounded,
+  Icons.set_meal_rounded,
+  Icons.breakfast_dining_rounded,
+  Icons.dinner_dining_rounded,
+  Icons.local_cafe_rounded,
+  Icons.eco_rounded,
+][(day.year * 400 + day.month * 32 + day.day + meal.index * 3) % 10];

@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ import '../../core/widgets/ruva_logo.dart';
 import '../../state/providers.dart';
 
 /// Strava-style overlay: a day's stats in white on a transparent PNG, with a
-/// route line and the RUVA logo. Any day can be picked.
+/// fitness icon and the RUVA logo. Any day can be picked.
 class StatsExportScreen extends ConsumerStatefulWidget {
   const StatsExportScreen({super.key, required this.day});
   final DateTime day; // local midnight
@@ -194,15 +193,15 @@ class ExportDate extends StatelessWidget {
 }
 
 /// Looks for the exported image (after your reference PNGs). Stats are
-/// always white; the route line and brand mark change.
+/// always white; the icon and brand mark change.
 enum ExportStyle {
   white(Colors.white, Colors.white),
-  lime(AppColors.accent, AppColors.primary), // lime route, forest wordmark
-  forest(AppColors.primary, AppColors.accent), // forest route, lime wordmark
-  badge(AppColors.primary, null); // forest route, round RUVA logo
+  lime(AppColors.accent, AppColors.primary), // lime icon, forest wordmark
+  forest(AppColors.primary, AppColors.accent), // forest icon, lime wordmark
+  badge(AppColors.primary, null); // forest icon, round RUVA logo
 
   const ExportStyle(this.line, this.wordmark);
-  final Color line;
+  final Color line; // the icon
   final Color? wordmark; // null: the round logo instead
 
   /// The RUVA wordmark tinted for this style, or the round logo.
@@ -219,8 +218,8 @@ enum ExportStyle {
   };
 }
 
-/// compact: stats, small route, small mark. poster (your path1/path30): big
-/// route on top, stats, full-width wordmark at the bottom.
+/// compact: stats, small icon, small mark. poster (your path1/path30): big
+/// icon on top, stats, full-width wordmark at the bottom.
 enum ExportLayout { compact, poster }
 
 /// The exported image on a transparent background.
@@ -265,13 +264,7 @@ class StatsCard extends StatelessWidget {
     );
     final h = stats.activeMinutes ~/ 60, m = stats.activeMinutes % 60;
     final poster = layout == ExportLayout.poster;
-    final route = SizedBox(
-      width: poster ? 220 : 150,
-      height: poster ? 160 : 110,
-      child: CustomPaint(
-        painter: _RoutePainter(seed: day.year * 400 + day.month * 32 + day.day, color: style.line),
-      ),
-    );
+    final icon = Icon(fitnessIcon(day), size: poster ? 120 : 72, color: style.line);
     final brand = style.mark(wordmark: poster ? 300 : 130, logo: poster ? 96 : 64);
 
     return SizedBox(
@@ -279,14 +272,14 @@ class StatsCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (poster) ...[route, const SizedBox(height: 28)],
+          if (poster) ...[icon, const SizedBox(height: 24)],
           ExportDate(day),
           const SizedBox(height: 18),
           if (stats.steps != null) stat(l.statSteps, n.format(stats.steps)),
           if (stats.km != null) stat(l.statDistance, '${stats.km!.toStringAsFixed(2)} km'),
           stat(l.statBurned, '${n.format(stats.kcal.round())} kcal'),
           stat(l.statActive, h > 0 ? '${h}h ${m}m' : '$m min'),
-          if (!poster) ...[route, const SizedBox(height: 22)] else const SizedBox(height: 10),
+          if (!poster) ...[icon, const SizedBox(height: 18)] else const SizedBox(height: 10),
           brand,
         ],
       ),
@@ -294,46 +287,14 @@ class StatsCard extends StatelessWidget {
   }
 }
 
-/// A smooth hand-drawn-looking route line (different every day).
-// ponytail: decorative, not your real route — RUVA doesn't record GPS. Read
-// Health Connect exercise routes if a real map line is wanted.
-class _RoutePainter extends CustomPainter {
-  _RoutePainter({required this.seed, required this.color});
-  final int seed;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final r = math.Random(seed);
-    const count = 9;
-    final c = size.center(Offset.zero);
-    // Points around an open loop (like a walk that nearly returns home).
-    final pts = [
-      for (var i = 0; i < count; i++)
-        () {
-          final a = -math.pi / 2 + i / count * 2 * math.pi * 0.9;
-          final k = 0.65 + r.nextDouble() * 0.35;
-          return c + Offset(math.cos(a) * size.width / 2 * k, math.sin(a) * size.height / 2 * k);
-        }(),
-    ];
-    final path = Path()..moveTo(pts.first.dx, pts.first.dy);
-    for (var i = 0; i < pts.length - 1; i++) {
-      // Catmull-Rom → cubic Bézier for a smooth line through every point.
-      final p0 = pts[math.max(i - 1, 0)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[math.min(i + 2, pts.length - 1)];
-      final c1 = p1 + (p2 - p0) / 6, c2 = p2 - (p3 - p1) / 6;
-      path.cubicTo(c1.dx, c1.dy, c2.dx, c2.dy, p2.dx, p2.dy);
-    }
-    canvas.drawPath(
-      path,
-      Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 4
-        ..strokeCap = StrokeCap.round
-        ..strokeJoin = StrokeJoin.round,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_RoutePainter old) => old.seed != seed || old.color != color;
-}
+/// A fitness icon for the exported image, different from day to day.
+IconData fitnessIcon(DateTime day) => const [
+  Icons.directions_run_rounded,
+  Icons.fitness_center_rounded,
+  Icons.directions_walk_rounded,
+  Icons.self_improvement_rounded,
+  Icons.directions_bike_rounded,
+  Icons.hiking_rounded,
+  Icons.sports_gymnastics_rounded,
+  Icons.favorite_rounded,
+][(day.year * 400 + day.month * 32 + day.day) % 8];

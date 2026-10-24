@@ -38,6 +38,10 @@ void main() {
     expect(find.descendant(of: card, matching: find.text('34 g')), findsOneWidget); // protein
     expect(find.descendant(of: card, matching: find.text('—')), findsNWidgets(2)); // carbs, fibre unknown
     expect(find.descendant(of: card, matching: find.text('Chicken · 250 kcal')), findsOneWidget);
+    expect(
+      find.descendant(of: card, matching: find.byIcon(foodIcon(DateTime(2026, 10, 4), Meal.lunch))),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text('Dinner'));
     await tester.pump();

@@ -83,7 +83,9 @@ void main() {
     tester.view.physicalSize = const Size(390, 3000);
     app.mealPhoto!.reply = const MealEstimate(
       isFood: true,
-      items: [EstimatedItem(name: 'Pap', grams: 250, nutrients: {Nutrient.energy: 280})],
+      items: [
+        EstimatedItem(name: 'Pap', grams: 250, nutrients: {Nutrient.energy: 280}),
+      ],
     );
     await tester.tap(find.bySemanticsLabel('Nutrition').last);
     await tester.pumpAndSettle();

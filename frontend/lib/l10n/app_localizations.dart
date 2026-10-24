@@ -4414,7 +4414,7 @@ abstract class AppLocalizations {
   /// No description provided for @layoutPoster.
   ///
   /// In en, this message translates to:
-  /// **'Route first'**
+  /// **'Icon first'**
   String get layoutPoster;
 
   /// No description provided for @pickDay.

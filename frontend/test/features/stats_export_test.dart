@@ -44,11 +44,12 @@ void main() {
     expect(find.text('420 kcal'), findsOneWidget); // watch 380 + logged 40
     expect(find.text('Active time'), findsOneWidget);
     expect(find.text('57 min'), findsOneWidget); // the watch's figure, not the logged 45
+    expect(find.byIcon(fitnessIcon(DateTime(2026, 10, 4))), findsOneWidget);
     expect(find.bySemanticsLabel('RUVA'), findsWidgets); // wordmark
     await tester.tap(find.text('Badge'));
     await tester.pump();
     expect(find.byType(Image), findsWidgets);
-    await tester.tap(find.text('Route first'));
+    await tester.tap(find.text('Icon first'));
     await tester.pump();
     expect(tester.widget<StatsCard>(find.byType(StatsCard)).layout, ExportLayout.poster);
     expect(find.text('57 min'), findsOneWidget);

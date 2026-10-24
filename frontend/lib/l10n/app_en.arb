@@ -854,7 +854,7 @@
   "styleForest": "Forest",
   "styleBadge": "Badge",
   "layoutCompact": "Stats first",
-  "layoutPoster": "Route first",
+  "layoutPoster": "Icon first",
   "previousDay": "Previous day",
   "nextDay": "Next day",
   "pickDay": "Pick a day",
