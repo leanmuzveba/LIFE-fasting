@@ -7,10 +7,11 @@ import '../../core/theme/app_theme.dart';
 import '../../core/widgets/ruva_kit.dart';
 import '../../domain/food.dart';
 import '../../state/providers.dart';
-import '../today/stats_export_screen.dart' show ExportDate, ExportStyle, sharePng;
+import '../today/stats_export_screen.dart' show DayNav, ExportDate, ExportStyle, sharePng;
 import 'food_labels.dart';
 
-/// One meal's calories, macros and foods in white on a transparent PNG.
+/// One meal's calories, macros and foods in white on a transparent PNG. Any
+/// day can be picked.
 class MealExportScreen extends ConsumerStatefulWidget {
   const MealExportScreen({super.key, required this.day});
   final DateTime day; // local midnight
@@ -20,6 +21,7 @@ class MealExportScreen extends ConsumerStatefulWidget {
 }
 
 class _MealExportScreenState extends ConsumerState<MealExportScreen> {
+  late DateTime _day = widget.day;
   Meal? _meal; // null until entries load: the first meal with food
   ExportStyle _style = ExportStyle.white;
   final _card = GlobalKey();
@@ -28,7 +30,7 @@ class _MealExportScreenState extends ConsumerState<MealExportScreen> {
   Future<void> _export(Meal meal) async {
     setState(() => _busy = true);
     try {
-      await sharePng(_card, 'ruva-${DateFormat('yyyy-MM-dd').format(widget.day)}-${meal.name}.png');
+      await sharePng(_card, 'ruva-${DateFormat('yyyy-MM-dd').format(_day)}-${meal.name}.png');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -37,7 +39,7 @@ class _MealExportScreenState extends ConsumerState<MealExportScreen> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final entries = ref.watch(diaryDayProvider(widget.day)).value ?? const <FoodEntry>[];
+    final entries = ref.watch(diaryDayProvider(_day)).value ?? const <FoodEntry>[];
     final meal = _meal ?? Meal.values.firstWhere((m) => entries.any((e) => e.meal == m), orElse: () => Meal.breakfast);
     final foods = [
       for (final e in entries)
@@ -64,7 +66,14 @@ class _MealExportScreenState extends ConsumerState<MealExportScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(12, 0, 12, 32),
           children: [
-            ScreenHeader(title: l.mealExportTitle, subtitle: DateFormat('EEE d MMM y').format(widget.day)),
+            ScreenHeader(title: l.mealExportTitle),
+            DayNav(
+              day: _day,
+              onChanged: (d) => setState(() {
+                _day = d;
+                _meal = null; // the first meal with food that day
+              }),
+            ),
             chips(Meal.values, meal, (m) => mealLabel(l, m), (m) => _meal = m),
             const SizedBox(height: 6),
             chips(ExportStyle.values, _style, (s) => s.label(l), (s) => _style = s),
@@ -84,7 +93,7 @@ class _MealExportScreenState extends ConsumerState<MealExportScreen> {
                     )
                   : RepaintBoundary(
                       key: _card,
-                      child: MealCard(day: widget.day, meal: meal, entries: foods, style: _style),
+                      child: MealCard(day: _day, meal: meal, entries: foods, style: _style),
                     ),
             ),
             const SizedBox(height: 16),

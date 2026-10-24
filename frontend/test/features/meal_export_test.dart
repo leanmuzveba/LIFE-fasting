@@ -43,5 +43,14 @@ void main() {
     await tester.pump();
     expect(find.byType(MealCard), findsNothing);
     expect(find.text('Nothing logged for Dinner on this day.'), findsOneWidget);
+
+    // Any day: the day before has nothing; back again picks Lunch.
+    await tester.tap(find.byTooltip('Previous day'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MealCard), findsNothing);
+    await tester.tap(find.byTooltip('Next day'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<MealCard>(find.byType(MealCard)).day, DateTime(2026, 10, 4));
+    expect(tester.widget<MealCard>(find.byType(MealCard)).meal, Meal.lunch);
   });
 }

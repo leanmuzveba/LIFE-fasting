@@ -31,18 +31,6 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   final _card = GlobalKey();
   bool _busy = false;
 
-  DateTime get _today {
-    final n = ref.read(clockProvider)().toLocal();
-    return DateTime(n.year, n.month, n.day);
-  }
-
-  void _shift(int days) => setState(() => _day = DateTime(_day.year, _day.month, _day.day + days));
-
-  Future<void> _pick() async {
-    final d = await showDatePicker(context: context, initialDate: _day, firstDate: DateTime(2020), lastDate: _today);
-    if (d != null) setState(() => _day = d);
-  }
-
   Future<void> _export() async {
     setState(() => _busy = true);
     try {
@@ -56,7 +44,6 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final stats = ref.watch(dayStatsProvider(_day)).value;
-    final isToday = !_day.isBefore(_today);
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -73,26 +60,7 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  tooltip: l.previousDay,
-                  onPressed: () => _shift(-1),
-                  icon: const Icon(Icons.chevron_left_rounded, color: AppColors.primary),
-                ),
-                TextButton.icon(
-                  onPressed: _pick,
-                  icon: const Icon(Icons.calendar_today_outlined, size: 18),
-                  label: Text(DateFormat('EEE d MMM y').format(_day), semanticsLabel: l.pickDay),
-                ),
-                IconButton(
-                  tooltip: l.nextDay,
-                  onPressed: isToday ? null : () => _shift(1),
-                  icon: const Icon(Icons.chevron_right_rounded, color: AppColors.primary),
-                ),
-              ],
-            ),
+            DayNav(day: _day, onChanged: (d) => setState(() => _day = d)),
             const SizedBox(height: 4),
             Row(
               children: [
@@ -146,6 +114,49 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// ‹ previous day · pick a date · next day › (never past today).
+class DayNav extends ConsumerWidget {
+  const DayNav({super.key, required this.day, required this.onChanged});
+  final DateTime day; // local midnight
+  final ValueChanged<DateTime> onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final n = ref.read(clockProvider)().toLocal();
+    final today = DateTime(n.year, n.month, n.day);
+    void shift(int days) => onChanged(DateTime(day.year, day.month, day.day + days));
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IconButton(
+          tooltip: l.previousDay,
+          onPressed: () => shift(-1),
+          icon: const Icon(Icons.chevron_left_rounded, color: AppColors.primary),
+        ),
+        TextButton.icon(
+          onPressed: () async {
+            final d = await showDatePicker(
+              context: context,
+              initialDate: day,
+              firstDate: DateTime(2020),
+              lastDate: today,
+            );
+            if (d != null) onChanged(d);
+          },
+          icon: const Icon(Icons.calendar_today_outlined, size: 18),
+          label: Text(DateFormat('EEE d MMM y').format(day), semanticsLabel: l.pickDay),
+        ),
+        IconButton(
+          tooltip: l.nextDay,
+          onPressed: day.isBefore(today) ? () => shift(1) : null,
+          icon: const Icon(Icons.chevron_right_rounded, color: AppColors.primary),
+        ),
+      ],
     );
   }
 }
