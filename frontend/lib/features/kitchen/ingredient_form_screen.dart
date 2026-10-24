@@ -13,7 +13,7 @@ import '../../domain/kitchen.dart';
 import '../../state/providers.dart';
 import 'kitchen_labels.dart';
 
-/// Add / Edit Ingredient (RUVA design, PRD §4.2): name, one or more
+/// Add / Edit Ingredient (MagnaVita design, PRD §4.2): name, one or more
 /// categories, quantity + unit, state, optional dates, low-stock level,
 /// brand and notes. Editing also offers Mark as finished and Remove.
 class IngredientFormScreen extends ConsumerStatefulWidget {

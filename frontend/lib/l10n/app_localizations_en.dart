@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'RUVA';
+  String get appName => 'MagnaVita';
 
   @override
   String get close => 'Close';
@@ -341,7 +341,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAll => 'Delete all';
 
   @override
-  String get onboardingTitle => 'Welcome to RUVA, your calm place for fasting, food and wellness';
+  String get onboardingTitle => 'Welcome to MagnaVita, your calm place for fasting, food and wellness';
 
   @override
   String get onboardingNotMedical =>
@@ -400,7 +400,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifTargetBody => 'Your planned time has passed. End your session whenever you’re ready.';
 
   @override
-  String get splashLoading => 'RUVA, loading';
+  String get splashLoading => 'MagnaVita, loading';
 
   @override
   String get greetingMorning => 'Good morning';
@@ -675,11 +675,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAllergies => 'Allergies';
 
   @override
-  String get settingsHowItWorks => 'How RUVA works + safety notes';
+  String get settingsHowItWorks => 'How MagnaVita works + safety notes';
 
   @override
   String get settingsHowItWorksBody =>
-      'RUVA helps you record fasting times, water, activity, meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.';
+      'MagnaVita helps you record fasting times, water, activity, meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. MagnaVita does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.';
 
   @override
   String get settingsFooter => 'Made with care. Not medical advice.';
@@ -1277,7 +1277,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get diaryInfoBody =>
-      'Nutrition values are estimates from USDA FoodData Central and the foods you create. “Partial” means some foods you logged have no data for that nutrient; “Unavailable” means none do. RUVA doesn’t set targets or judge what you eat.';
+      'Nutrition values are estimates from USDA FoodData Central and the foods you create. “Partial” means some foods you logged have no data for that nutrient; “Unavailable” means none do. MagnaVita doesn’t set targets or judge what you eat.';
 
   @override
   String get diaryMicros => 'Vitamins & minerals';
@@ -1501,7 +1501,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recipesEmptyKitchen =>
-      'Add ingredients to My Kitchen and RUVA will suggest what you can make. You can still search by name.';
+      'Add ingredients to My Kitchen and MagnaVita will suggest what you can make. You can still search by name.';
 
   @override
   String get recipesNone => 'No recipes match these filters.';
@@ -1914,7 +1914,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bodyAboutBmiBody =>
-      'BMI compares weight with height. It’s a quick screening number, not a diagnosis: it can’t tell muscle from fat, and it reads differently for athletes, older adults, pregnancy and some ethnic groups. Body-fat estimates can be several percent off. Treat these numbers as one signal among many — RUVA won’t set diets or calorie targets from them, and a healthcare professional can help you interpret them.';
+      'BMI compares weight with height. It’s a quick screening number, not a diagnosis: it can’t tell muscle from fat, and it reads differently for athletes, older adults, pregnancy and some ethnic groups. Body-fat estimates can be several percent off. Treat these numbers as one signal among many — MagnaVita won’t set diets or calorie targets from them, and a healthcare professional can help you interpret them.';
 
   @override
   String get bodyHistory => 'Weight history';
@@ -1977,10 +1977,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStepsAllow => 'Count my steps';
 
   @override
-  String get homeStepsWhy => 'RUVA can read your phone’s step sensor. Steps stay on this phone.';
+  String get homeStepsWhy => 'MagnaVita can read your phone’s step sensor. Steps stay on this phone.';
 
   @override
-  String get homeStepsDenied => 'Allow “Physical activity” for RUVA in your phone’s settings to count steps.';
+  String get homeStepsDenied => 'Allow “Physical activity” for MagnaVita in your phone’s settings to count steps.';
 
   @override
   String get homeStepsOpenSettings => 'Open settings';
@@ -2292,7 +2292,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myRecipePhoto => 'Recipe photo';
 
   @override
-  String get recipeAiTitle => 'Let RUVA write it';
+  String get recipeAiTitle => 'Let MagnaVita write it';
 
   @override
   String get recipeAiBody =>
@@ -2347,7 +2347,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get watchIntro =>
-      'RUVA can read the workouts, calories burned and steps your watch records, through Android’s Health Connect.';
+      'MagnaVita can read the workouts, calories burned and steps your watch records, through Android’s Health Connect.';
 
   @override
   String get watchSteps =>
@@ -2366,17 +2366,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get watchConnected => 'Watch connected';
 
   @override
-  String get watchDenied => 'RUVA wasn’t given access. You can allow it in Health Connect any time.';
+  String get watchDenied => 'MagnaVita wasn’t given access. You can allow it in Health Connect any time.';
 
   @override
-  String get watchLinkedBody => 'Connected — RUVA reads your watch data when you open the app.';
+  String get watchLinkedBody => 'Connected — MagnaVita reads your watch data when you open the app.';
 
   @override
   String get watchDisconnect => 'Stop reading watch data';
 
   @override
   String get watchPrivacy =>
-      'Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.';
+      'Read-only: MagnaVita never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.';
 
   @override
   String get activityFromWatch => 'From your watch';
@@ -2410,7 +2410,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get watchUsedNote =>
-      '✓ is the app RUVA uses (Mi Fitness when present), so nothing is counted twice. Mi Fitness shares data with Health Connect when it syncs, so RUVA can lag behind your watch face until then.';
+      '✓ is the app MagnaVita uses (Mi Fitness when present), so nothing is counted twice. Mi Fitness shares data with Health Connect when it syncs, so MagnaVita can lag behind your watch face until then.';
 
   @override
   String get watchRefresh => 'Refresh';
@@ -2420,7 +2420,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String appVersion(String version) {
-    return 'RUVA $version';
+    return 'MagnaVita $version';
   }
 
   @override

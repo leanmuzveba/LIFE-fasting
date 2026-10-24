@@ -17,23 +17,21 @@ Widget _app({bool reduceMotion = false}) => MaterialApp(
   ),
 );
 
-int _letters(WidgetTester tester) => tester
+int _leaves(WidgetTester tester) => tester
     .widgetList<Image>(find.byType(Image))
-    .where((i) => RegExp(r'/(u|v|a)\.png$').hasMatch((i.image as AssetImage).assetName))
+    .where((i) => RegExp(r'/leaf_\w+\.png$').hasMatch((i.image as AssetImage).assetName))
     .length;
 
 void main() {
-  testWidgets('the logo builds up: U, V, A appear in order', (tester) async {
+  testWidgets('the logo builds up: the two leaves appear in order', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pump();
-    expect(_letters(tester), 0);
+    expect(_leaves(tester), 0);
     await tester.pump(const Duration(milliseconds: 320));
-    expect(_letters(tester), 1);
+    expect(_leaves(tester), 1);
     await tester.pump(const Duration(milliseconds: 300));
-    expect(_letters(tester), 2);
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(_letters(tester), 3);
-    expect(find.bySemanticsLabel('RUVA, loading'), findsOneWidget);
+    expect(_leaves(tester), 2);
+    expect(find.bySemanticsLabel('MagnaVita, loading'), findsOneWidget);
   });
 
   test('head pulses during the build-up and lands full size', () {
@@ -53,7 +51,7 @@ void main() {
   testWidgets('reduced motion shows the finished logo without animating', (tester) async {
     await tester.pumpWidget(_app(reduceMotion: true));
     await tester.pump();
-    expect(_letters(tester), 3);
+    expect(_leaves(tester), 2);
     expect(tester.hasRunningAnimations, isFalse);
   });
 

@@ -45,7 +45,7 @@ void main() {
     expect(find.text('Active time'), findsOneWidget);
     expect(find.text('57 min'), findsOneWidget); // the watch's figure, not the logged 45
     expect(find.byIcon(fitnessIcon(DateTime(2026, 10, 4))), findsOneWidget);
-    expect(find.bySemanticsLabel('RUVA'), findsWidgets); // wordmark
+    expect(find.bySemanticsLabel('MagnaVita'), findsWidgets); // wordmark
     await tester.tap(find.text('Badge'));
     await tester.pump();
     expect(find.byType(Image), findsWidgets);

@@ -13,7 +13,7 @@ import '../../state/providers.dart';
 import 'barcode_scanner_screen.dart';
 import 'food_labels.dart';
 
-/// Search the bundled food database, pick an amount and log it (RUVA design,
+/// Search the bundled food database, pick an amount and log it (MagnaVita design,
 /// PRD v1.2 §3). Recent and saved foods are one tap away.
 class AddFoodScreen extends ConsumerStatefulWidget {
   const AddFoodScreen({super.key, required this.day, required this.meal, this.scan = false});

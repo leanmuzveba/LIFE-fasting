@@ -4,7 +4,7 @@ import '../l10n.dart';
 import '../theme/app_theme.dart';
 import '../theme/tokens.dart';
 
-/// Shared building blocks from the RUVA screen designs (docs/ruva designs):
+/// Shared building blocks from the MagnaVita screen designs (docs/ruva designs):
 /// rounded cards, one forest hero card per screen, lime-pale pill chips,
 /// mono eyebrows and a back/title header. Sized for 48 px tap targets.
 

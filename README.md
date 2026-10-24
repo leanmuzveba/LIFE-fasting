@@ -1,6 +1,6 @@
-# RUVA
+# MagnaVita
 
-A calm, offline-first personal wellness app for Android (iOS project included), built with Flutter. It grew out of the Fasting Companion app: the circular fasting timer is still the centrepiece, and food, kitchen, recipes, activity, water and body measurements sit around it.
+A calm, offline-first personal wellness app for Android (iOS project included), built with Flutter. It grew out of the Fasting Companion app (and was briefly called RUVA): the circular fasting timer is still the centrepiece, and food, kitchen, recipes, activity, water and body measurements sit around it.
 
 > **Not a medical device.** Milestone times and nutrition values are general estimates. The app cannot detect ketosis, fat burning or any other metabolic state, and BMI is shown with its limitations. Talk to a qualified healthcare professional before changing your eating patterns.
 
@@ -40,7 +40,7 @@ LIFE-fasting/
 
 ## Brand
 
-Forest `#135D44`, lime `#B9F36C`, mint `#F6FCEF`, ink `#1A2A20`. Fonts are Lexend, DM Sans and JetBrains Mono (OFL, bundled). Tokens live in `frontend/lib/core/theme/tokens.dart`, and the full guide is `docs/BRANDING/Ruva_Brand_Guide.pdf`.
+Forest `#135D44`, lime `#B9F36C`, mint `#F6FCEF`, ink `#1A2A20`. Fonts are Lexend, DM Sans and JetBrains Mono (OFL, bundled). Tokens live in `frontend/lib/core/theme/tokens.dart`. The MagnaVita logo and icon files are in `docs/BRANDING/new` (the colour guide is still `docs/BRANDING/Ruva_Brand_Guide.pdf`).
 
 ## Getting started
 

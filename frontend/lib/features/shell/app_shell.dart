@@ -68,7 +68,7 @@ class _AppShellState extends ConsumerState<AppShell> with WidgetsBindingObserver
     ),
   );
 
-  /// The centre + menu (RUVA home design).
+  /// The centre + menu (MagnaVita home design).
   Future<void> _quickAdd() async {
     final l = context.l10n;
     final settings = ref.read(settingsProvider).value;

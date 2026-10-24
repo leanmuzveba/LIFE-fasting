@@ -17,7 +17,7 @@ import 'shopping_list_sheet.dart';
 
 enum _Choice { keep, usedUp, spoiled }
 
-/// Monthly kitchen review (RUVA design, PRD §6): one item at a time — still
+/// Monthly kitchen review (MagnaVita design, PRD §6): one item at a time — still
 /// have it (update quantity), used it up, or spoiled — plus new purchases and
 /// the shopping list. Each decision is saved immediately and recorded.
 class KitchenReviewScreen extends ConsumerStatefulWidget {

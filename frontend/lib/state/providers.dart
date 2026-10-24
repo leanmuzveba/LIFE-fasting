@@ -915,7 +915,7 @@ final healthSourceProvider = Provider((ref) => HealthSource());
 
 enum WatchStatus { off, unavailable, needsPermission, linked }
 
-/// Whether you've connected your watch (opt-in) and RUVA can still read it.
+/// Whether you've connected your watch (opt-in) and MagnaVita can still read it.
 final watchStatusProvider = FutureProvider<WatchStatus>((ref) async {
   final linked = await ref.watch(settingsRepositoryProvider).flag('watch.linked');
   final hc = ref.watch(healthSourceProvider);

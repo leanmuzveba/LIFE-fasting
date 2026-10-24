@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// RUVA design tokens (docs/BRANDING/Ruva_Brand_Guide.pdf, "02 — Colour").
+/// MagnaVita design tokens (docs/BRANDING/Ruva_Brand_Guide.pdf, "02 — Colour").
 /// Forest anchors brand, buttons and active states; lime marks progress and
 /// highlights and is never used for text or behind white text.
 abstract final class AppColors {

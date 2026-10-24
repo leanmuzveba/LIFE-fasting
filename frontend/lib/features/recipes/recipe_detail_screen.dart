@@ -16,7 +16,7 @@ import '../../state/providers.dart';
 import 'recipe_form_screen.dart';
 import 'recipes_screen.dart' show RecipeImage;
 
-/// One recipe (RUVA design, PRD v1.2 §5.2): what you have and what's missing,
+/// One recipe (MagnaVita design, PRD v1.2 §5.2): what you have and what's missing,
 /// substitutions, batch scaling, steps, mark as cooked and log to the diary.
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   const RecipeDetailScreen({super.key, required this.recipe});

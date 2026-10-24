@@ -19,7 +19,7 @@ import 'meal_export_screen.dart';
 import 'meal_photo_screen.dart';
 import 'food_labels.dart';
 
-/// Nutrition tab root (RUVA design, PRD v1.2 §3): one day's meals with
+/// Nutrition tab root (MagnaVita design, PRD v1.2 §3): one day's meals with
 /// estimated totals, plus shortcuts to My Kitchen.
 class FoodDiaryScreen extends ConsumerStatefulWidget {
   const FoodDiaryScreen({super.key});

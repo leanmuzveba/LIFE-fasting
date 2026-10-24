@@ -1,6 +1,6 @@
 // Smart Recipe Planner (PRD v1.2 §5): TheMealDB recipes matched against the
 // kitchen with simple, explainable rules. No invented times, servings or
-// nutrition — TheMealDB doesn't provide them, so RUVA says so.
+// nutrition — TheMealDB doesn't provide them, so MagnaVita says so.
 
 import 'dart:typed_data';
 

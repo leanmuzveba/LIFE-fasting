@@ -54,7 +54,7 @@ class HealthSource {
     await _health.installHealthConnect();
   }
 
-  /// Shows Health Connect's permission screen; true when RUVA may read.
+  /// Shows Health Connect's permission screen; true when MagnaVita may read.
   Future<bool> connect() async {
     await _init();
     return _health.requestAuthorization(_types, permissions: [for (final _ in _types) HealthDataAccess.READ]);
@@ -183,7 +183,7 @@ class HealthSource {
   }
 }
 
-/// Maps Health Connect exercise types onto RUVA's activity types.
+/// Maps Health Connect exercise types onto MagnaVita's activity types.
 ActivityType workoutType(HealthWorkoutActivityType t) {
   final n = t.name.toLowerCase();
   if (n.contains('walk') || n.contains('hik')) return ActivityType.walk;
@@ -214,5 +214,5 @@ class SourceTotals {
   final int? steps;
   final int? activeKcal;
   final int? totalKcal;
-  final bool used; // the app RUVA reads from
+  final bool used; // the app MagnaVita reads from
 }

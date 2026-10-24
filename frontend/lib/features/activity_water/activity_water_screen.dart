@@ -15,7 +15,7 @@ import '../../state/providers.dart';
 import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
 
-/// Water (RUVA design): today's water against a personal goal with
+/// Water (MagnaVita design): today's water against a personal goal with
 /// quick-adds. Opened from Home.
 class ActivityWaterScreen extends StatelessWidget {
   const ActivityWaterScreen({super.key});

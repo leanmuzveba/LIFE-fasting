@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'tokens.dart';
 
-/// RUVA type system (brand guide "03 — Typography"): Lexend for headings,
+/// MagnaVita type system (brand guide "03 — Typography"): Lexend for headings,
 /// numbers, buttons and nav; DM Sans for body and UI copy; JetBrains Mono for
 /// small uppercase eyebrows and data captions.
 abstract final class AppFonts {

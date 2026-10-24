@@ -20,7 +20,7 @@ import 'session_sheet.dart';
 
 enum HistoryFilter { all, fasting, water, activity }
 
-/// History (RUVA design): filters, a month calendar with markers, a 14-day
+/// History (MagnaVita design): filters, a month calendar with markers, a 14-day
 /// fasting trend, recent days and a summary sheet for any day — all built
 /// from what was actually recorded.
 class HistoryScreen extends ConsumerStatefulWidget {

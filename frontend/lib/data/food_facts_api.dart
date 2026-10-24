@@ -15,7 +15,7 @@ class FoodFactsApi {
     try {
       final uri = Uri.parse('https://world.openfoodfacts.org/api/v2/product/$barcode.json?fields=$_fields');
       final req = await client.getUrl(uri);
-      req.headers.set(HttpHeaders.userAgentHeader, 'RUVA/1.0 (personal wellness app)');
+      req.headers.set(HttpHeaders.userAgentHeader, 'MagnaVita/1.0 (personal wellness app)');
       final res = await req.close().timeout(const Duration(seconds: 15));
       if (res.statusCode == 404) return null;
       if (res.statusCode != 200) throw HttpException('HTTP ${res.statusCode}');

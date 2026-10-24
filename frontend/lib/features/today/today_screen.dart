@@ -20,7 +20,7 @@ import '../../state/providers.dart';
 import '../ring/fasting_ring.dart' show FastingRing;
 import 'stats_export_screen.dart';
 
-/// Home dashboard (RUVA design): steps, then today's calories, hours fasted
+/// Home dashboard (MagnaVita design): steps, then today's calories, hours fasted
 /// and water. Logging happens from the centre + button.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({

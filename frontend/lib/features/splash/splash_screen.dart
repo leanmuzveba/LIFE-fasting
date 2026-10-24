@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import '../../core/l10n.dart';
 import '../../core/theme/tokens.dart';
 
-/// Animated RUVA splash, matched frame-by-frame to the supplied video
-/// (1.5 s, cream background): the lime body is there from the start, the
-/// forest arm draws outward from its middle, U·V·A pop in one by one and the
-/// head dot pulses until the logo completes at ~1.2 s. If loading takes
+/// Animated MagnaVita splash, timed like the original RUVA splash video (1.5 s,
+/// cream background): the forest swoosh draws outward from its middle, the
+/// two lime leaves pop in one by one and the head dot pulses until the logo
+/// completes at ~1.2 s. If loading takes
 /// longer, the head keeps a gentle heartbeat. Static when the system asks for
 /// reduced motion.
 class SplashScreen extends StatefulWidget {
@@ -69,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 }
 
-/// The six logo layers (same 741×741 canvas, so they stack exactly).
+/// The four logo layers (same 964×964 canvas, so they stack exactly).
 class AnimatedLogo extends StatelessWidget {
   const AnimatedLogo({super.key, required this.t, this.beat});
 
@@ -81,13 +81,13 @@ class AnimatedLogo extends StatelessWidget {
 
   static Widget _layer(String name) => Image.asset('assets/brand/splash/$name.png', fit: BoxFit.contain);
 
-  // Measured from the video (30 fps): the arm grows linearly from nothing to
-  // full size about its own centre (canvas box x 0…544, y 64…337) from 0.10 s
-  // to 1.17 s, keeping its hooked shape.
+  // Timing from the original video (30 fps): the swoosh grows linearly from
+  // nothing to full size about its own centre (canvas box x 177…708,
+  // y 328…783) from 0.10 s to 1.17 s.
   static const _armStart = 0.10, _armEnd = 1.17;
-  static const _armAlign = Alignment(272 / 741 * 2 - 1, 200.5 / 741 * 2 - 1);
+  static const _armAlign = Alignment(442.5 / 964 * 2 - 1, 555.5 / 964 * 2 - 1);
   // Head dot centre on the canvas, for scaling about its middle.
-  static const _headAlign = Alignment(589.5 / 741 * 2 - 1, 77.5 / 741 * 2 - 1);
+  static const _headAlign = Alignment(584 / 964 * 2 - 1, 241 / 964 * 2 - 1);
 
   /// Head scale: pops tiny↔full every 0.267 s, settles full at ~1.17 s.
   double get headScale {
@@ -114,11 +114,9 @@ class AnimatedLogo extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        _layer('body'),
-        Transform.scale(scale: arm, alignment: _armAlign, child: _layer('arm')),
-        if (t >= 0.30) _layer('u'),
-        if (t >= 0.60) _layer('v'),
-        if (t >= 0.90) _layer('a'),
+        Transform.scale(scale: arm, alignment: _armAlign, child: _layer('swoosh')),
+        if (t >= 0.30) _layer('leaf_left'),
+        if (t >= 0.60) _layer('leaf_right'),
         Transform.scale(scale: headScale, alignment: _headAlign, child: _layer('head')),
       ],
     );

@@ -30,7 +30,7 @@ class _MealExportScreenState extends ConsumerState<MealExportScreen> {
   Future<void> _export(Meal meal) async {
     setState(() => _busy = true);
     try {
-      await sharePng(_card, 'ruva-${DateFormat('yyyy-MM-dd').format(_day)}-${meal.name}.png');
+      await sharePng(_card, 'magnavita-${DateFormat('yyyy-MM-dd').format(_day)}-${meal.name}.png');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -171,7 +171,7 @@ class MealCard extends StatelessWidget {
             ),
           if (entries.length > shown) Text(l.mealExportMore(entries.length - shown), style: label),
           const SizedBox(height: 22),
-          style.mark(wordmark: 130, logo: 64),
+          style.mark(wordmark: 130, logo: 96),
         ],
       ),
     );

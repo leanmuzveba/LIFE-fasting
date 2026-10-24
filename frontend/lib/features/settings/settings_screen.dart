@@ -40,7 +40,7 @@ String allergenLabel(AppLocalizations l, Allergen a) => switch (a) {
   Allergen.sesame => l.allergenSesame,
 };
 
-/// Settings (RUVA design): profile card, preferences, optional reminders,
+/// Settings (MagnaVita design): profile card, preferences, optional reminders,
 /// privacy & data, about & safety.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key, required this.onChangeTarget});

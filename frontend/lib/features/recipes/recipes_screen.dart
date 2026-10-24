@@ -17,7 +17,7 @@ import 'recipe_form_screen.dart';
 
 enum _Show { all, mine, ready, expiring, saved }
 
-/// Smart Recipe Planner (RUVA design, PRD v1.2 §5): what you can make with
+/// Smart Recipe Planner (MagnaVita design, PRD v1.2 §5): what you can make with
 /// your kitchen, from TheMealDB, filtered by diet and never showing recipes
 /// with a recorded allergen.
 class RecipesScreen extends ConsumerStatefulWidget {

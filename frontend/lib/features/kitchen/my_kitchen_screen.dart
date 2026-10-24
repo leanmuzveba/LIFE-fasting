@@ -18,7 +18,7 @@ import 'shopping_list_sheet.dart';
 
 enum _Flag { none, expiring, lowStock }
 
-/// My Kitchen (RUVA design, PRD §4.3): search, category filters, an overview
+/// My Kitchen (MagnaVita design, PRD §4.3): search, category filters, an overview
 /// of expiring and low-stock items, and the inventory list.
 class MyKitchenScreen extends ConsumerStatefulWidget {
   const MyKitchenScreen({super.key});

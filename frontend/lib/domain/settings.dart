@@ -33,7 +33,7 @@ class AppSettings {
   /// Optional display name ('' = not set).
   final String userName;
 
-  /// When RUVA was first set up on this phone.
+  /// When MagnaVita was first set up on this phone.
   final DateTime? memberSince;
   final DietPreference diet;
   final Set<Allergen> allergies;

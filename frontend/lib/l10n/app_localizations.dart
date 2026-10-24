@@ -94,7 +94,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'RUVA'**
+  /// **'MagnaVita'**
   String get appName;
 
   /// No description provided for @close.
@@ -676,7 +676,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to RUVA, your calm place for fasting, food and wellness'**
+  /// **'Welcome to MagnaVita, your calm place for fasting, food and wellness'**
   String get onboardingTitle;
 
   /// No description provided for @onboardingNotMedical.
@@ -778,7 +778,7 @@ abstract class AppLocalizations {
   /// No description provided for @splashLoading.
   ///
   /// In en, this message translates to:
-  /// **'RUVA, loading'**
+  /// **'MagnaVita, loading'**
   String get splashLoading;
 
   /// No description provided for @greetingMorning.
@@ -1258,13 +1258,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsHowItWorks.
   ///
   /// In en, this message translates to:
-  /// **'How RUVA works + safety notes'**
+  /// **'How MagnaVita works + safety notes'**
   String get settingsHowItWorks;
 
   /// No description provided for @settingsHowItWorksBody.
   ///
   /// In en, this message translates to:
-  /// **'RUVA helps you record fasting times, water, activity, meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. RUVA does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.'**
+  /// **'MagnaVita helps you record fasting times, water, activity, meals and your kitchen, all on this phone. Fasting milestones and nutrition values are estimates, not measurements. MagnaVita does not diagnose anything. Speak with a qualified healthcare professional before changing how you eat.'**
   String get settingsHowItWorksBody;
 
   /// No description provided for @settingsFooter.
@@ -2302,7 +2302,7 @@ abstract class AppLocalizations {
   /// No description provided for @diaryInfoBody.
   ///
   /// In en, this message translates to:
-  /// **'Nutrition values are estimates from USDA FoodData Central and the foods you create. “Partial” means some foods you logged have no data for that nutrient; “Unavailable” means none do. RUVA doesn’t set targets or judge what you eat.'**
+  /// **'Nutrition values are estimates from USDA FoodData Central and the foods you create. “Partial” means some foods you logged have no data for that nutrient; “Unavailable” means none do. MagnaVita doesn’t set targets or judge what you eat.'**
   String get diaryInfoBody;
 
   /// No description provided for @diaryMicros.
@@ -2686,7 +2686,7 @@ abstract class AppLocalizations {
   /// No description provided for @recipesEmptyKitchen.
   ///
   /// In en, this message translates to:
-  /// **'Add ingredients to My Kitchen and RUVA will suggest what you can make. You can still search by name.'**
+  /// **'Add ingredients to My Kitchen and MagnaVita will suggest what you can make. You can still search by name.'**
   String get recipesEmptyKitchen;
 
   /// No description provided for @recipesNone.
@@ -3370,7 +3370,7 @@ abstract class AppLocalizations {
   /// No description provided for @bodyAboutBmiBody.
   ///
   /// In en, this message translates to:
-  /// **'BMI compares weight with height. It’s a quick screening number, not a diagnosis: it can’t tell muscle from fat, and it reads differently for athletes, older adults, pregnancy and some ethnic groups. Body-fat estimates can be several percent off. Treat these numbers as one signal among many — RUVA won’t set diets or calorie targets from them, and a healthcare professional can help you interpret them.'**
+  /// **'BMI compares weight with height. It’s a quick screening number, not a diagnosis: it can’t tell muscle from fat, and it reads differently for athletes, older adults, pregnancy and some ethnic groups. Body-fat estimates can be several percent off. Treat these numbers as one signal among many — MagnaVita won’t set diets or calorie targets from them, and a healthcare professional can help you interpret them.'**
   String get bodyAboutBmiBody;
 
   /// No description provided for @bodyHistory.
@@ -3472,13 +3472,13 @@ abstract class AppLocalizations {
   /// No description provided for @homeStepsWhy.
   ///
   /// In en, this message translates to:
-  /// **'RUVA can read your phone’s step sensor. Steps stay on this phone.'**
+  /// **'MagnaVita can read your phone’s step sensor. Steps stay on this phone.'**
   String get homeStepsWhy;
 
   /// No description provided for @homeStepsDenied.
   ///
   /// In en, this message translates to:
-  /// **'Allow “Physical activity” for RUVA in your phone’s settings to count steps.'**
+  /// **'Allow “Physical activity” for MagnaVita in your phone’s settings to count steps.'**
   String get homeStepsDenied;
 
   /// No description provided for @homeStepsOpenSettings.
@@ -3982,7 +3982,7 @@ abstract class AppLocalizations {
   /// No description provided for @recipeAiTitle.
   ///
   /// In en, this message translates to:
-  /// **'Let RUVA write it'**
+  /// **'Let MagnaVita write it'**
   String get recipeAiTitle;
 
   /// No description provided for @recipeAiBody.
@@ -4084,7 +4084,7 @@ abstract class AppLocalizations {
   /// No description provided for @watchIntro.
   ///
   /// In en, this message translates to:
-  /// **'RUVA can read the workouts, calories burned and steps your watch records, through Android’s Health Connect.'**
+  /// **'MagnaVita can read the workouts, calories burned and steps your watch records, through Android’s Health Connect.'**
   String get watchIntro;
 
   /// No description provided for @watchSteps.
@@ -4120,13 +4120,13 @@ abstract class AppLocalizations {
   /// No description provided for @watchDenied.
   ///
   /// In en, this message translates to:
-  /// **'RUVA wasn’t given access. You can allow it in Health Connect any time.'**
+  /// **'MagnaVita wasn’t given access. You can allow it in Health Connect any time.'**
   String get watchDenied;
 
   /// No description provided for @watchLinkedBody.
   ///
   /// In en, this message translates to:
-  /// **'Connected — RUVA reads your watch data when you open the app.'**
+  /// **'Connected — MagnaVita reads your watch data when you open the app.'**
   String get watchLinkedBody;
 
   /// No description provided for @watchDisconnect.
@@ -4138,7 +4138,7 @@ abstract class AppLocalizations {
   /// No description provided for @watchPrivacy.
   ///
   /// In en, this message translates to:
-  /// **'Read-only: RUVA never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.'**
+  /// **'Read-only: MagnaVita never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.'**
   String get watchPrivacy;
 
   /// No description provided for @activityFromWatch.
@@ -4192,7 +4192,7 @@ abstract class AppLocalizations {
   /// No description provided for @watchUsedNote.
   ///
   /// In en, this message translates to:
-  /// **'✓ is the app RUVA uses (Mi Fitness when present), so nothing is counted twice. Mi Fitness shares data with Health Connect when it syncs, so RUVA can lag behind your watch face until then.'**
+  /// **'✓ is the app MagnaVita uses (Mi Fitness when present), so nothing is counted twice. Mi Fitness shares data with Health Connect when it syncs, so MagnaVita can lag behind your watch face until then.'**
   String get watchUsedNote;
 
   /// No description provided for @watchRefresh.
@@ -4210,7 +4210,7 @@ abstract class AppLocalizations {
   /// No description provided for @appVersion.
   ///
   /// In en, this message translates to:
-  /// **'RUVA {version}'**
+  /// **'MagnaVita {version}'**
   String appVersion(String version);
 
   /// No description provided for @updateNow.

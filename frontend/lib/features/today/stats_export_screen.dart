@@ -14,7 +14,7 @@ import '../../core/widgets/ruva_logo.dart';
 import '../../state/providers.dart';
 
 /// Strava-style overlay: a day's stats in white on a transparent PNG, with a
-/// fitness icon and the RUVA logo. Any day can be picked.
+/// fitness icon and the MagnaVita logo. Any day can be picked.
 class StatsExportScreen extends ConsumerStatefulWidget {
   const StatsExportScreen({super.key, required this.day});
   final DateTime day; // local midnight
@@ -33,7 +33,7 @@ class _StatsExportScreenState extends ConsumerState<StatsExportScreen> {
   Future<void> _export() async {
     setState(() => _busy = true);
     try {
-      await sharePng(_card, 'ruva-${DateFormat('yyyy-MM-dd').format(_day)}.png');
+      await sharePng(_card, 'magnavita-${DateFormat('yyyy-MM-dd').format(_day)}.png');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -198,16 +198,16 @@ enum ExportStyle {
   white(Colors.white, Colors.white),
   lime(AppColors.accent, AppColors.primary), // lime icon, forest wordmark
   forest(AppColors.primary, AppColors.accent), // forest icon, lime wordmark
-  badge(AppColors.primary, null); // forest icon, round RUVA logo
+  badge(AppColors.primary, null); // forest icon, the two-tone MagnaVita mark
 
   const ExportStyle(this.line, this.wordmark);
   final Color line; // the icon
-  final Color? wordmark; // null: the round logo instead
+  final Color? wordmark; // null: the two-tone mark instead
 
-  /// The RUVA wordmark tinted for this style, or the round logo.
+  /// The MagnaVita wordmark tinted for this style, or the two-tone mark.
   Widget mark({required double wordmark, required double logo}) => switch (this.wordmark) {
-    final c? => Image.asset('assets/brand/wordmark.png', width: wordmark, color: c, semanticLabel: 'RUVA'),
-    null => RuvaLogo(size: logo, semanticLabel: 'RUVA'),
+    final c? => Image.asset('assets/brand/wordmark.png', width: wordmark, color: c, semanticLabel: 'MagnaVita'),
+    null => RuvaLogo(size: logo, semanticLabel: 'MagnaVita'),
   };
 
   String label(AppLocalizations l) => switch (this) {
@@ -265,7 +265,7 @@ class StatsCard extends StatelessWidget {
     final h = stats.activeMinutes ~/ 60, m = stats.activeMinutes % 60;
     final poster = layout == ExportLayout.poster;
     final icon = Icon(fitnessIcon(day), size: poster ? 120 : 72, color: style.line);
-    final brand = style.mark(wordmark: poster ? 300 : 130, logo: poster ? 96 : 64);
+    final brand = style.mark(wordmark: poster ? 300 : 130, logo: poster ? 140 : 96);
 
     return SizedBox(
       width: 300,
