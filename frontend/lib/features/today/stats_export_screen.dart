@@ -173,22 +173,16 @@ Future<void> sharePng(GlobalKey key, String name) async {
   );
 }
 
-/// The day on an exported image, as large as its stats: weekday, then date.
+/// The day on an exported image, small above its stats.
 class ExportDate extends StatelessWidget {
   const ExportDate(this.day, {super.key});
   final DateTime day;
 
   @override
   Widget build(BuildContext context) => Text(
-    '${DateFormat('EEEE').format(day)}\n${DateFormat('d MMM y').format(day)}',
+    DateFormat('EEEE · d MMM y').format(day).toUpperCase(),
     textAlign: TextAlign.center,
-    style: const TextStyle(
-      fontFamily: AppFonts.display,
-      fontWeight: FontWeight.w700,
-      fontSize: 34,
-      height: 1.15,
-      color: Colors.white,
-    ),
+    style: const TextStyle(fontFamily: AppFonts.mono, fontSize: 14, letterSpacing: 1.2, color: Colors.white),
   );
 }
 
