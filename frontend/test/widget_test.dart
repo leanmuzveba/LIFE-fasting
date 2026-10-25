@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +35,9 @@ late FakeHealthSource watch;
 /// What the release page reports (null = no newer version).
 AppRelease? latestRelease;
 
+/// The file the fake picker hands to Restore (null = cancelled).
+Uint8List? backupFile;
+
 /// Boots the real app on an in-memory database with a fake clock.
 
 Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = AgeEligibility.adult}) async {
@@ -49,6 +53,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
   steps = FakeStepCounter();
   watch = FakeHealthSource();
   latestRelease = null;
+  backupFile = null;
   final container = ProviderContainer(
     overrides: [
       databaseProvider.overrideWithValue(db),
@@ -62,6 +67,7 @@ Future<FakeClock> pumpApp(WidgetTester tester, {AgeEligibility eligibility = Age
       healthSourceProvider.overrideWithValue(watch),
       updateCheckerProvider.overrideWithValue(FakeUpdateChecker(() => latestRelease)),
       mealPhotoPickerProvider.overrideWithValue((_) async => onePixelPng),
+      backupPickerProvider.overrideWithValue(() async => backupFile),
       // Test-driven ticks instead of a real periodic timer.
       nowProvider.overrideWith((ref) async* {
         yield clock();

@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/data/notification_service.dart';
+import 'package:life_fasting/state/providers.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-import '../widget_test.dart' show notifications, openTimer, pumpApp, tick, quickAdd;
+import '../widget_test.dart' show backupFile, notifications, openTimer, pumpApp, tick, quickAdd;
 
 Future<void> _openSettings(WidgetTester tester) async {
   await tester.tap(find.bySemanticsLabel('Profile').last);
@@ -91,6 +96,38 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Continue'), findsOneWidget);
     expect(notifications.scheduled, isEmpty);
+  });
+
+  testWidgets('restore a backup brings data back; other files change nothing', (tester) async {
+    databaseFactory = databaseFactoryFfiNoIsolate; // Backup's scratch copies
+    final clock = await pumpApp(tester);
+    await quickAdd(tester, 'Start fast');
+    await tick(tester, clock, const Duration(hours: 1));
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    final backup = await tester.runAsync(() => c.read(sessionActionsProvider).backup());
+    await tester.runAsync(() => c.read(sessionRepositoryProvider).deleteAll()); // the "new phone"
+    c.invalidate(activeSessionProvider);
+    await _openSettings(tester);
+
+    backupFile = utf8.encode('holiday photo');
+    await _tapRow(tester, 'Restore from a backup');
+    await tester.runAsync(() async {
+      await tester.tap(find.text('Choose file'));
+      await Future<void>.delayed(const Duration(milliseconds: 300));
+    });
+    await tester.pumpAndSettle();
+    expect(find.textContaining('isn’t a MagnaVita backup'), findsOneWidget);
+    expect(await tester.runAsync(() => c.read(activeSessionProvider.future)), isNull);
+
+    backupFile = backup;
+    await _tapRow(tester, 'Restore from a backup');
+    await tester.runAsync(() async {
+      await tester.tap(find.text('Choose file'));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
+    });
+    await tester.pumpAndSettle();
+    expect(find.text('Your data is back'), findsOneWidget);
+    expect(await tester.runAsync(() => c.read(activeSessionProvider.future)), isNotNull);
   });
 
   testWidgets('profile name is optional; member-since date is shown', (tester) async {

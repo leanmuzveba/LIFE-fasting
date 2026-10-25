@@ -631,6 +631,66 @@ abstract class AppLocalizations {
   /// **'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts; meal photos are sent to Google Gemini.'**
   String get settingsDataStaysSub;
 
+  /// No description provided for @settingsBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Back up my data'**
+  String get settingsBackup;
+
+  /// No description provided for @settingsBackupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Save a backup file to Google Drive, email or Files. Your Gemini key isn’t included.'**
+  String get settingsBackupSub;
+
+  /// No description provided for @settingsRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a backup'**
+  String get settingsRestore;
+
+  /// No description provided for @settingsRestoreSub.
+  ///
+  /// In en, this message translates to:
+  /// **'On a new phone, pick the backup file to bring everything back'**
+  String get settingsRestoreSub;
+
+  /// No description provided for @restoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from a backup?'**
+  String get restoreTitle;
+
+  /// No description provided for @restoreBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything on this phone is replaced by what’s in the backup file.'**
+  String get restoreBody;
+
+  /// No description provided for @restorePick.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose file'**
+  String get restorePick;
+
+  /// No description provided for @restoreDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is back'**
+  String get restoreDone;
+
+  /// No description provided for @restoreNotBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'That file isn’t a MagnaVita backup, or it’s from a newer version. Nothing was changed.'**
+  String get restoreNotBackup;
+
+  /// No description provided for @backupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t make the backup. Nothing was changed.'**
+  String get backupFailed;
+
   /// No description provided for @settingsDeleteAll.
   ///
   /// In en, this message translates to:

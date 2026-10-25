@@ -3,10 +3,12 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/activity_repository.dart';
+import '../data/backup.dart';
 import '../data/body_repository.dart';
 import '../data/food_facts_api.dart';
 import '../data/food_repository.dart';
@@ -205,6 +207,22 @@ class SessionActions {
     await _ref.read(myRecipeRepositoryProvider).deleteAll();
     await _ref.read(settingsRepositoryProvider).clear();
     await _ref.read(notificationServiceProvider).cancelAll();
+    _reloadAll();
+  }
+
+  /// The backup file's bytes, to save somewhere safe.
+  Future<Uint8List> backup() => Backup.create(_ref.read(databaseProvider));
+
+  /// Replaces this phone's data with a backup; false when the file isn't one.
+  Future<bool> restore(Uint8List bytes) async {
+    if (!await Backup.restore(_ref.read(databaseProvider), bytes)) return false;
+    _reloadAll();
+    syncNotifications(_ref);
+    return true;
+  }
+
+  /// Every screen re-reads the database.
+  void _reloadAll() {
     _ref.invalidate(historyProvider);
     _ref.invalidate(activeSessionProvider);
     _ref.invalidate(hydrationDayProvider);
@@ -224,10 +242,20 @@ class SessionActions {
     _ref.invalidate(recipeSuggestionsProvider);
     _ref.invalidate(notificationPrefsProvider);
     _ref.invalidate(settingsProvider);
+    _ref.invalidate(stepGoalProvider);
+    _ref.invalidate(daySummariesProvider);
+    _ref.invalidate(dayStatsProvider);
+    _ref.invalidate(watchStatusProvider);
   }
 }
 
 final sessionActionsProvider = Provider(SessionActions.new);
+
+/// Picks a backup file to restore; null when cancelled (tests swap it).
+final backupPickerProvider = Provider<Future<Uint8List?> Function()>(
+  (ref) =>
+      () async => (await FilePicker.pickFile())?.readAsBytes(),
+);
 
 final notificationServiceProvider = Provider((ref) => NotificationService());
 

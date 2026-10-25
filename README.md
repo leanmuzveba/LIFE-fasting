@@ -14,7 +14,7 @@ A calm, offline-first personal wellness app for Android (iOS project included), 
 - **Activity and water**: workouts, steps (the higher of the phone pedometer and Health Connect/watch), and water entries with reminders
 - **Profile**: optional height, weigh-ins with a chart, body measurements, and BMI with its caveats. Weight tracking can be switched off, and under-18s get no adult classifications or fasting plans
 - **History**: fasting sessions in a list and calendar, plus food, activity, water and measurement history
-- **Privacy**: all data stays on the phone in SQLite. You can delete everything from Settings
+- **Privacy and backup**: all data stays on the phone in SQLite. Settings → Back up my data shares a backup file (without your Gemini key) to save in Drive, email or Files; Restore from a backup brings it back on a new phone. You can also delete everything
 
 ## Repository structure
 

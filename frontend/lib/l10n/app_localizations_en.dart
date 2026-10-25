@@ -318,6 +318,37 @@ class AppLocalizationsEn extends AppLocalizations {
       'Nothing is uploaded or shared. There are no accounts or ads. Recipe search sends only ingredient names and search words to TheMealDB; barcode scans send only the barcode number to Open Food Facts; meal photos are sent to Google Gemini.';
 
   @override
+  String get settingsBackup => 'Back up my data';
+
+  @override
+  String get settingsBackupSub => 'Save a backup file to Google Drive, email or Files. Your Gemini key isn’t included.';
+
+  @override
+  String get settingsRestore => 'Restore from a backup';
+
+  @override
+  String get settingsRestoreSub => 'On a new phone, pick the backup file to bring everything back';
+
+  @override
+  String get restoreTitle => 'Restore from a backup?';
+
+  @override
+  String get restoreBody => 'Everything on this phone is replaced by what’s in the backup file.';
+
+  @override
+  String get restorePick => 'Choose file';
+
+  @override
+  String get restoreDone => 'Your data is back';
+
+  @override
+  String get restoreNotBackup =>
+      'That file isn’t a MagnaVita backup, or it’s from a newer version. Nothing was changed.';
+
+  @override
+  String get backupFailed => 'Couldn’t make the backup. Nothing was changed.';
+
+  @override
   String get settingsDeleteAll => 'Delete all data';
 
   @override

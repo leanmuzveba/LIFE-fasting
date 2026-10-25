@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../data/update_checker.dart' show appVersion;
 import '../../core/format.dart';
@@ -221,6 +222,18 @@ class SettingsScreen extends ConsumerWidget {
           children: [
             _NavRow(icon: Icons.lock_outline, title: l.settingsDataStays, subtitle: l.settingsDataStaysSub),
             _NavRow(
+              icon: Icons.cloud_upload_outlined,
+              title: l.settingsBackup,
+              subtitle: l.settingsBackupSub,
+              onTap: () => _backup(context, ref),
+            ),
+            _NavRow(
+              icon: Icons.settings_backup_restore,
+              title: l.settingsRestore,
+              subtitle: l.settingsRestoreSub,
+              onTap: () => _confirmRestore(context, ref),
+            ),
+            _NavRow(
               icon: Icons.delete_outline,
               title: l.settingsDeleteAll,
               subtitle: l.settingsDeleteAllSub,
@@ -307,6 +320,51 @@ class SettingsScreen extends ConsumerWidget {
       children: [
         Semantics(header: true, child: Text(title, style: AppText.title.copyWith(fontSize: 19))),
         Text(body, style: AppText.body),
+      ],
+    ),
+  );
+
+  Future<void> _backup(BuildContext context, WidgetRef ref) async {
+    final day = DateFormat('yyyy-MM-dd').format(ref.read(clockProvider)());
+    try {
+      final bytes = await ref.read(sessionActionsProvider).backup();
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile.fromData(bytes, mimeType: 'application/octet-stream', name: 'magnavita-backup-$day.db')],
+        ),
+      );
+    } on Exception {
+      if (context.mounted) showRuvaSnack(context, context.l10n.backupFailed);
+    }
+  }
+
+  Future<void> _confirmRestore(BuildContext context, WidgetRef ref) => showAppSheet<void>(
+    context,
+    (ctx) => Gap16Column(
+      children: [
+        Semantics(header: true, child: Text(ctx.l10n.restoreTitle, style: AppText.title)),
+        Text(ctx.l10n.restoreBody, style: AppText.body.copyWith(color: AppColors.textSecondary)),
+        Row(
+          children: [
+            Expanded(
+              child: PillButton(label: ctx.l10n.cancel, outlined: true, onPressed: () => Navigator.pop(ctx)),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: PillButton(
+                label: ctx.l10n.restorePick,
+                onPressed: () async {
+                  Navigator.pop(ctx);
+                  final l = context.l10n;
+                  final bytes = await ref.read(backupPickerProvider)();
+                  if (bytes == null) return;
+                  final ok = await ref.read(sessionActionsProvider).restore(bytes).catchError((_) => false);
+                  if (context.mounted) showRuvaSnack(context, ok ? l.restoreDone : l.restoreNotBackup);
+                },
+              ),
+            ),
+          ],
+        ),
       ],
     ),
   );
