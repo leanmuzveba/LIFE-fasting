@@ -1019,12 +1019,10 @@ final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) as
   final activities = await ref.watch(activityDayProvider(day).future);
   var kcal = activities.where((a) => !a.fromWatch).fold(0.0, (s, a) => s + (a.kcal ?? 0));
   int? steps, active;
-  double? km;
   if (await ref.watch(watchStatusProvider.future) == WatchStatus.linked) {
     final hc = ref.watch(healthSourceProvider);
     try {
       steps = await hc.steps(day, to);
-      km = await hc.distanceKm(day, to);
       kcal += await hc.caloriesBurned(day, to) ?? 0;
       active = await hc.activeMinutes(day, to);
     } catch (_) {}
@@ -1032,11 +1030,11 @@ final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) as
   if (day == DateTime(now.year, now.month, now.day)) {
     // Same as the home card: the higher of watch and phone.
     final phone = ref.read(todayStepsProvider).value?.steps;
-    if (phone != null && phone > (steps ?? -1)) (steps, km) = (phone, null);
+    if (phone != null && phone > (steps ?? -1)) steps = phone;
   }
-  if ((km == null || km == 0) && steps != null && steps > 0) {
-    km = stepsToKm(steps, heightCm: (await ref.watch(bodyProfileProvider.future)).heightCm);
-  }
+  // From steps, exactly like the home card: the watch app's distance records
+  // cover only part of the day's walking.
+  final km = steps == null ? null : stepsToKm(steps, heightCm: (await ref.watch(bodyProfileProvider.future)).heightCm);
   return DayStats(steps: steps, km: km, kcal: kcal, activeMinutes: active ?? totalMinutes(activities));
 });
 

@@ -107,13 +107,6 @@ class HealthSource {
     return last;
   }
 
-  /// Distance walked/run (km) from your watch app, or null when none.
-  Future<double?> distanceKm(DateTime from, DateTime to) async {
-    await _init();
-    final m = await _total(HealthDataType.DISTANCE_DELTA, from, to);
-    return m == null ? null : m / 1000;
-  }
-
   /// Active time (minutes) from your watch app's step records: each record
   /// counts its length, capped at steps ÷ 60 so slow or sparse steps don't
   /// count as a full minute. Null when there are none.

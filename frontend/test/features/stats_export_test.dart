@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:life_fasting/domain/activity.dart';
+import 'package:life_fasting/domain/steps.dart';
 import 'package:life_fasting/features/today/stats_export_screen.dart';
 import 'package:life_fasting/state/providers.dart';
 
@@ -15,7 +16,6 @@ void main() {
     watch
       ..granted = true
       ..stepCount = 8432
-      ..km = 6.1
       ..calories = 380
       ..active = 57;
     await c.read(settingsRepositoryProvider).setFlag('watch.linked', true);
@@ -38,9 +38,9 @@ void main() {
 
     await tester.tap(find.byTooltip("Export the day's stats"));
     await tester.pumpAndSettle();
-    expect(find.text('Sunday\n4 Oct 2026'), findsOneWidget);
+    expect(find.text('SUNDAY · 4 OCT 2026'), findsOneWidget);
     expect(find.text('8,432'), findsOneWidget);
-    expect(find.text('6.10 km'), findsOneWidget);
+    expect(find.text('${stepsToKm(8432).toStringAsFixed(2)} km'), findsOneWidget); // as on the home card
     expect(find.text('420 kcal'), findsOneWidget); // watch 380 + logged 40
     expect(find.text('Active time'), findsOneWidget);
     expect(find.text('57 min'), findsOneWidget); // the watch's figure, not the logged 45
@@ -57,7 +57,7 @@ void main() {
 
     await tester.tap(find.byTooltip('Previous day'));
     await tester.pumpAndSettle();
-    expect(find.text('Saturday\n3 Oct 2026'), findsOneWidget);
+    expect(find.text('SATURDAY · 3 OCT 2026'), findsOneWidget);
     expect(find.text('420 kcal'), findsNothing); // nothing logged that day; the fake watch still says 380
     expect(find.text('380 kcal'), findsOneWidget);
   });

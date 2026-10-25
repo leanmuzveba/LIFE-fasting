@@ -222,12 +222,9 @@ class FakeHealthSource extends HealthSource {
   Future<DateTime?> lastStepsAt(DateTime from, DateTime to) async => syncedAt;
   @override
   Future<double?> caloriesBurned(DateTime from, DateTime to) async => calories;
-  double? km;
   int? active;
   @override
   Future<int?> activeMinutes(DateTime from, DateTime to) async => active;
-  @override
-  Future<double?> distanceKm(DateTime from, DateTime to) async => km;
   @override
   Future<List<WatchWorkout>> workouts(DateTime from, DateTime to) async => workoutList;
   List<SourceTotals> apps = const [];
