@@ -962,6 +962,17 @@ final watchStepsTodayProvider = FutureProvider<int?>((ref) async {
   }
 });
 
+/// When the watch's steps last reached Health Connect today, or null.
+final watchStepsSyncedProvider = FutureProvider<DateTime?>((ref) async {
+  if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return null;
+  final now = ref.read(clockProvider)().toLocal();
+  try {
+    return await ref.watch(healthSourceProvider).lastStepsAt(DateTime(now.year, now.month, now.day), now);
+  } catch (_) {
+    return null;
+  }
+});
+
 /// One day's movement, for the shareable stats image.
 class DayStats {
   const DayStats({this.steps, this.km, this.kcal = 0, this.activeMinutes = 0});
@@ -1061,7 +1072,9 @@ class WatchActions {
     _ref.invalidate(watchCaloriesTodayProvider);
     _ref.invalidate(watchSyncProvider);
     _ref.invalidate(watchStepsTodayProvider);
+    _ref.invalidate(watchStepsSyncedProvider);
     _ref.invalidate(watchBreakdownProvider);
+    _ref.invalidate(dayStatsProvider);
   }
 }
 

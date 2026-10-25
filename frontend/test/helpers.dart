@@ -217,6 +217,9 @@ class FakeHealthSource extends HealthSource {
   Future<bool> connected() async => granted;
   @override
   Future<int?> steps(DateTime from, DateTime to) async => stepCount;
+  DateTime? syncedAt;
+  @override
+  Future<DateTime?> lastStepsAt(DateTime from, DateTime to) async => syncedAt;
   @override
   Future<double?> caloriesBurned(DateTime from, DateTime to) async => calories;
   double? km;

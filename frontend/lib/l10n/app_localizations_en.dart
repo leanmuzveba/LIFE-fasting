@@ -2385,6 +2385,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStepsWatch => 'watch';
 
   @override
+  String homeWatchSynced(String time) {
+    return 'Watch last synced $time';
+  }
+
+  @override
   String get homeBurnedNone => 'Connected · nothing synced from your watch yet today';
 
   @override

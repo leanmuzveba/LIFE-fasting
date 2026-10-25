@@ -4153,6 +4153,12 @@ abstract class AppLocalizations {
   /// **'watch'**
   String get homeStepsWatch;
 
+  /// No description provided for @homeWatchSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch last synced {time}'**
+  String homeWatchSynced(String time);
+
   /// No description provided for @homeBurnedNone.
   ///
   /// In en, this message translates to:

@@ -186,6 +186,7 @@ class _StepsCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final watchSteps = ref.watch(watchStepsTodayProvider).value;
+    final synced = ref.watch(watchStepsSyncedProvider).value?.toLocal();
     // The watch counts the whole day; the phone sensor only since you opened the app.
     // Show the higher one, so a forgotten watch doesn't freeze the count.
     final phone = ref.watch(todayStepsProvider).value ?? const StepsState();
@@ -293,6 +294,18 @@ class _StepsCard extends ConsumerWidget {
                 ),
               ),
             ),
+          // Mi Fitness syncs in batches: say how fresh the watch's count is.
+          if (synced != null && !state.unavailable && !state.needsPermission) ...[
+            const SizedBox(height: 10),
+            Center(
+              child: Text(
+                l.homeWatchSynced(
+                  formatClock(synced, use24h: ref.watch(settingsProvider).value?.use24HourTime ?? false),
+                ),
+                style: muted,
+              ),
+            ),
+          ],
         ],
       ),
     );

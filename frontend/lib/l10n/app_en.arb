@@ -802,6 +802,8 @@
   "watchPrivacy": "Read-only: MagnaVita never writes to your health data, and nothing leaves this phone. You can revoke access in Health Connect.",
   "activityFromWatch": "From your watch",
   "homeStepsWatch": "watch",
+  "homeWatchSynced": "Watch last synced {time}",
+  "@homeWatchSynced": {"placeholders": {"time": {"type": "String"}}},
   "homeBurnedNone": "Connected · nothing synced from your watch yet today",
   "watchFromApps": "Today in Health Connect, by app",
   "watchNoData": "Nothing from today yet. Open Mi Fitness and let it sync, then tap Refresh.",

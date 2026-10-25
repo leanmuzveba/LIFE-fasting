@@ -57,12 +57,19 @@ void main() {
     expect(find.bySemanticsLabel(RegExp(r'^Calories burned: 312 kcal')), findsOneWidget);
 
     // Steps: the watch's whole-day count replaces the phone sensor's.
-    watch.stepCount = 8421;
     final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    final today = DateTime(2026, 10, 4); // the fake clock's day
+    final sub = c.listen(dayStatsProvider(today), (_, _) {}); // the export screen's numbers
+    await tester.runAsync(() => c.read(dayStatsProvider(today).future));
+    watch.stepCount = 8421;
+    watch.syncedAt = DateTime(2026, 10, 4, 14, 32);
     c.read(watchActionsProvider).refresh();
     await tester.pumpAndSettle();
     expect(find.bySemanticsLabel('Today’s steps: 8,421, 84% of goal'), findsOneWidget);
     expect(find.textContaining('· watch'), findsOneWidget);
+    expect(find.textContaining('Watch last synced 2:32'), findsOneWidget);
+    expect((await tester.runAsync(() => c.read(dayStatsProvider(today).future)))!.steps, 8421);
+    sub.close();
   });
 
   testWidgets('connected but nothing synced yet: the row still shows, saying so', (tester) async {

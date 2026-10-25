@@ -93,6 +93,20 @@ class HealthSource {
     return (await _total(HealthDataType.STEPS, from, to))?.round();
   }
 
+  /// When your watch app's latest step record ends: how fresh the count is.
+  Future<DateTime?> lastStepsAt(DateTime from, DateTime to) async {
+    await _init();
+    final points = _health.removeDuplicates(
+      await _health.getHealthDataFromTypes(types: const [HealthDataType.STEPS], startTime: from, endTime: to),
+    );
+    final id = preferredSource({for (final p in points) p.sourceId: 1});
+    DateTime? last;
+    for (final p in points) {
+      if (p.sourceId == id && (last == null || p.dateTo.isAfter(last))) last = p.dateTo;
+    }
+    return last;
+  }
+
   /// Distance walked/run (km) from your watch app, or null when none.
   Future<double?> distanceKm(DateTime from, DateTime to) async {
     await _init();
