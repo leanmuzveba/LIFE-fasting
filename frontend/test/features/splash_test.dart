@@ -22,7 +22,23 @@ int _leaves(WidgetTester tester) => tester
     .where((i) => RegExp(r'/leaf_\w+\.png$').hasMatch((i.image as AssetImage).assetName))
     .length;
 
+double _nameOpacity(WidgetTester tester) => tester
+    .widget<Opacity>(
+      find.ancestor(of: find.image(const AssetImage('assets/brand/wordmark.png')), matching: find.byType(Opacity)),
+    )
+    .opacity;
+
 void main() {
+  testWidgets('MagnaVita fades in under the logo as it completes', (tester) async {
+    await tester.pumpWidget(_app());
+    await tester.pump();
+    expect(_nameOpacity(tester), 0);
+    await tester.pump(const Duration(milliseconds: 1000)); // mid-fade
+    expect(_nameOpacity(tester), inExclusiveRange(0, 1));
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(_nameOpacity(tester), 1);
+  });
+
   testWidgets('the logo builds up: the two leaves appear in order', (tester) async {
     await tester.pumpWidget(_app());
     await tester.pump();

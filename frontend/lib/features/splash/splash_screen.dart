@@ -8,7 +8,7 @@ import '../../core/theme/tokens.dart';
 /// Animated MagnaVita splash, timed like the original RUVA splash video (1.5 s,
 /// cream background): the forest swoosh draws outward from its middle, the
 /// two lime leaves pop in one by one and the head dot pulses until the logo
-/// completes at ~1.2 s. If loading takes
+/// completes at ~1.2 s, as the MagnaVita name fades up beneath it. If loading takes
 /// longer, the head keeps a gentle heartbeat. Static when the system asks for
 /// reduced motion.
 class SplashScreen extends StatefulWidget {
@@ -56,12 +56,30 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         label: context.l10n.splashLoading,
         excludeSemantics: true,
         child: Center(
-          child: SizedBox.square(
-            dimension: size,
-            child: AnimatedBuilder(
-              animation: Listenable.merge([_intro, _beat]),
-              builder: (_, _) => AnimatedLogo(t: _intro.value * 1.2, beat: _beat.isAnimating ? _beat.value : null),
-            ),
+          child: AnimatedBuilder(
+            animation: Listenable.merge([_intro, _beat]),
+            builder: (_, _) {
+              final t = _intro.value * 1.2;
+              // The name fades up under the logo as it completes.
+              final name = Curves.easeOut.transform(((t - 0.85) / 0.35).clamp(0.0, 1.0));
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox.square(
+                    dimension: size,
+                    child: AnimatedLogo(t: t, beat: _beat.isAnimating ? _beat.value : null),
+                  ),
+                  SizedBox(height: size * 0.12),
+                  Opacity(
+                    opacity: name,
+                    child: Transform.translate(
+                      offset: Offset(0, (1 - name) * 12),
+                      child: Image.asset('assets/brand/wordmark.png', width: size * 1.2, color: AppColors.primary),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
