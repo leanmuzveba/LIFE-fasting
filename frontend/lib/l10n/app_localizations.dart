@@ -1003,12 +1003,6 @@ abstract class AppLocalizations {
   /// **'Nothing logged for {meal} on this day.'**
   String mealExportEmpty(String meal);
 
-  /// No description provided for @mealExportMore.
-  ///
-  /// In en, this message translates to:
-  /// **'+ {count} more'**
-  String mealExportMore(int count);
-
   /// No description provided for @previousDay.
   ///
   /// In en, this message translates to:

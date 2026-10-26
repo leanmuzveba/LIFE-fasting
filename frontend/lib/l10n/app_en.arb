@@ -192,8 +192,6 @@
   "mealExportTooltip": "Export a meal's nutrition",
   "mealExportEmpty": "Nothing logged for {meal} on this day.",
   "@mealExportEmpty": {"placeholders": {"meal": {"type": "String"}}},
-  "mealExportMore": "+ {count} more",
-  "@mealExportMore": {"placeholders": {"count": {"type": "int"}}},
   "previousDay": "Previous day",
   "nextDay": "Next day",
   "today": "Today",

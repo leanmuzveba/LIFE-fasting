@@ -10,7 +10,7 @@ import '../../state/providers.dart';
 import '../today/stats_export_screen.dart' show DayNav, ExportDate, ExportStyle, sharePng;
 import 'food_labels.dart';
 
-/// One meal's calories, macros and foods in white on a transparent PNG. Any
+/// One meal's calories and macros in white on a transparent PNG. Any
 /// day can be picked.
 class MealExportScreen extends ConsumerStatefulWidget {
   const MealExportScreen({super.key, required this.day});
@@ -128,7 +128,6 @@ class MealCard extends StatelessWidget {
       color: white,
     );
     String grams(double v) => v < 10 ? '${v.toStringAsFixed(1)} g' : '${v.round()} g';
-    const shown = 6;
 
     return SizedBox(
       width: 300,
@@ -157,19 +156,6 @@ class MealCard extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           Icon(foodIcon(day, meal), size: 56, color: style.line),
-          const SizedBox(height: 14),
-          for (final e in entries.take(shown))
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                [e.name, if (e.nutrients[Nutrient.energy] case final k?) '${k.round()} kcal'].join(' · '),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: label,
-              ),
-            ),
-          if (entries.length > shown) Text(l.mealExportMore(entries.length - shown), style: label),
           const SizedBox(height: 22),
           style.mark(wordmark: 130, logo: 96),
         ],

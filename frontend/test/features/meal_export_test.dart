@@ -8,7 +8,7 @@ import 'package:life_fasting/state/providers.dart';
 import '../widget_test.dart' show pumpApp;
 
 void main() {
-  testWidgets('export one meal: calories, macros and foods; meals switch', (tester) async {
+  testWidgets('export one meal: calories and macros; meals switch', (tester) async {
     await pumpApp(tester);
     tester.view.physicalSize = const Size(390, 2400);
     final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
@@ -37,7 +37,7 @@ void main() {
     expect(find.descendant(of: card, matching: find.text('450 kcal')), findsOneWidget);
     expect(find.descendant(of: card, matching: find.text('34 g')), findsOneWidget); // protein
     expect(find.descendant(of: card, matching: find.text('—')), findsNWidgets(2)); // carbs, fibre unknown
-    expect(find.descendant(of: card, matching: find.text('Chicken · 250 kcal')), findsOneWidget);
+    expect(find.descendant(of: card, matching: find.textContaining('Chicken')), findsNothing); // totals only
     expect(
       find.descendant(of: card, matching: find.byIcon(foodIcon(DateTime(2026, 10, 4), Meal.lunch))),
       findsOneWidget,

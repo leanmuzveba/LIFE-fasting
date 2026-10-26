@@ -540,11 +540,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String mealExportMore(int count) {
-    return '+ $count more';
-  }
-
-  @override
   String get previousDay => 'Previous day';
 
   @override
