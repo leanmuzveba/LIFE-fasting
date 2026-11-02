@@ -320,6 +320,7 @@ IconData activityIcon(ActivityType t) => switch (t) {
   ActivityType.walk => Icons.directions_walk,
   ActivityType.run => Icons.directions_run,
   ActivityType.cycle => Icons.directions_bike,
+  ActivityType.swim => Icons.pool,
   ActivityType.strength => Icons.fitness_center,
   ActivityType.yoga => Icons.self_improvement,
   ActivityType.other => Icons.more_horiz,
@@ -329,16 +330,20 @@ String activityLabel(AppLocalizations l, ActivityType t) => switch (t) {
   ActivityType.walk => l.activityWalk,
   ActivityType.run => l.activityRun,
   ActivityType.cycle => l.activityCycle,
+  ActivityType.swim => l.activitySwim,
   ActivityType.strength => l.activityStrength,
   ActivityType.yoga => l.activityYoga,
   ActivityType.other => l.activityOther,
 };
 
-String intensityLabel(AppLocalizations l, Intensity i) => switch (i) {
-  Intensity.light => l.intensityLight,
+String intensityLabel(AppLocalizations l, Intensity i, {bool swim = false}) => switch (i) {
+  Intensity.light => swim ? l.intensityLeisurely : l.intensityLight,
   Intensity.moderate => l.intensityModerate,
-  Intensity.heavy => l.intensityHeavy,
+  Intensity.heavy => swim ? l.intensityVigorous : l.intensityHeavy,
 };
+
+/// "25", or "22.86" for a yards pool.
+String _metres(double m) => m.toStringAsFixed(2).replaceFirst(RegExp(r'\.?0+$'), '');
 
 /// The Activity tab: log a workout (with gym exercises) and see what you've
 /// logged or your watch recorded.
@@ -385,7 +390,8 @@ class ActivityCard extends StatelessWidget {
     final a = entry;
     final detail = [
       l.activityMinutes(a.minutes),
-      if (a.intensity != null) intensityLabel(l, a.intensity!).toLowerCase(),
+      if (a.laps != null) l.swimLapsSummary(a.laps!, a.swumM == null ? '?' : _metres(a.swumM!)),
+      if (a.intensity != null) intensityLabel(l, a.intensity!, swim: a.type == ActivityType.swim).toLowerCase(),
       if (a.kcal != null) '${a.kcal!.round()} kcal',
       '${formatShortDay(a.startedAt)} ${formatClock(a.startedAt, use24h: use24h)}',
     ].join(' · ');
@@ -458,13 +464,90 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
   double? _shownEstimate; // what the form shows; saved unless you type your own
   late DateTime? _when = widget.entry?.startedAt.toLocal(); // null = now
   String? _error;
+  // Swims: pool, laps, and time as total minutes or pace per lap.
+  late double? _poolM = widget.entry?.poolM ?? poolLengths.first; // null = custom
+  late final _customPool = TextEditingController();
+  late final _laps = TextEditingController(text: widget.entry?.laps?.toString() ?? '');
+  late final _pace = TextEditingController();
+  bool _byPace = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_poolM != null && !poolLengths.contains(_poolM)) {
+      _customPool.text = _metres(_poolM!);
+      _poolM = null;
+    }
+  }
 
   @override
   void dispose() {
     _notes.dispose();
     _kcal.dispose();
+    _customPool.dispose();
+    _laps.dispose();
+    _pace.dispose();
     super.dispose();
   }
+
+  bool get _swim => _type == ActivityType.swim;
+  int? get _lapCount => int.tryParse(_laps.text.trim());
+  double? get _pool => _poolM ?? double.tryParse(_customPool.text.trim().replaceAll(',', '.'));
+
+  /// Minutes from laps × pace, or null until both are entered.
+  int? get _paceMinutes {
+    final laps = _lapCount, pace = int.tryParse(_pace.text.trim());
+    return laps == null || pace == null || laps <= 0 || pace <= 0 ? null : swimMinutes(laps, pace);
+  }
+
+  int? get _effectiveMinutes => _swim && _byPace ? _paceMinutes : _minutes;
+
+  /// Equal-width outlined chips; tapping one runs its action.
+  Widget _chipRow(List<(String, bool, VoidCallback)> chips) => Row(
+    children: [
+      for (final (i, (label, selected, onTap)) in chips.indexed) ...[
+        if (i > 0) const SizedBox(width: 8),
+        Expanded(
+          child: RuvaChip(
+            label: label,
+            selected: selected,
+            outlined: true,
+            dense: true,
+            onTap: () => setState(() {
+              onTap();
+              _error = null;
+            }),
+          ),
+        ),
+      ],
+    ],
+  );
+
+  List<Widget> _swimFields(AppLocalizations l) => [
+    const SizedBox(height: 18),
+    MonoLabel(l.swimPool),
+    const SizedBox(height: 10),
+    _chipRow([
+      for (final m in poolLengths) (m == 22.86 ? '25 yd' : '${_metres(m)} m', _poolM == m, () => _poolM = m),
+      (l.swimPoolCustom, _poolM == null, () => _poolM = null),
+    ]),
+    if (_poolM == null) ...[
+      const SizedBox(height: 10),
+      RuvaTextField(
+        controller: _customPool,
+        label: l.swimPoolCustomField,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        onChanged: (_) => setState(() {}),
+      ),
+    ],
+    const SizedBox(height: 18),
+    RuvaTextField(
+      controller: _laps,
+      label: l.swimLaps,
+      keyboardType: TextInputType.number,
+      onChanged: (_) => setState(() => _error = null),
+    ),
+  ];
 
   Future<void> _pickWhen() async {
     final now = ref.read(clockProvider)();
@@ -481,13 +564,21 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
 
   Future<void> _save() async {
     final l = context.l10n;
+    final minutes = _effectiveMinutes;
+    if (minutes == null) {
+      setState(() => _error = l.swimNeedPace);
+      return;
+    }
     final now = ref.read(clockProvider)().toUtc();
     final e = widget.entry;
+    final laps = _swim ? _lapCount : null;
     final entry = ActivityEntry(
       id: e?.id,
       type: _type,
       startedAt: (_when ?? now).toUtc(),
-      minutes: _minutes,
+      minutes: minutes,
+      laps: laps,
+      poolM: laps == null ? null : _pool,
       intensity: _intensity,
       notes: _notes.text,
       createdAt: e?.createdAt ?? now,
@@ -504,10 +595,12 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
     if (e != null) {
       Navigator.pop(context);
     } else {
-      showRuvaSnack(context, l.activityLogged(activityLabel(l, _type), _minutes));
+      showRuvaSnack(context, l.activityLogged(activityLabel(l, _type), minutes));
       setState(() {
         _notes.clear();
         _kcal.clear();
+        _laps.clear();
+        _pace.clear();
         _when = null;
         _exercises = const [];
       });
@@ -530,12 +623,21 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
     return w == null || w.isEmpty ? null : w.last.weightKg;
   }
 
+  /// Swims with a full profile: from your own resting energy (Mifflin-St Jeor).
+  double? _personalSwimKcal(int minutes) {
+    final p = ref.watch(bodyProfileProvider).value;
+    final kg = _weightKg, age = p?.ageOn(ref.read(clockProvider)());
+    if (!_swim || kg == null || p?.heightCm == null || age == null || p?.sex == null) return null;
+    return swimKcal(_intensity, minutes, weightKg: kg, heightCm: p!.heightCm!, age: age, sex: p.sex!);
+  }
+
   /// MET estimate; a watch workout keeps the watch's own figure.
   double? _estimate() {
     final e = widget.entry;
     if (e != null && e.fromWatch) return e.kcal;
-    final kg = _weightKg;
-    return kg == null ? null : activityKcal(_type, _intensity, _minutes, kg);
+    final kg = _weightKg, minutes = _effectiveMinutes;
+    if (kg == null || minutes == null) return null;
+    return _personalSwimKcal(minutes) ?? activityKcal(_type, _intensity, minutes, kg);
   }
 
   @override
@@ -557,12 +659,12 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
         ),
         const SizedBox(height: 14),
         GridView.count(
-          crossAxisCount: 3,
+          crossAxisCount: 4,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
-          childAspectRatio: 1.25,
+          childAspectRatio: 1,
           children: [
             for (final t in ActivityType.values)
               Semantics(
@@ -599,17 +701,35 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
               ),
           ],
         ),
+        if (_swim) ..._swimFields(l),
         const SizedBox(height: 18),
-        MonoLabel(l.activityDuration),
+        MonoLabel(_swim ? l.swimTime : l.activityDuration),
         const SizedBox(height: 10),
-        ValueStepper(
-          large: true,
-          label: l.activityMinutes(_minutes),
-          minusTooltip: l.decreaseMinute,
-          plusTooltip: l.increaseMinute,
-          onMinus: _minutes > minActivityMinutes ? () => setState(() => _minutes--) : null,
-          onPlus: _minutes < maxActivityMinutes ? () => setState(() => _minutes++) : null,
-        ),
+        if (_swim) ...[
+          _chipRow([(l.swimByMinutes, !_byPace, () => _byPace = false), (l.swimByPace, _byPace, () => _byPace = true)]),
+          const SizedBox(height: 10),
+        ],
+        if (_swim && _byPace) ...[
+          RuvaTextField(
+            controller: _pace,
+            label: l.swimPaceField,
+            keyboardType: TextInputType.number,
+            onChanged: (_) => setState(() => _error = null),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _paceMinutes == null ? l.swimNeedPace : l.swimDurationFromPace(_paceMinutes!),
+            style: AppText.small.copyWith(fontSize: 13.5, color: AppColors.primary),
+          ),
+        ] else
+          ValueStepper(
+            large: true,
+            label: l.activityMinutes(_minutes),
+            minusTooltip: l.decreaseMinute,
+            plusTooltip: l.increaseMinute,
+            onMinus: _minutes > minActivityMinutes ? () => setState(() => _minutes--) : null,
+            onPlus: _minutes < maxActivityMinutes ? () => setState(() => _minutes++) : null,
+          ),
         const SizedBox(height: 18),
         MonoLabel(l.activityIntensity),
         const SizedBox(height: 10),
@@ -619,7 +739,7 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
               if (i > 0) const SizedBox(width: 8),
               Expanded(
                 child: RuvaChip(
-                  label: intensityLabel(l, v),
+                  label: intensityLabel(l, v, swim: _swim),
                   selected: v == _intensity,
                   outlined: true,
                   // Tap again to clear: intensity is optional.
@@ -666,7 +786,9 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
                   widget.entry?.fromWatch ?? false
                       ? l.activityKcalWatch((estimate ?? 0).round())
                       : estimate == null
-                      ? l.activityKcalNeedWeight
+                      ? (kg == null ? l.activityKcalNeedWeight : l.swimNeedPace)
+                      : _personalSwimKcal(_effectiveMinutes!) != null
+                      ? l.activityKcalPersonal(estimate.round())
                       : l.activityKcalEstimate(
                           estimate.round(),
                           kg!.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), ''),

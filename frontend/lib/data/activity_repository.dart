@@ -22,6 +22,8 @@ class ActivityRepository {
     'external_id': e.externalId,
     'kcal': e.kcal,
     'exercises': jsonEncode([for (final x in e.exercises) x.toJson()]),
+    'laps': e.laps,
+    'pool_m': e.poolM,
   };
 
   static ActivityEntry _fromRow(Map<String, Object?> r) => ActivityEntry(
@@ -39,6 +41,8 @@ class ActivityRepository {
       for (final j in jsonDecode((r['exercises'] as String?) ?? '[]') as List)
         Exercise.fromJson(j as Map<String, dynamic>),
     ],
+    laps: r['laps'] as int?,
+    poolM: (r['pool_m'] as num?)?.toDouble(),
   );
 
   Future<ActivityEntry> insert(ActivityEntry e) async =>

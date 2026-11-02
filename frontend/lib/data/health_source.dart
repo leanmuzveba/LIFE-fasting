@@ -196,6 +196,7 @@ ActivityType workoutType(HealthWorkoutActivityType t) {
   if (n.contains('walk') || n.contains('hik')) return ActivityType.walk;
   if (n.contains('run')) return ActivityType.run;
   if (n.contains('bik') || n.contains('cycl')) return ActivityType.cycle;
+  if (n.contains('swim')) return ActivityType.swim;
   if (n.contains('yoga') || n.contains('pilates')) return ActivityType.yoga;
   if (n.contains('strength') || n.contains('weight') || n.contains('functional') || n.contains('core')) {
     return ActivityType.strength;

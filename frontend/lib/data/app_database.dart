@@ -27,6 +27,7 @@ abstract final class AppDatabase {
     _v11RecipePhotos,
     _v12WatchWorkouts,
     _v13Exercises,
+    _v14Swims,
   ];
 
   static int get latestVersion => migrations.length;
@@ -53,6 +54,12 @@ abstract final class AppDatabase {
         onUpgrade: (db, from, _) => run(db, from),
       ),
     );
+  }
+
+  /// Version 14 — swims: laps completed and pool length.
+  static Future<void> _v14Swims(DatabaseExecutor db) async {
+    await db.execute('ALTER TABLE activity_entries ADD COLUMN laps INTEGER');
+    await db.execute('ALTER TABLE activity_entries ADD COLUMN pool_m REAL');
   }
 
   /// Version 13 — gym exercises in an activity (JSON list of name/sets/reps).

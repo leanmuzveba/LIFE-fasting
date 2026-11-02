@@ -637,6 +637,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activityYoga => 'Yoga';
 
   @override
+  String get activitySwim => 'Swim';
+
+  @override
+  String get swimPool => 'Pool length';
+
+  @override
+  String get swimPoolCustom => 'Custom';
+
+  @override
+  String get swimPoolCustomField => 'Pool length in metres';
+
+  @override
+  String get swimLaps => 'Laps completed';
+
+  @override
+  String swimLapsSummary(int laps, String metres) {
+    return '$laps laps · $metres m';
+  }
+
+  @override
+  String get swimTime => 'Swim time';
+
+  @override
+  String get swimByMinutes => 'Total minutes';
+
+  @override
+  String get swimByPace => 'Pace per lap';
+
+  @override
+  String get swimPaceField => 'Average seconds per lap';
+
+  @override
+  String swimDurationFromPace(int minutes) {
+    return '≈ $minutes min in the water';
+  }
+
+  @override
+  String get swimNeedPace => 'Enter your laps and pace per lap to work out the time.';
+
+  @override
+  String get intensityLeisurely => 'Leisurely';
+
+  @override
+  String get intensityVigorous => 'Vigorous';
+
+  @override
+  String activityKcalPersonal(int kcal) {
+    return '≈ $kcal kcal burned (est.) · from your weight, height, age and sex';
+  }
+
+  @override
   String get activityOther => 'Other';
 
   @override

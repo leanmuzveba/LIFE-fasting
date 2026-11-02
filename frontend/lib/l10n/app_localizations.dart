@@ -1189,6 +1189,96 @@ abstract class AppLocalizations {
   /// **'Yoga'**
   String get activityYoga;
 
+  /// No description provided for @activitySwim.
+  ///
+  /// In en, this message translates to:
+  /// **'Swim'**
+  String get activitySwim;
+
+  /// No description provided for @swimPool.
+  ///
+  /// In en, this message translates to:
+  /// **'Pool length'**
+  String get swimPool;
+
+  /// No description provided for @swimPoolCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get swimPoolCustom;
+
+  /// No description provided for @swimPoolCustomField.
+  ///
+  /// In en, this message translates to:
+  /// **'Pool length in metres'**
+  String get swimPoolCustomField;
+
+  /// No description provided for @swimLaps.
+  ///
+  /// In en, this message translates to:
+  /// **'Laps completed'**
+  String get swimLaps;
+
+  /// No description provided for @swimLapsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{laps} laps · {metres} m'**
+  String swimLapsSummary(int laps, String metres);
+
+  /// No description provided for @swimTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Swim time'**
+  String get swimTime;
+
+  /// No description provided for @swimByMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'Total minutes'**
+  String get swimByMinutes;
+
+  /// No description provided for @swimByPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Pace per lap'**
+  String get swimByPace;
+
+  /// No description provided for @swimPaceField.
+  ///
+  /// In en, this message translates to:
+  /// **'Average seconds per lap'**
+  String get swimPaceField;
+
+  /// No description provided for @swimDurationFromPace.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {minutes} min in the water'**
+  String swimDurationFromPace(int minutes);
+
+  /// No description provided for @swimNeedPace.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your laps and pace per lap to work out the time.'**
+  String get swimNeedPace;
+
+  /// No description provided for @intensityLeisurely.
+  ///
+  /// In en, this message translates to:
+  /// **'Leisurely'**
+  String get intensityLeisurely;
+
+  /// No description provided for @intensityVigorous.
+  ///
+  /// In en, this message translates to:
+  /// **'Vigorous'**
+  String get intensityVigorous;
+
+  /// No description provided for @activityKcalPersonal.
+  ///
+  /// In en, this message translates to:
+  /// **'≈ {kcal} kcal burned (est.) · from your weight, height, age and sex'**
+  String activityKcalPersonal(int kcal);
+
   /// No description provided for @activityOther.
   ///
   /// In en, this message translates to:
