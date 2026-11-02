@@ -105,6 +105,9 @@ class FakeNotifications extends NotificationService {
       scheduled[NotificationService.monthlyReviewId] = DateTime(2000, 1, 1, 10);
 
   @override
+  Future<void> scheduleRestOver(DateTime at) async => scheduled[NotificationService.restOverId] = at;
+
+  @override
   Future<void> cancel(int id) async => scheduled.remove(id);
 
   @override

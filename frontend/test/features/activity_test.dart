@@ -17,6 +17,9 @@ Future<void> _openActivity(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+/// The exercise sheet's name box (it has the focus).
+final _exerciseName = find.byWidgetPredicate((w) => w is TextField && w.autofocus);
+
 Future<void> _scrollTo(WidgetTester tester, Finder f) async {
   await tester.ensureVisible(f);
   await tester.pumpAndSettle();
@@ -109,7 +112,7 @@ void main() {
     await _scrollTo(tester, find.text('Add exercise'));
     await tester.tap(find.text('Add exercise'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).last, 'cru');
+    await tester.enterText(_exerciseName, 'cru');
     await tester.pump();
     await tester.tap(find.text('Crunches'));
     for (var i = 0; i < 5; i++) {
@@ -121,7 +124,7 @@ void main() {
 
     await tester.tap(find.text('Add exercise'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.byType(TextField).last, 'Leg raises');
+    await tester.enterText(_exerciseName, 'Leg raises');
     await tester.pump();
     await tester.tap(find.byTooltip('1 set less'));
     await tester.tap(find.text('Add'));

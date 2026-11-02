@@ -4429,6 +4429,12 @@ abstract class AppLocalizations {
   /// **'Name, e.g. crunches'**
   String get exerciseName;
 
+  /// No description provided for @exerciseWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight per set ({unit}) · optional'**
+  String exerciseWeight(String unit);
+
   /// No description provided for @exerciseSets.
   ///
   /// In en, this message translates to:
@@ -4446,6 +4452,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'For holds like plank, count seconds as reps.'**
   String get exerciseRepsHint;
+
+  /// No description provided for @notifRestTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest over'**
+  String get notifRestTitle;
+
+  /// No description provided for @notifRestBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Time for your next set.'**
+  String get notifRestBody;
+
+  /// No description provided for @workoutCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength workout'**
+  String get workoutCardTitle;
+
+  /// No description provided for @workoutCardSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Track every set\'s weight and reps, with a rest timer between sets'**
+  String get workoutCardSub;
+
+  /// No description provided for @workoutStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start workout'**
+  String get workoutStart;
+
+  /// No description provided for @workoutInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout in progress · {time}'**
+  String workoutInProgress(String time);
+
+  /// No description provided for @workoutResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume workout'**
+  String get workoutResume;
+
+  /// No description provided for @workoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get workoutTitle;
+
+  /// No description provided for @workoutElapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} · {sets, plural, =1{1 set} other{{sets} sets}} done'**
+  String workoutElapsed(String time, int sets);
+
+  /// No description provided for @workoutFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish workout'**
+  String get workoutFinish;
+
+  /// No description provided for @workoutEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first exercise. Each one starts from what you did last time.'**
+  String get workoutEmpty;
+
+  /// No description provided for @workoutAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise'**
+  String get workoutAddExercise;
+
+  /// No description provided for @workoutDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard workout'**
+  String get workoutDiscard;
+
+  /// No description provided for @workoutDiscardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard this workout?'**
+  String get workoutDiscardTitle;
+
+  /// No description provided for @workoutDiscardBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing from it will be saved.'**
+  String get workoutDiscardBody;
+
+  /// No description provided for @workoutNothingDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick off at least one set to save the workout.'**
+  String get workoutNothingDone;
+
+  /// No description provided for @workoutSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout saved — {minutes} min, {sets, plural, =1{1 set} other{{sets} sets}}'**
+  String workoutSaved(int minutes, int sets);
+
+  /// No description provided for @workoutLastTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Last time: {what}'**
+  String workoutLastTime(String what);
+
+  /// No description provided for @workoutSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get workoutSet;
+
+  /// No description provided for @workoutReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps'**
+  String get workoutReps;
+
+  /// No description provided for @workoutAddSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add set'**
+  String get workoutAddSet;
+
+  /// No description provided for @workoutRemoveSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove set {n}'**
+  String workoutRemoveSet(int n);
+
+  /// No description provided for @workoutRemoveExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name}'**
+  String workoutRemoveExercise(String name);
+
+  /// No description provided for @workoutSetDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Set {n} done'**
+  String workoutSetDone(int n);
+
+  /// No description provided for @workoutSetTodo.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark set {n} done'**
+  String workoutSetTodo(int n);
+
+  /// No description provided for @restTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest'**
+  String get restTitle;
+
+  /// No description provided for @restLess.
+  ///
+  /// In en, this message translates to:
+  /// **'15 seconds less rest'**
+  String get restLess;
+
+  /// No description provided for @restMore.
+  ///
+  /// In en, this message translates to:
+  /// **'15 seconds more rest'**
+  String get restMore;
+
+  /// No description provided for @restSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get restSkip;
+
+  /// No description provided for @pickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an exercise'**
+  String get pickerTitle;
+
+  /// No description provided for @pickerSearch.
+  ///
+  /// In en, this message translates to:
+  /// **'Search exercises'**
+  String get pickerSearch;
+
+  /// No description provided for @pickerYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Your exercises'**
+  String get pickerYours;
+
+  /// No description provided for @pickerAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get pickerAll;
+
+  /// No description provided for @pickerOwn.
+  ///
+  /// In en, this message translates to:
+  /// **'Add “{name}” as your own'**
+  String pickerOwn(String name);
+
+  /// No description provided for @pickerNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises match.'**
+  String get pickerNone;
+
+  /// No description provided for @equipFreeWeights.
+  ///
+  /// In en, this message translates to:
+  /// **'Free weights'**
+  String get equipFreeWeights;
+
+  /// No description provided for @equipMachines.
+  ///
+  /// In en, this message translates to:
+  /// **'Machines'**
+  String get equipMachines;
+
+  /// No description provided for @equipBodyweight.
+  ///
+  /// In en, this message translates to:
+  /// **'Bodyweight'**
+  String get equipBodyweight;
+
+  /// No description provided for @equipOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get equipOther;
 
   /// No description provided for @exerciseFewerSets.
   ///

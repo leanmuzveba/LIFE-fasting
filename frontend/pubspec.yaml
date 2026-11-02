@@ -45,6 +45,7 @@ flutter:
     - assets/brand/
     - assets/brand/splash/
     - assets/foods/
+    - assets/exercises/
   # RUVA brand fonts (SIL OFL; licences in assets/fonts/OFL-*.txt)
   fonts:
     - family: Lexend

@@ -68,19 +68,66 @@ class ActivityEntry {
   );
 }
 
-/// One exercise in a workout: sets × reps (or seconds, for holds like plank).
-class Exercise {
-  const Exercise(this.name, {this.sets = 3, this.reps = 10});
-  final String name;
-  final int sets;
+/// One set: reps (or seconds, for holds like plank) and the weight, if any.
+class SetLog {
+  const SetLog({this.reps = 10, this.kg, this.done = true});
   final int reps;
+  final double? kg;
+  final bool done; // ticked off (an unticked set is still planned)
 
-  Map<String, Object> toJson() => {'name': name, 'sets': sets, 'reps': reps};
-  factory Exercise.fromJson(Map<String, dynamic> j) =>
-      Exercise(j['name'] as String, sets: j['sets'] as int, reps: j['reps'] as int);
+  SetLog copyWith({int? reps, double? Function()? kg, bool? done}) =>
+      SetLog(reps: reps ?? this.reps, kg: kg != null ? kg() : this.kg, done: done ?? this.done);
+
+  List<Object?> toJson() => [reps, kg, if (!done) 0];
+  factory SetLog.fromJson(List<dynamic> j) =>
+      SetLog(reps: j[0] as int, kg: (j[1] as num?)?.toDouble(), done: j.length < 3 || j[2] != 0);
+}
+
+/// One exercise in a workout: its sets, and the library entry it came from.
+class Exercise {
+  Exercise(this.name, {int sets = 3, int reps = 10, double? kg, this.libraryId})
+    : log = List.filled(sets, SetLog(reps: reps, kg: kg));
+  const Exercise.logged(this.name, this.log, {this.libraryId});
+  final String name;
+  final String? libraryId; // free-exercise-db id, when picked from the library
+  final List<SetLog> log;
+
+  int get sets => log.length;
+
+  Exercise withLog(List<SetLog> log) => Exercise.logged(name, log, libraryId: libraryId);
+
+  Map<String, Object> toJson() => {
+    'name': name,
+    'id': ?libraryId,
+    'log': [for (final s in log) s.toJson()],
+  };
+
+  /// Reads both this format and the original {name, sets, reps}.
+  factory Exercise.fromJson(Map<String, dynamic> j) => j['log'] == null
+      ? Exercise(j['name'] as String, sets: j['sets'] as int, reps: j['reps'] as int)
+      : Exercise.logged(j['name'] as String, [
+          for (final s in j['log'] as List) SetLog.fromJson(s as List),
+        ], libraryId: j['id'] as String?);
+
+  /// "Bench press 3 × 10 · 60 kg", or each set when they differ.
+  String describe({bool imperial = false}) {
+    String load(double? kg) => kg == null ? '' : formatLoad(kg, imperial: imperial);
+    final first = log.firstOrNull;
+    if (first == null) return name;
+    if (log.every((s) => s.reps == first.reps && s.kg == first.kg)) {
+      return '$name ${log.length} × ${first.reps}${first.kg == null ? '' : ' · ${load(first.kg)}'}';
+    }
+    return '$name ${log.map((s) => s.kg == null ? '${s.reps}' : '${load(s.kg)} × ${s.reps}').join(', ')}';
+  }
 
   @override
-  String toString() => '$name $sets × $reps';
+  String toString() => describe();
+}
+
+/// "60 kg" or "135 lb", without a trailing ".0".
+String formatLoad(double kg, {bool imperial = false}) {
+  final v = imperial ? kg / 0.45359237 : kg;
+  return '${v.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '')} ${imperial ? 'lb' : 'kg'}';
 }
 
 /// Suggestions when naming an exercise; ones you've used before come first.

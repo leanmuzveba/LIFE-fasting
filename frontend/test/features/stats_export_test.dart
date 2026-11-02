@@ -30,7 +30,7 @@ void main() {
             kcal: 40,
             createdAt: t,
             updatedAt: t,
-            exercises: const [Exercise('Crunches', sets: 3, reps: 15)],
+            exercises: [Exercise('Crunches', sets: 3, reps: 15)],
           ),
         );
     c.invalidate(watchStatusProvider);

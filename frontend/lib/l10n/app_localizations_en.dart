@@ -2543,6 +2543,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exerciseName => 'Name, e.g. crunches';
 
   @override
+  String exerciseWeight(String unit) {
+    return 'Weight per set ($unit) · optional';
+  }
+
+  @override
   String exerciseSets(int n) {
     String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n sets', one: '1 set');
     return '$_temp0';
@@ -2555,6 +2560,143 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exerciseRepsHint => 'For holds like plank, count seconds as reps.';
+
+  @override
+  String get notifRestTitle => 'Rest over';
+
+  @override
+  String get notifRestBody => 'Time for your next set.';
+
+  @override
+  String get workoutCardTitle => 'Strength workout';
+
+  @override
+  String get workoutCardSub => 'Track every set\'s weight and reps, with a rest timer between sets';
+
+  @override
+  String get workoutStart => 'Start workout';
+
+  @override
+  String workoutInProgress(String time) {
+    return 'Workout in progress · $time';
+  }
+
+  @override
+  String get workoutResume => 'Resume workout';
+
+  @override
+  String get workoutTitle => 'Workout';
+
+  @override
+  String workoutElapsed(String time, int sets) {
+    String _temp0 = intl.Intl.pluralLogic(sets, locale: localeName, other: '$sets sets', one: '1 set');
+    return '$time · $_temp0 done';
+  }
+
+  @override
+  String get workoutFinish => 'Finish workout';
+
+  @override
+  String get workoutEmpty => 'Add your first exercise. Each one starts from what you did last time.';
+
+  @override
+  String get workoutAddExercise => 'Add exercise';
+
+  @override
+  String get workoutDiscard => 'Discard workout';
+
+  @override
+  String get workoutDiscardTitle => 'Discard this workout?';
+
+  @override
+  String get workoutDiscardBody => 'Nothing from it will be saved.';
+
+  @override
+  String get workoutNothingDone => 'Tick off at least one set to save the workout.';
+
+  @override
+  String workoutSaved(int minutes, int sets) {
+    String _temp0 = intl.Intl.pluralLogic(sets, locale: localeName, other: '$sets sets', one: '1 set');
+    return 'Workout saved — $minutes min, $_temp0';
+  }
+
+  @override
+  String workoutLastTime(String what) {
+    return 'Last time: $what';
+  }
+
+  @override
+  String get workoutSet => 'Set';
+
+  @override
+  String get workoutReps => 'Reps';
+
+  @override
+  String get workoutAddSet => 'Add set';
+
+  @override
+  String workoutRemoveSet(int n) {
+    return 'Remove set $n';
+  }
+
+  @override
+  String workoutRemoveExercise(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String workoutSetDone(int n) {
+    return 'Set $n done';
+  }
+
+  @override
+  String workoutSetTodo(int n) {
+    return 'Mark set $n done';
+  }
+
+  @override
+  String get restTitle => 'Rest';
+
+  @override
+  String get restLess => '15 seconds less rest';
+
+  @override
+  String get restMore => '15 seconds more rest';
+
+  @override
+  String get restSkip => 'Skip';
+
+  @override
+  String get pickerTitle => 'Add an exercise';
+
+  @override
+  String get pickerSearch => 'Search exercises';
+
+  @override
+  String get pickerYours => 'Your exercises';
+
+  @override
+  String get pickerAll => 'All';
+
+  @override
+  String pickerOwn(String name) {
+    return 'Add “$name” as your own';
+  }
+
+  @override
+  String get pickerNone => 'No exercises match.';
+
+  @override
+  String get equipFreeWeights => 'Free weights';
+
+  @override
+  String get equipMachines => 'Machines';
+
+  @override
+  String get equipBodyweight => 'Bodyweight';
+
+  @override
+  String get equipOther => 'Other';
 
   @override
   String get exerciseFewerSets => '1 set less';

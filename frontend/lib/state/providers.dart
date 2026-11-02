@@ -36,6 +36,7 @@ import '../domain/meal_estimate.dart';
 import '../domain/recipe.dart';
 import '../domain/settings.dart';
 import '../domain/steps.dart';
+import '../domain/workout.dart';
 
 /// Opened in main() and injected with an override.
 final databaseProvider = Provider<Database>((ref) => throw UnimplementedError('override databaseProvider'));
@@ -423,6 +424,145 @@ class ActivityActions {
 }
 
 final activityActionsProvider = Provider(ActivityActions.new);
+
+// --- Strength workouts --------------------------------------------------------
+
+/// The bundled exercise library, A–Z.
+final exerciseLibraryProvider = FutureProvider<List<LibraryExercise>>((ref) async {
+  final list = jsonDecode(await rootBundle.loadString('assets/exercises/exercises.json')) as List;
+  return [for (final j in list) LibraryExercise.fromJson(j as Map<String, dynamic>)]
+    ..sort((a, b) => a.name.compareTo(b.name));
+});
+
+/// Every exercise you've logged, by [exerciseKey], newest session first.
+final exerciseHistoryProvider = FutureProvider<Map<String, List<(DateTime, Exercise)>>>((ref) async {
+  ref.watch(recentActivitiesProvider); // recompute when activities change
+  final history = <String, List<(DateTime, Exercise)>>{};
+  for (final a in (await ref.watch(activityRepositoryProvider).all()).reversed) {
+    for (final x in a.exercises) {
+      (history[exerciseKey(x)] ??= []).add((a.startedAt, x));
+    }
+  }
+  return history;
+});
+
+/// Rest between sets, in seconds (you change it from the rest timer).
+final restSecondsProvider = FutureProvider<int>(
+  (ref) async =>
+      int.tryParse(await ref.watch(settingsRepositoryProvider).value('workout.rest') ?? '') ?? defaultRestSeconds,
+);
+
+/// The strength workout in progress (null = none), saved after every change.
+class WorkoutNotifier extends AsyncNotifier<Workout?> {
+  static const _key = 'workout.current';
+
+  @override
+  Future<Workout?> build() async {
+    final json = await ref.watch(settingsRepositoryProvider).value(_key);
+    return json == null ? null : Workout.fromJson(jsonDecode(json) as Map<String, dynamic>);
+  }
+
+  DateTime _now() => ref.read(clockProvider)().toUtc();
+
+  Future<void> _set(Workout? w) async {
+    state = AsyncData(w);
+    await ref.read(settingsRepositoryProvider).setValue(_key, w == null ? null : jsonEncode(w.toJson()));
+  }
+
+  Future<void> _edit(Workout Function(Workout) change) async {
+    final w = await future;
+    if (w != null) await _set(change(w));
+  }
+
+  Future<void> _editSets(int i, List<SetLog> Function(List<SetLog>) change) => _edit(
+    (w) => w.copyWith(exercises: [...w.exercises]..[i] = w.exercises[i].withLog(change([...w.exercises[i].log]))),
+  );
+
+  Future<void> start() async {
+    if (await future != null) return;
+    await _set(Workout(startedAt: _now()));
+    unawaited(ref.read(notificationServiceProvider).requestPermission()); // for the rest timer
+  }
+
+  /// Adds an exercise, starting from what you did last time (or 3 × 10).
+  Future<void> addExercise(String name, {String? libraryId}) async {
+    final fresh = Exercise.logged(name, const [], libraryId: libraryId);
+    final last = (await ref.read(exerciseHistoryProvider.future))[exerciseKey(fresh)]?.first.$2;
+    final log = [for (final s in last?.log ?? List.filled(3, const SetLog())) s.copyWith(done: false)];
+    await _edit((w) => w.copyWith(exercises: [...w.exercises, fresh.withLog(log)]));
+  }
+
+  Future<void> removeExercise(int i) => _edit((w) => w.copyWith(exercises: [...w.exercises]..removeAt(i)));
+
+  Future<void> updateSet(int i, int j, SetLog s) => _editSets(i, (log) => log..[j] = s);
+
+  Future<void> addSet(int i) =>
+      _editSets(i, (log) => log..add((log.lastOrNull ?? const SetLog()).copyWith(done: false)));
+
+  Future<void> removeSet(int i, int j) => _editSets(i, (log) => log..removeAt(j));
+
+  /// Ticks a set on or off; ticking one on starts the rest timer.
+  Future<void> toggleDone(int i, int j) async {
+    final w = await future;
+    if (w == null) return;
+    final done = !w.exercises[i].log[j].done;
+    await _editSets(i, (log) => log..[j] = log[j].copyWith(done: done));
+    if (done) await _rest(await ref.read(restSecondsProvider.future));
+  }
+
+  Future<void> _rest(int seconds) async {
+    final until = _now().add(Duration(seconds: seconds));
+    await _edit((w) => w.copyWith(restUntil: () => until));
+    await ref.read(notificationServiceProvider).scheduleRestOver(until);
+  }
+
+  /// Longer or shorter rest: for this rest and the ones after it.
+  Future<void> adjustRest(int deltaSeconds) async {
+    final seconds = ((await ref.read(restSecondsProvider.future)) + deltaSeconds).clamp(minRestSeconds, maxRestSeconds);
+    await ref.read(settingsRepositoryProvider).setValue('workout.rest', '$seconds');
+    ref.invalidate(restSecondsProvider);
+    final until = (await future)?.restUntil;
+    if (until != null && until.isAfter(_now())) {
+      final next = until.add(Duration(seconds: deltaSeconds));
+      await _edit((w) => w.copyWith(restUntil: () => next));
+      await ref.read(notificationServiceProvider).scheduleRestOver(next);
+    }
+  }
+
+  Future<void> skipRest() async {
+    await ref.read(notificationServiceProvider).cancel(NotificationService.restOverId);
+    await _edit((w) => w.copyWith(restUntil: () => null));
+  }
+
+  /// Saves what you did as a strength activity; null when nothing was ticked.
+  Future<ActivityEntry?> finish() async {
+    final w = await future;
+    if (w == null || w.completed.isEmpty) return null;
+    final now = _now();
+    final minutes = now.difference(w.startedAt).inMinutes.clamp(minActivityMinutes, maxActivityMinutes);
+    final weighIns = await ref.read(weighInsProvider.future);
+    final kg = (await ref.read(bodyProfileProvider.future)).trackWeight ? weighIns.lastOrNull?.weightKg : null;
+    final entry = ActivityEntry(
+      type: ActivityType.strength,
+      startedAt: w.startedAt,
+      minutes: minutes,
+      kcal: kg == null ? null : activityKcal(ActivityType.strength, null, minutes, kg),
+      exercises: w.completed,
+      createdAt: now,
+      updatedAt: now,
+    );
+    if (!await ref.read(activityActionsProvider).save(entry)) return null;
+    await discard();
+    return entry;
+  }
+
+  Future<void> discard() async {
+    await ref.read(notificationServiceProvider).cancel(NotificationService.restOverId);
+    await _set(null);
+  }
+}
+
+final workoutProvider = AsyncNotifierProvider<WorkoutNotifier, Workout?>(WorkoutNotifier.new);
 
 // --- History (PRD v1.2 §10) -------------------------------------------------
 

@@ -42,6 +42,14 @@ class SettingsRepository {
   Future<void> setFlag(String name, bool on) =>
       _db.insert('settings', {'key': name, 'value': on ? '1' : '0'}, conflictAlgorithm: ConflictAlgorithm.replace);
 
+  /// Any stored text value, e.g. the workout in progress (null = none).
+  Future<String?> value(String key) async =>
+      (await _db.query('settings', where: 'key = ?', whereArgs: [key])).firstOrNull?['value'] as String?;
+
+  Future<void> setValue(String key, String? value) => value == null
+      ? _db.delete('settings', where: 'key = ?', whereArgs: [key])
+      : _db.insert('settings', {'key': key, 'value': value}, conflictAlgorithm: ConflictAlgorithm.replace);
+
   Future<int?> stepGoal() async => int.tryParse(
     '${(await _db.query('settings', where: 'key = ?', whereArgs: ['steps.goal'])).firstOrNull?['value']}',
   );

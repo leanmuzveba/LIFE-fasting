@@ -16,6 +16,7 @@ class NotificationService {
   /// Water reminders use ids 100.. (one per slot in [waterReminderHours]).
   static const waterReminderBaseId = 100;
   static const monthlyReviewId = 200;
+  static const restOverId = 300;
 
   final _plugin = FlutterLocalNotificationsPlugin();
 
@@ -138,6 +139,31 @@ class NotificationService {
       matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime,
       title: _l.appName,
       body: _l.notifReviewBody,
+    );
+  }
+
+  /// "Rest over" between sets, so it reaches you with the phone in your pocket.
+  // ponytail: inexact, so Android may hold it a little in deep sleep; exact
+  // alarms need an extra permission. The workout screen also vibrates on time.
+  Future<void> scheduleRestOver(DateTime at) async {
+    await _init();
+    await _plugin.cancel(id: restOverId);
+    if (!at.isAfter(DateTime.now())) return;
+    await _plugin.zonedSchedule(
+      id: restOverId,
+      scheduledDate: tz.TZDateTime.from(at.toUtc(), tz.UTC),
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'rest_timer',
+          'Rest timer',
+          channelDescription: 'Tells you when your rest between sets is over',
+          importance: Importance.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      title: _l.notifRestTitle,
+      body: _l.notifRestBody,
     );
   }
 

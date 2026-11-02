@@ -1,0 +1,3 @@
+free-exercise-db by yuhonas, https://github.com/yuhonas/free-exercise-db
+Released into the public domain (The Unlicense). Trimmed to the fields MagnaVita uses.
+Photos are loaded from the same repository when online.

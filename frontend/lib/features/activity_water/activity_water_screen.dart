@@ -11,9 +11,11 @@ import '../../core/widgets/sheet.dart';
 import '../../domain/activity.dart';
 import '../../domain/hydration.dart';
 import '../../domain/settings.dart';
+import '../../domain/workout.dart';
 import '../../state/providers.dart';
 import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
+import '../workout/workout_screen.dart';
 
 /// Water (MagnaVita design): today's water against a personal goal with
 /// quick-adds. Opened from Home.
@@ -367,6 +369,8 @@ class ActivityScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 20),
+        const _WorkoutCard(),
+        const SizedBox(height: 14),
         const RuvaCard(padding: EdgeInsets.all(18), child: ActivityForm()),
         const SizedBox(height: 26),
         MonoLabel(l.activityRecent),
@@ -378,16 +382,64 @@ class ActivityScreen extends ConsumerWidget {
   }
 }
 
+/// Start (or get back to) a strength workout.
+class _WorkoutCard extends ConsumerWidget {
+  const _WorkoutCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final w = ref.watch(workoutProvider).value;
+    final now = w == null ? null : ref.watch(nowProvider).value;
+    return ForestCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.fitness_center, color: AppColors.accent),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  w == null || now == null
+                      ? l.workoutCardTitle
+                      : l.workoutInProgress(formatClockDuration(now.difference(w.startedAt))),
+                  style: AppText.title.copyWith(color: AppColors.white, fontSize: 18),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(l.workoutCardSub, style: AppText.small.copyWith(color: AppColors.white.withValues(alpha: 0.8))),
+          const SizedBox(height: 14),
+          PrimaryButton(
+            light: true,
+            label: w == null ? l.workoutStart : l.workoutResume,
+            onPressed: () async {
+              await ref.read(workoutProvider.notifier).start();
+              if (context.mounted) {
+                await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const WorkoutScreen()));
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// One activity row; tap to edit or delete.
-class ActivityCard extends StatelessWidget {
+class ActivityCard extends ConsumerWidget {
   const ActivityCard({super.key, required this.entry, required this.use24h});
   final ActivityEntry entry;
   final bool use24h;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final a = entry;
+    final imperial = ref.watch(settingsProvider).value?.units == UnitSystem.imperial;
+    final exercises = [for (final x in a.exercises) x.describe(imperial: imperial)];
     final detail = [
       l.activityMinutes(a.minutes),
       if (a.laps != null) l.swimLapsSummary(a.laps!, a.swumM == null ? '?' : _metres(a.swumM!)),
@@ -402,7 +454,7 @@ class ActivityCard extends StatelessWidget {
         container: true,
         label:
             '${activityLabel(l, a.type)}, $detail${a.fromWatch ? ', ${l.activityFromWatch}' : ''}'
-            '${a.exercises.isEmpty ? '' : '. ${a.exercises.join(', ')}'}. ${l.edit}',
+            '${exercises.isEmpty ? '' : '. ${exercises.join(', ')}'}. ${l.edit}',
         excludeSemantics: true,
         child: Row(
           children: [
@@ -430,8 +482,8 @@ class ActivityCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                  if (a.exercises.isNotEmpty)
-                    Text(a.exercises.join(' · '), style: AppText.small.copyWith(color: AppColors.primary)),
+                  if (exercises.isNotEmpty)
+                    Text(exercises.join(' · '), style: AppText.small.copyWith(color: AppColors.primary)),
                   if (a.notes.isNotEmpty)
                     Text(a.notes, maxLines: 1, overflow: TextOverflow.ellipsis, style: AppText.small),
                 ],
@@ -612,8 +664,19 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
       for (final a in ref.read(recentActivitiesProvider).value ?? const <ActivityEntry>[])
         for (final x in a.exercises) x.name,
     ];
-    final x = await showAppSheet<Exercise>(context, (_) => _ExerciseSheet(suggestions: {...used, ...commonExercises}));
-    if (x != null) setState(() => _exercises = [..._exercises, x]);
+    final library = ref.read(exerciseLibraryProvider).value ?? const <LibraryExercise>[];
+    final imperial = ref.read(settingsProvider).value?.units == UnitSystem.imperial;
+    final x = await showAppSheet<Exercise>(
+      context,
+      (_) => _ExerciseSheet(
+        suggestions: {...used, ...commonExercises, for (final e in library) e.name},
+        imperial: imperial,
+      ),
+    );
+    if (x == null) return;
+    // Linked to the library when the name matches, so its history adds up.
+    final id = library.where((e) => e.name.toLowerCase() == x.name.toLowerCase()).firstOrNull?.id;
+    setState(() => _exercises = [..._exercises, Exercise.logged(x.name, x.log, libraryId: id)]);
   }
 
   /// Latest weigh-in (null when none or weight tracking is off).
@@ -843,8 +906,9 @@ class _ActivityFormState extends ConsumerState<ActivityForm> {
 
 /// Name an exercise (suggestions filter as you type), then sets and reps.
 class _ExerciseSheet extends StatefulWidget {
-  const _ExerciseSheet({required this.suggestions});
+  const _ExerciseSheet({required this.suggestions, required this.imperial});
   final Set<String> suggestions;
+  final bool imperial;
 
   @override
   State<_ExerciseSheet> createState() => _ExerciseSheetState();
@@ -852,11 +916,13 @@ class _ExerciseSheet extends StatefulWidget {
 
 class _ExerciseSheetState extends State<_ExerciseSheet> {
   final _name = TextEditingController();
+  final _weight = TextEditingController();
   int _sets = 3, _reps = 10;
 
   @override
   void dispose() {
     _name.dispose();
+    _weight.dispose();
     super.dispose();
   }
 
@@ -899,11 +965,20 @@ class _ExerciseSheetState extends State<_ExerciseSheet> {
           onPlus: _reps < 300 ? () => setState(() => _reps += _reps >= 20 ? 5 : 1) : null, // 5s past 20 (plank holds)
         ),
         Text(l.exerciseRepsHint, style: AppText.small),
+        RuvaTextField(
+          controller: _weight,
+          label: l.exerciseWeight(widget.imperial ? 'lb' : 'kg'),
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        ),
         PrimaryButton(
           label: l.exerciseAdd,
           onPressed: q.isEmpty
               ? null
-              : () => Navigator.pop(context, Exercise(_name.text.trim(), sets: _sets, reps: _reps)),
+              : () {
+                  final w = double.tryParse(_weight.text.trim().replaceAll(',', '.'));
+                  final kg = w == null || w <= 0 ? null : (widget.imperial ? w * 0.45359237 : w);
+                  Navigator.pop(context, Exercise(_name.text.trim(), sets: _sets, reps: _reps, kg: kg));
+                },
         ),
       ],
     );
