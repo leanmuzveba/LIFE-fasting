@@ -74,7 +74,15 @@ def main():
   <p class="small">Open the downloaded file and tap <b>Update</b>. Your data stays on your phone.</p>
 </main></body></html>
 ''')
-    run('npx', '--yes', 'vercel', 'deploy', 'release_site', '--prod', '--yes')
+    # The first deploy of a session often fails for no stated reason; a retry works.
+    for attempt in range(3):
+        try:
+            run('npx', '--yes', 'vercel', 'deploy', 'release_site', '--prod', '--yes')
+            break
+        except subprocess.CalledProcessError:
+            if attempt == 2:
+                raise
+            print('Deploy failed, trying again...')
     print(f'Published {version} (build {build}): {URL}')
 
 
