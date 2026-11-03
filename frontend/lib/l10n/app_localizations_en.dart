@@ -2718,6 +2718,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String get equipOther => 'Other';
 
   @override
+  String get libraryTitle => 'Exercise library';
+
+  @override
+  String get libraryBrowse => 'Browse the exercise library';
+
+  @override
+  String exerciseAbout(String name) {
+    return 'How to do $name';
+  }
+
+  @override
+  String get exerciseAddToWorkout => 'Add to workout';
+
+  @override
+  String get exerciseYours => 'Your history';
+
+  @override
+  String get exerciseNoHistory => 'You haven\'t logged this yet. Your best sets will show here.';
+
+  @override
+  String exerciseHeaviest(String set) {
+    return 'Heaviest set: $set';
+  }
+
+  @override
+  String exerciseBest1rm(String load, String set) {
+    return 'Best estimated 1-rep max: $load (from $set)';
+  }
+
+  @override
+  String get exerciseMuscles => 'Muscles';
+
+  @override
+  String exerciseAlsoWorks(String muscles) {
+    return 'Also works: $muscles';
+  }
+
+  @override
+  String get exerciseHow => 'How to do it';
+
+  @override
+  String exercisePhotos(String name) {
+    return 'Photos showing how to do $name';
+  }
+
+  @override
+  String get exercisePhotosOffline => 'Photos load when you\'re online.';
+
+  @override
+  String get exerciseSource => 'Exercises from free-exercise-db (public domain).';
+
+  @override
   String get exerciseFewerSets => '1 set less';
 
   @override

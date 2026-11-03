@@ -4723,6 +4723,90 @@ abstract class AppLocalizations {
   /// **'Other'**
   String get equipOther;
 
+  /// No description provided for @libraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise library'**
+  String get libraryTitle;
+
+  /// No description provided for @libraryBrowse.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the exercise library'**
+  String get libraryBrowse;
+
+  /// No description provided for @exerciseAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'How to do {name}'**
+  String exerciseAbout(String name);
+
+  /// No description provided for @exerciseAddToWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to workout'**
+  String get exerciseAddToWorkout;
+
+  /// No description provided for @exerciseYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Your history'**
+  String get exerciseYours;
+
+  /// No description provided for @exerciseNoHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t logged this yet. Your best sets will show here.'**
+  String get exerciseNoHistory;
+
+  /// No description provided for @exerciseHeaviest.
+  ///
+  /// In en, this message translates to:
+  /// **'Heaviest set: {set}'**
+  String exerciseHeaviest(String set);
+
+  /// No description provided for @exerciseBest1rm.
+  ///
+  /// In en, this message translates to:
+  /// **'Best estimated 1-rep max: {load} (from {set})'**
+  String exerciseBest1rm(String load, String set);
+
+  /// No description provided for @exerciseMuscles.
+  ///
+  /// In en, this message translates to:
+  /// **'Muscles'**
+  String get exerciseMuscles;
+
+  /// No description provided for @exerciseAlsoWorks.
+  ///
+  /// In en, this message translates to:
+  /// **'Also works: {muscles}'**
+  String exerciseAlsoWorks(String muscles);
+
+  /// No description provided for @exerciseHow.
+  ///
+  /// In en, this message translates to:
+  /// **'How to do it'**
+  String get exerciseHow;
+
+  /// No description provided for @exercisePhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos showing how to do {name}'**
+  String exercisePhotos(String name);
+
+  /// No description provided for @exercisePhotosOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Photos load when you\'re online.'**
+  String get exercisePhotosOffline;
+
+  /// No description provided for @exerciseSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises from free-exercise-db (public domain).'**
+  String get exerciseSource;
+
   /// No description provided for @exerciseFewerSets.
   ///
   /// In en, this message translates to:

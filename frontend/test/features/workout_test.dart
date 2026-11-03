@@ -12,6 +12,7 @@ import 'package:life_fasting/state/providers.dart';
 import '../widget_test.dart' show notifications, pumpApp, tick;
 
 const _bench = 'Barbell Bench Press - Medium Grip';
+const _benchId = 'Barbell_Bench_Press_-_Medium_Grip';
 
 Future<void> _addBench(WidgetTester tester) async {
   await tester.tap(find.text('Add exercise'));
@@ -106,5 +107,77 @@ void main() {
     expect(find.text('Last time: $_bench 2 × 10 · 60 kg'), findsOneWidget);
     expect(tester.widget<TextField>(find.byType(TextField).at(0)).controller!.text, '60');
     expect(find.byTooltip('Mark set 3 done'), findsNothing, reason: 'two sets, like last time');
+  });
+
+  test('personal bests: heaviest set, and the best estimated 1-rep max', () {
+    final pb = personalBests(const [
+      Exercise.logged('Squat', [SetLog(reps: 5, kg: 100), SetLog(reps: 12, kg: 90)]),
+      Exercise.logged('Squat', [SetLog(reps: 1, kg: 120, done: false), SetLog(reps: 2, kg: 100)]),
+    ]);
+    expect((pb.heaviest!.kg, pb.heaviest!.reps), (100, 5));
+    expect((pb.strongest!.kg, pb.strongest!.reps), (90, 12)); // 126 kg beats 100 × 5's 116.7
+    expect(
+      personalBests(const [
+        Exercise.logged('Plank', [SetLog(reps: 1)]),
+      ]).heaviest,
+      isNull,
+    );
+  });
+
+  testWidgets('the library: browse an exercise, how to do it, your bests; add it from the picker', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 2400);
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    await tester.runAsync(() => c.read(exerciseLibraryProvider.future));
+    final t = DateTime.utc(2026, 10, 2, 17);
+    await c
+        .read(activityRepositoryProvider)
+        .insert(
+          ActivityEntry(
+            type: ActivityType.strength,
+            startedAt: t,
+            minutes: 30,
+            createdAt: t,
+            updatedAt: t,
+            exercises: const [
+              Exercise.logged(_bench, [SetLog(reps: 5, kg: 70), SetLog(reps: 10, kg: 60)], libraryId: _benchId),
+            ],
+          ),
+        );
+    c.invalidate(recentActivitiesProvider);
+    await tester.tap(find.bySemanticsLabel('Activity').last);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Browse the exercise library'));
+    await tester.pumpAndSettle();
+    expect(find.text('Exercise library'), findsOneWidget);
+    expect(find.textContaining('as your own'), findsNothing);
+    await tester.tap(find.text(_bench).first); // under "Your exercises"
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp('^Photos showing how to do $_bench')), findsOneWidget);
+    expect(find.text('Heaviest set: 70 kg × 5'), findsOneWidget);
+    expect(find.text('Best estimated 1-rep max: 81.7 kg (from 70 kg × 5)'), findsOneWidget);
+    expect(find.text('Fri 2 Oct · 70 kg × 5, 60 kg × 10'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('HOW TO DO IT'), 300);
+    expect(find.text('1.'), findsOneWidget);
+    expect(find.text('Add to workout'), findsNothing, reason: 'just browsing');
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Start workout'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Add exercise'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'dumbbell bench press');
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('How to do Dumbbell Bench Press'));
+    await tester.pumpAndSettle();
+    expect(find.text("You haven't logged this yet. Your best sets will show here."), findsOneWidget);
+    await tester.tap(find.text('Add to workout'));
+    await tester.pumpAndSettle();
+    expect((await c.read(workoutProvider.future))!.exercises.single.libraryId, 'Dumbbell_Bench_Press');
+    expect(find.byTooltip('How to do Dumbbell Bench Press'), findsOneWidget); // from the workout, too
   });
 }

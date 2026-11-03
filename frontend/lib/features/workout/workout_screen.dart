@@ -12,6 +12,7 @@ import '../../domain/activity.dart';
 import '../../domain/profile.dart';
 import '../../domain/workout.dart';
 import '../../state/providers.dart';
+import 'exercise_detail.dart';
 import 'exercise_picker.dart';
 
 /// "12:34", or "1:02:03" past an hour.
@@ -171,6 +172,13 @@ class _ExerciseCard extends ConsumerWidget {
           Row(
             children: [
               Expanded(child: Text(exercise.name, style: AppText.cardValue.copyWith(fontSize: 16))),
+              if (ref.watch(exerciseLibraryProvider).value?.where((x) => x.id == exercise.libraryId).firstOrNull
+                  case final x?)
+                IconButton(
+                  tooltip: l.exerciseAbout(exercise.name),
+                  icon: const Icon(Icons.info_outline, size: 20, color: AppColors.primary),
+                  onPressed: () => showExerciseDetail(context, x),
+                ),
               IconButton(
                 tooltip: l.workoutRemoveExercise(exercise.name),
                 icon: const Icon(Icons.close, size: 20, color: AppColors.muted),

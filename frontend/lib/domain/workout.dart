@@ -103,3 +103,15 @@ double oneRepMax(double kg, int reps) => reps <= 1 ? kg : kg * (1 + reps / 30);
 const defaultRestSeconds = 90;
 const minRestSeconds = 15;
 const maxRestSeconds = 600;
+
+/// Your bests over past sessions of one exercise: the heaviest set, and the
+/// set with the highest estimated one-rep max (often a lighter set of more reps).
+({SetLog? heaviest, SetLog? strongest}) personalBests(Iterable<Exercise> sessions) {
+  SetLog? heaviest, strongest;
+  for (final s in sessions.expand((x) => x.log)) {
+    if (s.kg == null || !s.done) continue;
+    if (heaviest == null || s.kg! > heaviest.kg! || (s.kg == heaviest.kg && s.reps > heaviest.reps)) heaviest = s;
+    if (strongest == null || oneRepMax(s.kg!, s.reps) > oneRepMax(strongest.kg!, strongest.reps)) strongest = s;
+  }
+  return (heaviest: heaviest, strongest: strongest);
+}

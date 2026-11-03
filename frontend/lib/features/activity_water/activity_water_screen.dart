@@ -15,6 +15,7 @@ import '../../domain/workout.dart';
 import '../../state/providers.dart';
 import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
+import '../workout/exercise_picker.dart';
 import '../workout/workout_screen.dart';
 
 /// Water (MagnaVita design): today's water against a personal goal with
@@ -421,6 +422,15 @@ class _WorkoutCard extends ConsumerWidget {
                 await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const WorkoutScreen()));
               }
             },
+          ),
+          const SizedBox(height: 4),
+          Center(
+            child: TextButton.icon(
+              style: TextButton.styleFrom(foregroundColor: AppColors.accent),
+              onPressed: () => showExerciseLibrary(context),
+              icon: const Icon(Icons.menu_book_outlined, size: 18),
+              label: Text(l.libraryBrowse),
+            ),
           ),
         ],
       ),

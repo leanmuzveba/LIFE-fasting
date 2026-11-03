@@ -7,6 +7,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/ruva_kit.dart';
 import '../../domain/workout.dart';
 import '../../state/providers.dart';
+import 'exercise_detail.dart';
 
 String equipmentLabel(AppLocalizations l, EquipmentGroup g) => switch (g) {
   EquipmentGroup.freeWeights => l.equipFreeWeights,
@@ -19,7 +20,7 @@ String equipmentLabel(AppLocalizations l, EquipmentGroup g) => switch (g) {
 String exerciseSubtitle(LibraryExercise x) =>
     [if (x.primary.isNotEmpty) x.primary.join(', '), ?x.equipment].join(' · ').capitalised();
 
-extension on String {
+extension Capitalised on String {
   String capitalised() => isEmpty ? this : this[0].toUpperCase() + substring(1);
 }
 
@@ -27,8 +28,13 @@ extension on String {
 Future<(String, String?)?> showExercisePicker(BuildContext context) =>
     Navigator.of(context).push(MaterialPageRoute<(String, String?)>(builder: (_) => const _ExercisePickerScreen()));
 
+/// The library to browse: tap an exercise to see how it's done.
+Future<void> showExerciseLibrary(BuildContext context) =>
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const _ExercisePickerScreen(browse: true)));
+
 class _ExercisePickerScreen extends ConsumerStatefulWidget {
-  const _ExercisePickerScreen();
+  const _ExercisePickerScreen({this.browse = false});
+  final bool browse;
 
   @override
   ConsumerState<_ExercisePickerScreen> createState() => _ExercisePickerScreenState();
@@ -69,13 +75,35 @@ class _ExercisePickerScreenState extends ConsumerState<_ExercisePickerScreen> {
     ];
     final exact = q.isEmpty || yours.any((y) => y.$1.toLowerCase() == q) || rest.any((x) => x.name.toLowerCase() == q);
 
-    Widget tile(String name, String? id, String subtitle) => ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(name, style: AppText.body.copyWith(fontSize: 15, fontWeight: FontWeight.w500)),
-      subtitle: subtitle.isEmpty ? null : Text(subtitle, style: AppText.small),
-      trailing: const Icon(Icons.add_circle_outline, color: AppColors.primary),
-      onTap: () => Navigator.pop(context, (name, id)),
+    void pick(String name, String? id) => Navigator.pop(context, (name, id));
+    void detail(LibraryExercise x) => showExerciseDetail(
+      context,
+      x,
+      onAdd: widget.browse
+          ? null
+          : () {
+              Navigator.pop(context); // the detail page
+              pick(x.name, x.id);
+            },
     );
+    Widget tile(String name, String? id, String subtitle) {
+      final x = byId[id];
+      return ListTile(
+        contentPadding: EdgeInsets.zero,
+        title: Text(name, style: AppText.body.copyWith(fontSize: 15, fontWeight: FontWeight.w500)),
+        subtitle: subtitle.isEmpty ? null : Text(subtitle, style: AppText.small),
+        trailing: widget.browse
+            ? (x == null ? null : const Icon(Icons.chevron_right, color: AppColors.muted))
+            : x == null
+            ? const Icon(Icons.add_circle_outline, color: AppColors.primary)
+            : IconButton(
+                tooltip: l.exerciseAbout(name),
+                icon: const Icon(Icons.info_outline, color: AppColors.primary),
+                onPressed: () => detail(x),
+              ),
+        onTap: widget.browse ? (x == null ? null : () => detail(x)) : () => pick(name, id),
+      );
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -83,7 +111,7 @@ class _ExercisePickerScreenState extends ConsumerState<_ExercisePickerScreen> {
           slivers: [
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              sliver: SliverToBoxAdapter(child: ScreenHeader(title: l.pickerTitle)),
+              sliver: SliverToBoxAdapter(child: ScreenHeader(title: widget.browse ? l.libraryTitle : l.pickerTitle)),
             ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -91,7 +119,7 @@ class _ExercisePickerScreenState extends ConsumerState<_ExercisePickerScreen> {
                 children: [
                   TextField(
                     controller: _search,
-                    autofocus: true,
+                    autofocus: !widget.browse,
                     decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: l.pickerSearch),
                     onChanged: (_) => setState(() {}),
                   ),
@@ -110,7 +138,7 @@ class _ExercisePickerScreenState extends ConsumerState<_ExercisePickerScreen> {
                         ),
                     ],
                   ),
-                  if (!exact) ...[
+                  if (!exact && !widget.browse) ...[
                     const SizedBox(height: 8),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
