@@ -28,7 +28,25 @@ def run(*cmd):
     subprocess.run(cmd, cwd=ROOT, check=True, shell=os.name == 'nt')
 
 
+def deploy():
+    # The first deploy of a session often fails for no stated reason; a retry works.
+    for attempt in range(3):
+        try:
+            run('npx', '--yes', 'vercel', 'deploy', 'release_site', '--prod', '--yes')
+            return
+        except subprocess.CalledProcessError:
+            if attempt == 2:
+                raise
+            print('Deploy failed, trying again...')
+
+
 def main():
+    if sys.argv[1:] == ['--deploy-only']:  # the build is in release_site; only the upload failed
+        deploy()
+        with open(os.path.join(SITE, 'version.json'), encoding='utf-8') as f:
+            v = json.load(f)
+        print(f"Published {v['version']} (build {v['build']}): {URL}")
+        return
     notes = sys.argv[1] if len(sys.argv) > 1 else ''
     if subprocess.run(['git', 'status', '--porcelain', 'lib'], cwd=ROOT, capture_output=True, text=True).stdout.strip():
         sys.exit('Commit your changes first: the build number comes from the commit count.')
@@ -74,15 +92,7 @@ def main():
   <p class="small">Open the downloaded file and tap <b>Update</b>. Your data stays on your phone.</p>
 </main></body></html>
 ''')
-    # The first deploy of a session often fails for no stated reason; a retry works.
-    for attempt in range(3):
-        try:
-            run('npx', '--yes', 'vercel', 'deploy', 'release_site', '--prod', '--yes')
-            break
-        except subprocess.CalledProcessError:
-            if attempt == 2:
-                raise
-            print('Deploy failed, trying again...')
+    deploy()
     print(f'Published {version} (build {build}): {URL}')
 
 
