@@ -13,6 +13,7 @@ import '../../domain/profile.dart';
 import '../../domain/workout.dart';
 import '../../state/providers.dart';
 import 'exercise_picker.dart';
+import 'progress_screen.dart';
 
 /// Opens [x]'s page; with [onAdd], it has an "Add to workout" button.
 Future<void> showExerciseDetail(BuildContext context, LibraryExercise x, {VoidCallback? onAdd}) => Navigator.of(context)
@@ -35,6 +36,7 @@ class ExerciseDetailScreen extends ConsumerWidget {
     final imperial = ref.watch(settingsProvider).value?.units == UnitSystem.imperial;
     final past = ref.watch(exerciseHistoryProvider).value?[x.id] ?? const [];
     final pb = personalBests(past.map((p) => p.$2));
+    final series = oneRepMaxSeries(past);
     String set(SetLog s) => '${formatLoad(s.kg!, imperial: imperial)} × ${s.reps}';
     final body = AppText.body.copyWith(fontSize: 14.5);
     return Scaffold(
@@ -78,6 +80,10 @@ class ExerciseDetailScreen extends ConsumerWidget {
                               l.exerciseBest1rm(formatLoad(oneRepMax(s.kg!, s.reps), imperial: imperial), set(s)),
                               style: body,
                             ),
+                          if (series.length >= 2) ...[
+                            const SizedBox(height: 14),
+                            OneRepMaxChart(series: series, imperial: imperial),
+                          ],
                           if (pb.heaviest != null) const SizedBox(height: 10),
                           for (final (at, e) in past.take(5))
                             Padding(

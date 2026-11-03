@@ -4987,6 +4987,102 @@ abstract class AppLocalizations {
   /// **'Empty workout'**
   String get workoutEmptyStart;
 
+  /// No description provided for @progressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progressTitle;
+
+  /// No description provided for @progressSub.
+  ///
+  /// In en, this message translates to:
+  /// **'From the workouts you\'ve logged'**
+  String get progressSub;
+
+  /// No description provided for @progressEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish a strength workout and your progress shows here.'**
+  String get progressEmpty;
+
+  /// No description provided for @progressThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get progressThisWeek;
+
+  /// No description provided for @progressOfPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} of {target}'**
+  String progressOfPlan(int n, int target);
+
+  /// No description provided for @progressStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get progressStreak;
+
+  /// No description provided for @progressWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'{n, plural, =1{1 week} other{{n} weeks}}'**
+  String progressWeeks(int n);
+
+  /// No description provided for @progressMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get progressMonth;
+
+  /// No description provided for @progressPerWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Workouts per week'**
+  String get progressPerWeek;
+
+  /// No description provided for @progressPerWeekLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Workouts per week, last 8 weeks: {counts}'**
+  String progressPerWeekLabel(String counts);
+
+  /// No description provided for @progressBests.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal bests'**
+  String get progressBests;
+
+  /// No description provided for @progressNoBests.
+  ///
+  /// In en, this message translates to:
+  /// **'Tick off sets in a workout to set your first bests.'**
+  String get progressNoBests;
+
+  /// No description provided for @progressBest1rm.
+  ///
+  /// In en, this message translates to:
+  /// **'Best estimated 1-rep max {load}'**
+  String progressBest1rm(String load);
+
+  /// No description provided for @progressMostReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Most reps in a set: {n}'**
+  String progressMostReps(int n);
+
+  /// No description provided for @progressChart.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated 1-rep max over time'**
+  String get progressChart;
+
+  /// No description provided for @progressChartLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated 1-rep max went from {first} to {last}'**
+  String progressChartLabel(String first, String last);
+
   /// No description provided for @libraryTitle.
   ///
   /// In en, this message translates to:

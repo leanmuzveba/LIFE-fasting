@@ -17,6 +17,7 @@ import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
 import '../workout/exercise_picker.dart';
 import '../workout/plan_screen.dart';
+import '../workout/progress_screen.dart';
 import '../workout/workout_screen.dart';
 
 /// Water (MagnaVita design): today's water against a personal goal with
@@ -451,6 +452,7 @@ class _WorkoutCard extends ConsumerWidget {
             alignment: WrapAlignment.center,
             children: [
               link(Icons.event_note_outlined, plan == null ? l.planMake : l.planYours, () => showPlan(context)),
+              link(Icons.insights_outlined, l.progressTitle, () => showProgress(context)),
               link(Icons.menu_book_outlined, l.libraryBrowse, () => showExerciseLibrary(context)),
               if (upNext) link(Icons.add, l.workoutEmptyStart, openWorkout),
             ],

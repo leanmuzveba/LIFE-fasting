@@ -108,6 +108,50 @@ const defaultRestSeconds = 90;
 const minRestSeconds = 15;
 const maxRestSeconds = 600;
 
+/// Monday 00:00 (local) of [t]'s week.
+DateTime weekStart(DateTime t) {
+  final d = t.toLocal();
+  return DateTime(d.year, d.month, d.day - (d.weekday - 1));
+}
+
+/// Workouts in each of the last [weeks] weeks, oldest first; the last is this week.
+List<int> weeklyCounts(Iterable<DateTime> sessions, DateTime now, {int weeks = 8}) {
+  final thisWeek = weekStart(now);
+  final counts = List.filled(weeks, 0);
+  for (final s in sessions) {
+    // Calendar weeks, counted by date so a clock change doesn't shift a session.
+    final start = weekStart(s);
+    final back =
+        DateTime.utc(
+          thisWeek.year,
+          thisWeek.month,
+          thisWeek.day,
+        ).difference(DateTime.utc(start.year, start.month, start.day)).inDays ~/
+        7;
+    if (back >= 0 && back < weeks) counts[weeks - 1 - back]++;
+  }
+  return counts;
+}
+
+/// Weeks in a row with at least one workout, up to now. This week only
+/// breaks the streak once it's over.
+int weekStreak(List<int> counts) {
+  var i = counts.length - 1;
+  if (i >= 0 && counts[i] == 0) i--;
+  var n = 0;
+  while (i >= 0 && counts[i] > 0) {
+    n++;
+    i--;
+  }
+  return n;
+}
+
+/// The best estimated one-rep max of each session that had weights, oldest first.
+List<(DateTime, double)> oneRepMaxSeries(List<(DateTime, Exercise)> sessions) => [
+  for (final (at, x) in sessions.reversed)
+    if (personalBests([x]).strongest case final s?) (at, oneRepMax(s.kg!, s.reps)),
+];
+
 /// Your bests over past sessions of one exercise: the heaviest set, and the
 /// set with the highest estimated one-rep max (often a lighter set of more reps).
 ({SetLog? heaviest, SetLog? strongest}) personalBests(Iterable<Exercise> sessions) {

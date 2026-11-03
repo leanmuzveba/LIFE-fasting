@@ -2864,6 +2864,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutEmptyStart => 'Empty workout';
 
   @override
+  String get progressTitle => 'Progress';
+
+  @override
+  String get progressSub => 'From the workouts you\'ve logged';
+
+  @override
+  String get progressEmpty => 'Finish a strength workout and your progress shows here.';
+
+  @override
+  String get progressThisWeek => 'This week';
+
+  @override
+  String progressOfPlan(int n, int target) {
+    return '$n of $target';
+  }
+
+  @override
+  String get progressStreak => 'Streak';
+
+  @override
+  String progressWeeks(int n) {
+    String _temp0 = intl.Intl.pluralLogic(n, locale: localeName, other: '$n weeks', one: '1 week');
+    return '$_temp0';
+  }
+
+  @override
+  String get progressMonth => 'Last 30 days';
+
+  @override
+  String get progressPerWeek => 'Workouts per week';
+
+  @override
+  String progressPerWeekLabel(String counts) {
+    return 'Workouts per week, last 8 weeks: $counts';
+  }
+
+  @override
+  String get progressBests => 'Personal bests';
+
+  @override
+  String get progressNoBests => 'Tick off sets in a workout to set your first bests.';
+
+  @override
+  String progressBest1rm(String load) {
+    return 'Best estimated 1-rep max $load';
+  }
+
+  @override
+  String progressMostReps(int n) {
+    return 'Most reps in a set: $n';
+  }
+
+  @override
+  String get progressChart => 'Estimated 1-rep max over time';
+
+  @override
+  String progressChartLabel(String first, String last) {
+    return 'Estimated 1-rep max went from $first to $last';
+  }
+
+  @override
   String get libraryTitle => 'Exercise library';
 
   @override
