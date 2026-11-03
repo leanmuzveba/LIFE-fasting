@@ -73,3 +73,31 @@ int stepsToday(StepBook? book, DateTime now) => book != null && book.day == _day
 
 /// Rough distance from steps; uses height when known (stride ≈ 41.5% of it).
 double stepsToKm(int steps, {double? heightCm}) => steps * (heightCm == null ? 0.75 : heightCm * 0.00415) / 1000;
+
+/// Steps you typed in for a day (say, from your watch's own screen), and the
+/// phone's count at that moment, so steps walked afterwards still add up.
+class ManualSteps {
+  const ManualSteps(this.steps, {this.phoneAt});
+  final int steps;
+  final int? phoneAt;
+
+  Map<String, Object?> toJson() => {'steps': steps, 'phoneAt': phoneAt};
+  factory ManualSteps.fromJson(Map<String, dynamic> j) => ManualSteps(j['steps'] as int, phoneAt: j['phoneAt'] as int?);
+}
+
+/// Where the shown count comes from.
+enum StepSource { phone, watch, edited }
+
+/// The day's steps: the highest of the watch, the phone and your own figure
+/// (plus what the phone has counted since you entered it). So a late watch
+/// sync never pulls the count down, and takes over once it catches up.
+(int, StepSource) shownSteps({int? watch, int? phone, ManualSteps? manual}) {
+  final since = phone != null && manual?.phoneAt != null ? (phone - manual!.phoneAt!).clamp(0, 1 << 30) : 0;
+  final mine = manual == null ? null : manual.steps + since;
+  var best = (phone ?? 0, StepSource.phone);
+  if (watch != null && watch >= best.$1) best = (watch, StepSource.watch);
+  if (mine != null && mine > best.$1) best = (mine, StepSource.edited);
+  return best;
+}
+
+String stepDayKey(DateTime d) => _dayKey(d);

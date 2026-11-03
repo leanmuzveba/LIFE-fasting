@@ -190,8 +190,12 @@ class _StepsCard extends ConsumerWidget {
     // The watch counts the whole day; the phone sensor only since you opened the app.
     // Show the higher one, so a forgotten watch doesn't freeze the count.
     final phone = ref.watch(todayStepsProvider).value ?? const StepsState();
-    final fromWatch = watchSteps != null && watchSteps >= phone.steps;
-    final state = fromWatch ? StepsState(steps: watchSteps) : phone;
+    final now = ref.watch(clockProvider)();
+    final today = DateTime(now.year, now.month, now.day);
+    final manual = ref.watch(manualStepsProvider(today)).value;
+    final phoneOk = !phone.unavailable && !phone.needsPermission;
+    final (count, source) = shownSteps(watch: watchSteps, phone: phoneOk ? phone.steps : null, manual: manual);
+    final state = source == StepSource.phone ? phone : StepsState(steps: count);
     final height = ref.watch(bodyProfileProvider).value?.heightCm;
     final n = NumberFormat.decimalPattern();
     final muted = AppText.small.copyWith(color: onForestMuted, fontSize: 13);
@@ -213,7 +217,8 @@ class _StepsCard extends ConsumerWidget {
                 child: Text(
                   [
                     l.homeKm(stepsToKm(state.steps, heightCm: height).toStringAsFixed(1)),
-                    if (fromWatch) l.homeStepsWatch,
+                    if (source == StepSource.watch) l.homeStepsWatch,
+                    if (source == StepSource.edited) l.homeStepsEdited,
                   ].join(' · '),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -292,6 +297,18 @@ class _StepsCard extends ConsumerWidget {
                     ],
                   ),
                 ),
+              ),
+            ),
+          if (!state.unavailable && !state.needsPermission)
+            Center(
+              child: TextButton.icon(
+                style: TextButton.styleFrom(foregroundColor: AppColors.white, textStyle: muted),
+                onPressed: () => showAppSheet<void>(
+                  context,
+                  (_) => _StepsEditSheet(day: today, current: state.steps, edited: manual != null),
+                ),
+                icon: const Icon(Icons.edit_outlined, size: 15, color: AppColors.accent),
+                label: Text(l.homeStepsEdit),
               ),
             ),
           // Mi Fitness syncs in batches: say how fresh the watch's count is.
@@ -454,6 +471,64 @@ class _MetricRow extends StatelessWidget {
 }
 
 /// Change the daily steps goal (500-step steps).
+/// Type the count your watch shows; the phone keeps adding to it.
+class _StepsEditSheet extends ConsumerStatefulWidget {
+  const _StepsEditSheet({required this.day, required this.current, required this.edited});
+  final DateTime day;
+  final int current;
+  final bool edited;
+
+  @override
+  ConsumerState<_StepsEditSheet> createState() => _StepsEditSheetState();
+}
+
+class _StepsEditSheetState extends ConsumerState<_StepsEditSheet> {
+  late final _steps = TextEditingController(text: '${widget.current}');
+
+  @override
+  void dispose() {
+    _steps.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final value = int.tryParse(_steps.text.replaceAll(RegExp(r'[^0-9]'), ''));
+    return Gap16Column(
+      children: [
+        Semantics(header: true, child: Text(l.stepsEditTitle, style: AppText.title)),
+        Text(l.stepsEditBody, style: AppText.body.copyWith(color: AppColors.textSecondary)),
+        RuvaTextField(
+          controller: _steps,
+          label: l.stepsEditField,
+          keyboardType: TextInputType.number,
+          autofocus: true,
+          bold: true,
+          onChanged: (_) => setState(() {}),
+        ),
+        PrimaryButton(
+          label: l.save,
+          onPressed: value == null || value > 200000
+              ? null
+              : () async {
+                  await setManualSteps(ref, widget.day, value);
+                  if (context.mounted) Navigator.pop(context);
+                },
+        ),
+        if (widget.edited)
+          TextButton(
+            onPressed: () async {
+              await setManualSteps(ref, widget.day, null);
+              if (context.mounted) Navigator.pop(context);
+            },
+            child: Text(l.stepsEditReset),
+          ),
+      ],
+    );
+  }
+}
+
 class _GoalSheet extends ConsumerStatefulWidget {
   const _GoalSheet({required this.goal});
   final int goal;

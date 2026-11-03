@@ -2462,6 +2462,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeStepsWatch => 'watch';
 
   @override
+  String get homeStepsEdited => 'edited';
+
+  @override
+  String get homeStepsEdit => 'Edit steps';
+
+  @override
+  String get stepsEditTitle => 'Today’s steps';
+
+  @override
+  String get stepsEditBody =>
+      'Type the number your watch shows. MagnaVita keeps adding the steps your phone counts after this, and uses your watch’s own count again once it syncs past it.';
+
+  @override
+  String get stepsEditField => 'Steps';
+
+  @override
+  String get stepsEditReset => 'Go back to the automatic count';
+
+  @override
   String homeWatchSynced(String time) {
     return 'Watch last synced $time';
   }

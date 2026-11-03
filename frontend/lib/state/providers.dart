@@ -1130,6 +1130,26 @@ final watchStepsTodayProvider = FutureProvider<int?>((ref) async {
   }
 });
 
+/// Steps you entered yourself for a local day (key: local midnight), or null.
+final manualStepsProvider = FutureProvider.family<ManualSteps?, DateTime>((ref, day) async {
+  final json = await ref.watch(settingsRepositoryProvider).value('steps.manual.${stepDayKey(day)}');
+  return json == null ? null : ManualSteps.fromJson(jsonDecode(json) as Map<String, dynamic>);
+});
+
+/// Saves (or with null, clears) your own step count for [day].
+Future<void> setManualSteps(WidgetRef ref, DateTime day, int? steps) async {
+  final phone = ref.read(todayStepsProvider).value;
+  final phoneAt = phone == null || phone.unavailable || phone.needsPermission ? null : phone.steps;
+  await ref
+      .read(settingsRepositoryProvider)
+      .setValue(
+        'steps.manual.${stepDayKey(day)}',
+        steps == null ? null : jsonEncode(ManualSteps(steps, phoneAt: phoneAt).toJson()),
+      );
+  ref.invalidate(manualStepsProvider(day));
+  ref.invalidate(dayStatsProvider(day));
+}
+
 /// When the watch's steps last reached Health Connect today, or null.
 final watchStepsSyncedProvider = FutureProvider<DateTime?>((ref) async {
   if (await ref.watch(watchStatusProvider.future) != WatchStatus.linked) return null;
@@ -1167,10 +1187,15 @@ final dayStatsProvider = FutureProvider.family<DayStats, DateTime>((ref, day) as
       active = await hc.activeMinutes(day, to);
     } catch (_) {}
   }
+  final manual = await ref.watch(manualStepsProvider(day).future);
   if (day == DateTime(now.year, now.month, now.day)) {
-    // Same as the home card: the higher of watch and phone.
+    // Same as the home card: the highest of watch, phone and your own figure.
     final phone = ref.read(todayStepsProvider).value?.steps;
-    if (phone != null && phone > (steps ?? -1)) steps = phone;
+    if (phone != null || manual != null || steps != null) {
+      steps = shownSteps(watch: steps, phone: phone, manual: manual).$1;
+    }
+  } else if (manual != null && manual.steps > (steps ?? -1)) {
+    steps = manual.steps;
   }
   // From steps, exactly like the home card: the watch app's distance records
   // cover only part of the day's walking.

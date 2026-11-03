@@ -279,6 +279,48 @@ void main() {
     expect(find.bySemanticsLabel('Today’s steps: 3,240, 41% of goal'), findsOneWidget);
   });
 
+  testWidgets('steps: type in what your watch shows; the phone keeps adding, a later sync takes over', (tester) async {
+    await pumpApp(tester);
+    tester.view.physicalSize = const Size(390, 1600);
+    final c = ProviderScope.containerOf(tester.element(find.byType(Scaffold).first));
+    steps.readingsController.add(5000);
+    await tester.pumpAndSettle();
+    steps.readingsController.add(8000); // phone: 3,000 today
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Today’s steps: 3,000, 30% of goal'), findsOneWidget);
+
+    await tester.tap(find.text('Edit steps'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, '9800');
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Today’s steps: 9,800, 98% of goal'), findsOneWidget);
+    expect(find.textContaining('· edited'), findsOneWidget);
+
+    steps.readingsController.add(8200); // 200 more on the phone
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Today’s steps: 10,000, 100% of goal'), findsOneWidget);
+    final today = DateTime(2026, 10, 4);
+    expect((await tester.runAsync(() => c.read(dayStatsProvider(today).future)))!.steps, 10000); // the export too
+
+    // The watch syncs past it: its own count is used again.
+    await c.read(settingsRepositoryProvider).setFlag('watch.linked', true);
+    watch
+      ..granted = true
+      ..stepCount = 12000;
+    c.read(watchActionsProvider).refresh();
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel('Today’s steps: 12,000, 100% of goal'), findsOneWidget);
+    expect(find.textContaining('· watch'), findsOneWidget);
+
+    await tester.tap(find.text('Edit steps'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Go back to the automatic count'));
+    await tester.pumpAndSettle();
+    expect(await c.read(manualStepsProvider(today).future), isNull);
+  });
+
   testWidgets('Home offers an update when a newer build is published', (tester) async {
     await pumpApp(tester);
     expect(find.text('New version available'), findsNothing);

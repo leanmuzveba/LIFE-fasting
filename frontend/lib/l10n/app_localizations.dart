@@ -4297,6 +4297,42 @@ abstract class AppLocalizations {
   /// **'watch'**
   String get homeStepsWatch;
 
+  /// No description provided for @homeStepsEdited.
+  ///
+  /// In en, this message translates to:
+  /// **'edited'**
+  String get homeStepsEdited;
+
+  /// No description provided for @homeStepsEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit steps'**
+  String get homeStepsEdit;
+
+  /// No description provided for @stepsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today’s steps'**
+  String get stepsEditTitle;
+
+  /// No description provided for @stepsEditBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the number your watch shows. MagnaVita keeps adding the steps your phone counts after this, and uses your watch’s own count again once it syncs past it.'**
+  String get stepsEditBody;
+
+  /// No description provided for @stepsEditField.
+  ///
+  /// In en, this message translates to:
+  /// **'Steps'**
+  String get stepsEditField;
+
+  /// No description provided for @stepsEditReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back to the automatic count'**
+  String get stepsEditReset;
+
   /// No description provided for @homeWatchSynced.
   ///
   /// In en, this message translates to:
