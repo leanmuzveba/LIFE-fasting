@@ -16,6 +16,7 @@ import '../../state/providers.dart';
 import '../hydration/hydration_screen.dart';
 import '../ring/fasting_ring.dart';
 import '../workout/exercise_picker.dart';
+import '../workout/plan_screen.dart';
 import '../workout/workout_screen.dart';
 
 /// Water (MagnaVita design): today's water against a personal goal with
@@ -383,7 +384,8 @@ class ActivityScreen extends ConsumerWidget {
   }
 }
 
-/// Start (or get back to) a strength workout.
+/// Start (or get back to) a strength workout: the next day of your plan, or
+/// an empty one. Also the way to your plan, progress and the library.
 class _WorkoutCard extends ConsumerWidget {
   const _WorkoutCard();
 
@@ -391,7 +393,22 @@ class _WorkoutCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final w = ref.watch(workoutProvider).value;
+    final plan = ref.watch(planProvider).value;
     final now = w == null ? null : ref.watch(nowProvider).value;
+    final upNext = w == null && plan != null && plan.days.isNotEmpty;
+    Future<void> openWorkout() async {
+      await ref.read(workoutProvider.notifier).start();
+      if (context.mounted) {
+        await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const WorkoutScreen()));
+      }
+    }
+
+    Widget link(IconData icon, String label, VoidCallback onTap) => TextButton.icon(
+      style: TextButton.styleFrom(foregroundColor: AppColors.accent),
+      onPressed: onTap,
+      icon: Icon(icon, size: 18),
+      label: Text(label),
+    );
     return ForestCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,35 +419,41 @@ class _WorkoutCard extends ConsumerWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  w == null || now == null
-                      ? l.workoutCardTitle
-                      : l.workoutInProgress(formatClockDuration(now.difference(w.startedAt))),
+                  w != null && now != null
+                      ? l.workoutInProgress(formatClockDuration(now.difference(w.startedAt)))
+                      : upNext
+                      ? l.planUpNext(planDayLabel(l, plan, plan.next))
+                      : l.workoutCardTitle,
                   style: AppText.title.copyWith(color: AppColors.white, fontSize: 18),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 6),
-          Text(l.workoutCardSub, style: AppText.small.copyWith(color: AppColors.white.withValues(alpha: 0.8))),
+          Text(
+            upNext ? plan.days[plan.next].exercises.map((x) => x.name).join(' · ') : l.workoutCardSub,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: AppText.small.copyWith(color: AppColors.white.withValues(alpha: 0.8)),
+          ),
           const SizedBox(height: 14),
           PrimaryButton(
             light: true,
-            label: w == null ? l.workoutStart : l.workoutResume,
-            onPressed: () async {
-              await ref.read(workoutProvider.notifier).start();
-              if (context.mounted) {
-                await Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => const WorkoutScreen()));
-              }
-            },
+            label: w != null
+                ? l.workoutResume
+                : upNext
+                ? l.planStartDay(plan.next + 1)
+                : l.workoutStart,
+            onPressed: upNext ? () => startPlanDay(context, ref, plan.next) : openWorkout,
           ),
           const SizedBox(height: 4),
-          Center(
-            child: TextButton.icon(
-              style: TextButton.styleFrom(foregroundColor: AppColors.accent),
-              onPressed: () => showExerciseLibrary(context),
-              icon: const Icon(Icons.menu_book_outlined, size: 18),
-              label: Text(l.libraryBrowse),
-            ),
+          Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              link(Icons.event_note_outlined, plan == null ? l.planMake : l.planYours, () => showPlan(context)),
+              link(Icons.menu_book_outlined, l.libraryBrowse, () => showExerciseLibrary(context)),
+              if (upNext) link(Icons.add, l.workoutEmptyStart, openWorkout),
+            ],
           ),
         ],
       ),

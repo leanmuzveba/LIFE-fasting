@@ -4723,6 +4723,270 @@ abstract class AppLocalizations {
   /// **'Other'**
   String get equipOther;
 
+  /// No description provided for @goalStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Get stronger'**
+  String get goalStrength;
+
+  /// No description provided for @goalMuscle.
+  ///
+  /// In en, this message translates to:
+  /// **'Build muscle'**
+  String get goalMuscle;
+
+  /// No description provided for @goalEndurance.
+  ///
+  /// In en, this message translates to:
+  /// **'Tone and endurance'**
+  String get goalEndurance;
+
+  /// No description provided for @goalFatLoss.
+  ///
+  /// In en, this message translates to:
+  /// **'Lose fat'**
+  String get goalFatLoss;
+
+  /// No description provided for @focusPush.
+  ///
+  /// In en, this message translates to:
+  /// **'Push: chest, shoulders, triceps'**
+  String get focusPush;
+
+  /// No description provided for @focusPull.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull: back, biceps'**
+  String get focusPull;
+
+  /// No description provided for @focusLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Legs'**
+  String get focusLegs;
+
+  /// No description provided for @focusChestTriceps.
+  ///
+  /// In en, this message translates to:
+  /// **'Chest & triceps'**
+  String get focusChestTriceps;
+
+  /// No description provided for @focusBackBiceps.
+  ///
+  /// In en, this message translates to:
+  /// **'Back & biceps'**
+  String get focusBackBiceps;
+
+  /// No description provided for @focusShouldersCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoulders & core'**
+  String get focusShouldersCore;
+
+  /// No description provided for @focusChest.
+  ///
+  /// In en, this message translates to:
+  /// **'Chest'**
+  String get focusChest;
+
+  /// No description provided for @focusBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get focusBack;
+
+  /// No description provided for @focusShoulders.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoulders'**
+  String get focusShoulders;
+
+  /// No description provided for @focusArmsCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Arms & core'**
+  String get focusArmsCore;
+
+  /// No description provided for @planDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {n} · {focus}'**
+  String planDay(int n, String focus);
+
+  /// No description provided for @planTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan'**
+  String get planTitle;
+
+  /// No description provided for @planSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{goal} · {days} days a week · {rest} s rest between sets'**
+  String planSummary(String goal, int days, int rest);
+
+  /// No description provided for @planEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap an exercise to change its sets and reps or swap it.'**
+  String get planEditHint;
+
+  /// No description provided for @planChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change my plan'**
+  String get planChange;
+
+  /// No description provided for @planNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get planNext;
+
+  /// No description provided for @planStartDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Start day {n}'**
+  String planStartDay(int n);
+
+  /// No description provided for @planSets.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} sets'**
+  String planSets(int n);
+
+  /// No description provided for @planReps.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} reps'**
+  String planReps(int n);
+
+  /// No description provided for @planSwapFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Swap for'**
+  String get planSwapFor;
+
+  /// No description provided for @planRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from the plan'**
+  String get planRemove;
+
+  /// No description provided for @planSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a workout plan'**
+  String get planSetupTitle;
+
+  /// No description provided for @planSetupSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Each day works different muscles'**
+  String get planSetupSub;
+
+  /// No description provided for @planGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Your goal'**
+  String get planGoal;
+
+  /// No description provided for @planDaysPerWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Days a week'**
+  String get planDaysPerWeek;
+
+  /// No description provided for @planDaysChip.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} days'**
+  String planDaysChip(int n);
+
+  /// No description provided for @planLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience'**
+  String get planLevel;
+
+  /// No description provided for @levelBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner'**
+  String get levelBeginner;
+
+  /// No description provided for @levelIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate'**
+  String get levelIntermediate;
+
+  /// No description provided for @levelExpert.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get levelExpert;
+
+  /// No description provided for @planEquipment.
+  ///
+  /// In en, this message translates to:
+  /// **'Equipment'**
+  String get planEquipment;
+
+  /// No description provided for @planEquipGym.
+  ///
+  /// In en, this message translates to:
+  /// **'Full gym'**
+  String get planEquipGym;
+
+  /// No description provided for @planEquipDumbbells.
+  ///
+  /// In en, this message translates to:
+  /// **'Dumbbells at home'**
+  String get planEquipDumbbells;
+
+  /// No description provided for @planEquipBodyweight.
+  ///
+  /// In en, this message translates to:
+  /// **'No equipment'**
+  String get planEquipBodyweight;
+
+  /// No description provided for @planReplaces.
+  ///
+  /// In en, this message translates to:
+  /// **'This replaces your current plan.'**
+  String get planReplaces;
+
+  /// No description provided for @planCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my plan'**
+  String get planCreate;
+
+  /// No description provided for @planUpNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Up next: {day}'**
+  String planUpNext(String day);
+
+  /// No description provided for @planMake.
+  ///
+  /// In en, this message translates to:
+  /// **'Make a workout plan'**
+  String get planMake;
+
+  /// No description provided for @planYours.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan'**
+  String get planYours;
+
+  /// No description provided for @workoutEmptyStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Empty workout'**
+  String get workoutEmptyStart;
+
   /// No description provided for @libraryTitle.
   ///
   /// In en, this message translates to:

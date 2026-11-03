@@ -33,6 +33,7 @@ import '../domain/hydration.dart';
 import '../domain/kitchen.dart';
 import '../domain/kitchen_review.dart';
 import '../domain/meal_estimate.dart';
+import '../domain/plan.dart';
 import '../domain/recipe.dart';
 import '../domain/settings.dart';
 import '../domain/steps.dart';
@@ -247,6 +248,9 @@ class SessionActions {
     _ref.invalidate(daySummariesProvider);
     _ref.invalidate(dayStatsProvider);
     _ref.invalidate(watchStatusProvider);
+    _ref.invalidate(workoutProvider);
+    _ref.invalidate(planProvider);
+    _ref.invalidate(restSecondsProvider);
   }
 }
 
@@ -434,11 +438,20 @@ final exerciseLibraryProvider = FutureProvider<List<LibraryExercise>>((ref) asyn
     ..sort((a, b) => a.name.compareTo(b.name));
 });
 
+/// Every strength session you've logged, newest first.
+final strengthSessionsProvider = FutureProvider<List<ActivityEntry>>((ref) async {
+  ref.watch(recentActivitiesProvider); // recompute when activities change
+  final all = await ref.watch(activityRepositoryProvider).all();
+  return [
+    for (final a in all.reversed)
+      if (a.exercises.isNotEmpty) a,
+  ];
+});
+
 /// Every exercise you've logged, by [exerciseKey], newest session first.
 final exerciseHistoryProvider = FutureProvider<Map<String, List<(DateTime, Exercise)>>>((ref) async {
-  ref.watch(recentActivitiesProvider); // recompute when activities change
   final history = <String, List<(DateTime, Exercise)>>{};
-  for (final a in (await ref.watch(activityRepositoryProvider).all()).reversed) {
+  for (final a in await ref.watch(strengthSessionsProvider.future)) {
     for (final x in a.exercises) {
       (history[exerciseKey(x)] ??= []).add((a.startedAt, x));
     }
@@ -482,6 +495,30 @@ class WorkoutNotifier extends AsyncNotifier<Workout?> {
     if (await future != null) return;
     await _set(Workout(startedAt: _now()));
     unawaited(ref.read(notificationServiceProvider).requestPermission()); // for the rest timer
+  }
+
+  /// Starts day [day] of your plan: its exercises and sets, at last time's weights.
+  Future<void> startPlanned(int day) async {
+    if (await future != null) return;
+    final plan = await ref.read(planProvider.future);
+    if (plan == null) return;
+    final history = await ref.read(exerciseHistoryProvider.future);
+    await ref.read(settingsRepositoryProvider).setValue('workout.rest', '${plan.rest}');
+    ref.invalidate(restSecondsProvider);
+    await _set(
+      Workout(
+        startedAt: _now(),
+        planDay: day,
+        exercises: [
+          for (final x in plan.days[day].exercises)
+            x.withLog([
+              for (final s in x.log)
+                s.copyWith(kg: () => history[exerciseKey(x)]?.first.$2.log.lastOrNull?.kg, done: false),
+            ]),
+        ],
+      ),
+    );
+    unawaited(ref.read(notificationServiceProvider).requestPermission());
   }
 
   /// Adds an exercise, starting from what you did last time (or 3 × 10).
@@ -552,6 +589,7 @@ class WorkoutNotifier extends AsyncNotifier<Workout?> {
       updatedAt: now,
     );
     if (!await ref.read(activityActionsProvider).save(entry)) return null;
+    if (w.planDay case final day?) await ref.read(planProvider.notifier).done(day);
     await discard();
     return entry;
   }
@@ -563,6 +601,59 @@ class WorkoutNotifier extends AsyncNotifier<Workout?> {
 }
 
 final workoutProvider = AsyncNotifierProvider<WorkoutNotifier, Workout?>(WorkoutNotifier.new);
+
+/// Your weekly workout plan (null = none yet).
+class PlanNotifier extends AsyncNotifier<WorkoutPlan?> {
+  static const _key = 'workout.plan';
+
+  @override
+  Future<WorkoutPlan?> build() async {
+    final json = await ref.watch(settingsRepositoryProvider).value(_key);
+    return json == null ? null : WorkoutPlan.fromJson(jsonDecode(json) as Map<String, dynamic>);
+  }
+
+  Future<void> _set(WorkoutPlan? p) async {
+    state = AsyncData(p);
+    await ref.read(settingsRepositoryProvider).setValue(_key, p == null ? null : jsonEncode(p.toJson()));
+  }
+
+  Future<void> create({
+    required PlanGoal goal,
+    required int daysPerWeek,
+    required PlanLevel level,
+    required PlanEquipment equipment,
+  }) async {
+    // Usually loaded already (the setup screen shows it); waiting on it costs a frame.
+    final List<LibraryExercise> library =
+        ref.read(exerciseLibraryProvider).value ?? await ref.read(exerciseLibraryProvider.future);
+    await _set(buildPlan(library, goal: goal, daysPerWeek: daysPerWeek, level: level, equipment: equipment));
+  }
+
+  Future<void> _editDay(int day, List<Exercise> Function(List<Exercise>) change) async {
+    final p = await future;
+    if (p == null) return;
+    await _set(p.copyWith(days: [...p.days]..[day] = PlanDay(p.days[day].focus, change([...p.days[day].exercises]))));
+  }
+
+  /// Swaps exercise [i] of [day] for [x], keeping its sets and reps.
+  Future<void> swap(int day, int i, LibraryExercise x) =>
+      _editDay(day, (list) => list..[i] = Exercise.logged(x.name, list[i].log, libraryId: x.id));
+
+  Future<void> setSetsReps(int day, int i, int sets, int reps) =>
+      _editDay(day, (list) => list..[i] = Exercise(list[i].name, sets: sets, reps: reps, libraryId: list[i].libraryId));
+
+  Future<void> remove(int day, int i) => _editDay(day, (list) => list..removeAt(i));
+
+  /// You finished [day]: the next one is up.
+  Future<void> done(int day) async {
+    final p = await future;
+    if (p != null) await _set(p.copyWith(next: (day + 1) % p.days.length));
+  }
+
+  Future<void> delete() => _set(null);
+}
+
+final planProvider = AsyncNotifierProvider<PlanNotifier, WorkoutPlan?>(PlanNotifier.new);
 
 // --- History (PRD v1.2 §10) -------------------------------------------------
 

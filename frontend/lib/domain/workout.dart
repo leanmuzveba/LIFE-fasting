@@ -57,11 +57,12 @@ EquipmentGroup groupOf(String? equipment) => switch (equipment) {
 /// A strength session in progress: kept in the database as you go, so
 /// closing the app never loses it.
 class Workout {
-  const Workout({required this.startedAt, this.exercises = const [], this.restUntil});
+  const Workout({required this.startedAt, this.exercises = const [], this.restUntil, this.planDay});
 
   final DateTime startedAt; // UTC
   final List<Exercise> exercises; // planned and ticked-off sets
   final DateTime? restUntil; // UTC; the rest timer's end
+  final int? planDay; // the plan day this came from; finishing it moves the plan on
 
   int get doneSets => exercises.fold(0, (n, x) => n + x.log.where((s) => s.done).length);
 
@@ -79,18 +80,21 @@ class Workout {
     startedAt: startedAt,
     exercises: exercises ?? this.exercises,
     restUntil: restUntil != null ? restUntil() : this.restUntil,
+    planDay: planDay,
   );
 
   Map<String, Object?> toJson() => {
     'startedAt': startedAt.toIso8601String(),
     'exercises': [for (final x in exercises) x.toJson()],
     'restUntil': restUntil?.toIso8601String(),
+    'planDay': ?planDay,
   };
 
   factory Workout.fromJson(Map<String, dynamic> j) => Workout(
     startedAt: DateTime.parse(j['startedAt'] as String).toUtc(),
     exercises: [for (final x in j['exercises'] as List) Exercise.fromJson(x as Map<String, dynamic>)],
     restUntil: j['restUntil'] == null ? null : DateTime.parse(j['restUntil'] as String).toUtc(),
+    planDay: j['planDay'] as int?,
   );
 }
 

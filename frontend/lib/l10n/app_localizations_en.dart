@@ -2718,6 +2718,152 @@ class AppLocalizationsEn extends AppLocalizations {
   String get equipOther => 'Other';
 
   @override
+  String get goalStrength => 'Get stronger';
+
+  @override
+  String get goalMuscle => 'Build muscle';
+
+  @override
+  String get goalEndurance => 'Tone and endurance';
+
+  @override
+  String get goalFatLoss => 'Lose fat';
+
+  @override
+  String get focusPush => 'Push: chest, shoulders, triceps';
+
+  @override
+  String get focusPull => 'Pull: back, biceps';
+
+  @override
+  String get focusLegs => 'Legs';
+
+  @override
+  String get focusChestTriceps => 'Chest & triceps';
+
+  @override
+  String get focusBackBiceps => 'Back & biceps';
+
+  @override
+  String get focusShouldersCore => 'Shoulders & core';
+
+  @override
+  String get focusChest => 'Chest';
+
+  @override
+  String get focusBack => 'Back';
+
+  @override
+  String get focusShoulders => 'Shoulders';
+
+  @override
+  String get focusArmsCore => 'Arms & core';
+
+  @override
+  String planDay(int n, String focus) {
+    return 'Day $n · $focus';
+  }
+
+  @override
+  String get planTitle => 'Your plan';
+
+  @override
+  String planSummary(String goal, int days, int rest) {
+    return '$goal · $days days a week · $rest s rest between sets';
+  }
+
+  @override
+  String get planEditHint => 'Tap an exercise to change its sets and reps or swap it.';
+
+  @override
+  String get planChange => 'Change my plan';
+
+  @override
+  String get planNext => 'Next';
+
+  @override
+  String planStartDay(int n) {
+    return 'Start day $n';
+  }
+
+  @override
+  String planSets(int n) {
+    return '$n sets';
+  }
+
+  @override
+  String planReps(int n) {
+    return '$n reps';
+  }
+
+  @override
+  String get planSwapFor => 'Swap for';
+
+  @override
+  String get planRemove => 'Remove from the plan';
+
+  @override
+  String get planSetupTitle => 'Make a workout plan';
+
+  @override
+  String get planSetupSub => 'Each day works different muscles';
+
+  @override
+  String get planGoal => 'Your goal';
+
+  @override
+  String get planDaysPerWeek => 'Days a week';
+
+  @override
+  String planDaysChip(int n) {
+    return '$n days';
+  }
+
+  @override
+  String get planLevel => 'Experience';
+
+  @override
+  String get levelBeginner => 'Beginner';
+
+  @override
+  String get levelIntermediate => 'Intermediate';
+
+  @override
+  String get levelExpert => 'Advanced';
+
+  @override
+  String get planEquipment => 'Equipment';
+
+  @override
+  String get planEquipGym => 'Full gym';
+
+  @override
+  String get planEquipDumbbells => 'Dumbbells at home';
+
+  @override
+  String get planEquipBodyweight => 'No equipment';
+
+  @override
+  String get planReplaces => 'This replaces your current plan.';
+
+  @override
+  String get planCreate => 'Create my plan';
+
+  @override
+  String planUpNext(String day) {
+    return 'Up next: $day';
+  }
+
+  @override
+  String get planMake => 'Make a workout plan';
+
+  @override
+  String get planYours => 'Your plan';
+
+  @override
+  String get workoutEmptyStart => 'Empty workout';
+
+  @override
   String get libraryTitle => 'Exercise library';
 
   @override
