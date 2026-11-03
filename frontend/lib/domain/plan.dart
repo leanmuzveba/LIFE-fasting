@@ -139,6 +139,8 @@ class WorkoutPlan {
     required this.equipment,
     required this.days,
     this.next = 0,
+    this.weekdays = const [1, 3, 5],
+    this.remindAt,
   });
 
   final PlanGoal goal;
@@ -146,11 +148,30 @@ class WorkoutPlan {
   final PlanEquipment equipment;
   final List<PlanDay> days;
   final int next; // the day to do next
+  final List<int> weekdays; // when you train: 1 = Monday … 7 = Sunday, sorted
+  final int? remindAt; // minutes after midnight to remind you on those days; null = off
 
   int get rest => restFor(goal);
 
-  WorkoutPlan copyWith({List<PlanDay>? days, int? next}) =>
-      WorkoutPlan(goal: goal, level: level, equipment: equipment, days: days ?? this.days, next: next ?? this.next);
+  WorkoutPlan copyWith({List<PlanDay>? days, int? next, List<int>? weekdays, int? Function()? remindAt}) => WorkoutPlan(
+    goal: goal,
+    level: level,
+    equipment: equipment,
+    days: days ?? this.days,
+    next: next ?? this.next,
+    weekdays: weekdays ?? this.weekdays,
+    remindAt: remindAt != null ? remindAt() : this.remindAt,
+  );
+
+  /// The next day you train, from [now]'s date on (today counts); null with no days set.
+  DateTime? nextSession(DateTime now) {
+    final d = now.toLocal();
+    for (var i = 0; i < 7; i++) {
+      final day = DateTime(d.year, d.month, d.day + i);
+      if (weekdays.contains(day.weekday)) return day;
+    }
+    return null;
+  }
 
   Map<String, Object?> toJson() => {
     'goal': goal.name,
@@ -158,6 +179,8 @@ class WorkoutPlan {
     'equipment': equipment.name,
     'days': [for (final d in days) d.toJson()],
     'next': next,
+    'weekdays': weekdays,
+    'remindAt': ?remindAt,
   };
 
   factory WorkoutPlan.fromJson(Map<String, dynamic> j) => WorkoutPlan(
@@ -166,8 +189,17 @@ class WorkoutPlan {
     equipment: PlanEquipment.values.byName(j['equipment'] as String),
     days: [for (final d in j['days'] as List) PlanDay.fromJson(d as Map<String, dynamic>)],
     next: j['next'] as int? ?? 0,
+    weekdays: [for (final w in (j['weekdays'] as List?) ?? defaultWeekdays((j['days'] as List).length)) w as int],
+    remindAt: j['remindAt'] as int?,
   );
 }
+
+/// Training days spread over the week, with rest days between where they fit.
+List<int> defaultWeekdays(int days) => switch (days) {
+  <= 3 => const [1, 3, 5], // Mon, Wed, Fri
+  4 => const [1, 2, 4, 5],
+  _ => const [1, 2, 3, 4, 5],
+};
 
 /// A plan of [daysPerWeek] (3–5) sessions, each on different muscles.
 WorkoutPlan buildPlan(
@@ -180,6 +212,7 @@ WorkoutPlan buildPlan(
   goal: goal,
   level: level,
   equipment: equipment,
+  weekdays: defaultWeekdays(daysPerWeek),
   days: [
     for (final focus in splits[daysPerWeek.clamp(3, 5)]!)
       () {

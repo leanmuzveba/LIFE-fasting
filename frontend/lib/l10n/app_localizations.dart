@@ -4969,6 +4969,72 @@ abstract class AppLocalizations {
   /// **'Up next: {day}'**
   String planUpNext(String day);
 
+  /// No description provided for @planToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today: {day}'**
+  String planToday(String day);
+
+  /// No description provided for @planUpNextOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Up next {weekday}: {day}'**
+  String planUpNextOn(String weekday, String day);
+
+  /// No description provided for @planWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Your week'**
+  String get planWeek;
+
+  /// No description provided for @planWeekHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the days you train. Miss one and your next workout waits for you.'**
+  String get planWeekHint;
+
+  /// No description provided for @planWeekdayTrained.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday}: trained'**
+  String planWeekdayTrained(String weekday);
+
+  /// No description provided for @planWeekdayTraining.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday}: training day'**
+  String planWeekdayTraining(String weekday);
+
+  /// No description provided for @planWeekdayRest.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday}: rest day'**
+  String planWeekdayRest(String weekday);
+
+  /// No description provided for @planRemind.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me on training days'**
+  String get planRemind;
+
+  /// No description provided for @planRemindAt.
+  ///
+  /// In en, this message translates to:
+  /// **'At {time}'**
+  String planRemindAt(String time);
+
+  /// No description provided for @notifWorkoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Training day'**
+  String get notifWorkoutTitle;
+
+  /// No description provided for @notifWorkoutBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your plan has a workout today, whenever suits you.'**
+  String get notifWorkoutBody;
+
   /// No description provided for @planMake.
   ///
   /// In en, this message translates to:

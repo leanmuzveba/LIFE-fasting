@@ -181,19 +181,19 @@ class SessionActions {
     );
     if (error != null) return error;
     await _ref.read(sessionRepositoryProvider).update(edited.copyWith(updatedAt: now));
-    _refresh();
+    await _refresh();
     return null;
   }
 
   Future<void> delete(FastingSession s) async {
     await _ref.read(sessionRepositoryProvider).delete(s.id!);
-    _refresh();
+    await _refresh();
   }
 
-  void _refresh() {
+  Future<void> _refresh() async {
     _ref.invalidate(historyProvider);
     _ref.invalidate(activeSessionProvider);
-    syncNotifications(_ref);
+    await syncNotifications(_ref);
   }
 
   /// "Delete all data": sessions, settings, preferences and scheduled reminders.
@@ -290,10 +290,13 @@ final notificationPrefsProvider = AsyncNotifierProvider<NotificationPrefsNotifie
 /// Idempotently (re)schedules exactly the notifications the user has enabled.
 /// Called after every session change and on app launch.
 Future<void> syncNotifications(Ref ref) async {
+  // Everything read before the first await: callers don't wait, so the ref may be gone by then.
   final svc = ref.read(notificationServiceProvider);
+  final repo = ref.read(settingsRepositoryProvider);
+  final sessions = ref.read(sessionRepositoryProvider);
   final settings = await ref.read(settingsProvider.future);
-  final prefs = {for (final p in await ref.read(settingsRepositoryProvider).notificationPrefs()) p.type: p};
-  final active = await ref.read(sessionRepositoryProvider).active();
+  final prefs = {for (final p in await repo.notificationPrefs()) p.type: p};
+  final active = await sessions.active();
   final allowed = settings.canFast; // Never notify under-18 or unconfirmed users.
 
   final target = prefs[NotificationType.targetReached];
@@ -314,6 +317,15 @@ Future<void> syncNotifications(Ref ref) async {
     await svc.scheduleMonthlyReview();
   } else {
     await svc.cancel(NotificationService.monthlyReviewId);
+  }
+
+  // Training-day reminders, from your workout plan (general fitness, so for everyone).
+  final planJson = await repo.value(PlanNotifier.key);
+  final plan = planJson == null ? null : WorkoutPlan.fromJson(jsonDecode(planJson) as Map<String, dynamic>);
+  if (plan?.remindAt case final at?) {
+    await svc.scheduleWorkoutReminders(plan!.weekdays, at ~/ 60, at % 60);
+  } else {
+    await svc.cancelWorkoutReminders();
   }
 
   final daily = prefs[NotificationType.dailyReminder];
@@ -604,17 +616,38 @@ final workoutProvider = AsyncNotifierProvider<WorkoutNotifier, Workout?>(Workout
 
 /// Your weekly workout plan (null = none yet).
 class PlanNotifier extends AsyncNotifier<WorkoutPlan?> {
-  static const _key = 'workout.plan';
+  static const key = 'workout.plan';
 
   @override
   Future<WorkoutPlan?> build() async {
-    final json = await ref.watch(settingsRepositoryProvider).value(_key);
+    final json = await ref.watch(settingsRepositoryProvider).value(key);
     return json == null ? null : WorkoutPlan.fromJson(jsonDecode(json) as Map<String, dynamic>);
   }
 
   Future<void> _set(WorkoutPlan? p) async {
+    final before = state.value;
     state = AsyncData(p);
-    await ref.read(settingsRepositoryProvider).setValue(_key, p == null ? null : jsonEncode(p.toJson()));
+    await ref.read(settingsRepositoryProvider).setValue(key, p == null ? null : jsonEncode(p.toJson()));
+    if (before?.remindAt != p?.remindAt || before?.weekdays != p?.weekdays) await syncNotifications(ref);
+  }
+
+  /// Trains on [weekday] (1 = Monday) or not; keeps at least one day.
+  Future<void> toggleWeekday(int weekday) async {
+    final p = await future;
+    if (p == null) return;
+    final days = p.weekdays.contains(weekday) ? [...p.weekdays.where((w) => w != weekday)] : [...p.weekdays, weekday]
+      ..sort();
+    if (days.isNotEmpty) await _set(p.copyWith(weekdays: days));
+  }
+
+  /// Reminds you on training days at [minutes] after midnight (null = off);
+  /// false when the phone won't allow notifications.
+  Future<bool> setReminder(int? minutes) async {
+    final p = await future;
+    if (p == null) return false;
+    if (minutes != null && !await ref.read(notificationServiceProvider).requestPermission()) return false;
+    await _set(p.copyWith(remindAt: () => minutes));
+    return true;
   }
 
   Future<void> create({
@@ -626,7 +659,16 @@ class PlanNotifier extends AsyncNotifier<WorkoutPlan?> {
     // Usually loaded already (the setup screen shows it); waiting on it costs a frame.
     final List<LibraryExercise> library =
         ref.read(exerciseLibraryProvider).value ?? await ref.read(exerciseLibraryProvider.future);
-    await _set(buildPlan(library, goal: goal, daysPerWeek: daysPerWeek, level: level, equipment: equipment));
+    final fresh = buildPlan(library, goal: goal, daysPerWeek: daysPerWeek, level: level, equipment: equipment);
+    final old = await future; // a new plan keeps your reminder, and your days when there are as many
+    await _set(
+      old == null
+          ? fresh
+          : fresh.copyWith(
+              weekdays: old.weekdays.length == daysPerWeek ? old.weekdays : null,
+              remindAt: () => old.remindAt,
+            ),
+    );
   }
 
   Future<void> _editDay(int day, List<Exercise> Function(List<Exercise>) change) async {

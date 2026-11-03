@@ -108,6 +108,14 @@ class FakeNotifications extends NotificationService {
   Future<void> scheduleRestOver(DateTime at) async => scheduled[NotificationService.restOverId] = at;
 
   @override
+  Future<void> scheduleWorkoutReminders(List<int> weekdays, int hour, int minute) async {
+    await cancelWorkoutReminders();
+    for (final w in weekdays) {
+      scheduled[NotificationService.workoutReminderBaseId + w] = DateTime(2000, 1, 1, hour, minute);
+    }
+  }
+
+  @override
   Future<void> cancel(int id) async => scheduled.remove(id);
 
   @override

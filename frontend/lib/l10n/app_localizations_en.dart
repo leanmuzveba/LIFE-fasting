@@ -2855,6 +2855,51 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String planToday(String day) {
+    return 'Today: $day';
+  }
+
+  @override
+  String planUpNextOn(String weekday, String day) {
+    return 'Up next $weekday: $day';
+  }
+
+  @override
+  String get planWeek => 'Your week';
+
+  @override
+  String get planWeekHint => 'Tap the days you train. Miss one and your next workout waits for you.';
+
+  @override
+  String planWeekdayTrained(String weekday) {
+    return '$weekday: trained';
+  }
+
+  @override
+  String planWeekdayTraining(String weekday) {
+    return '$weekday: training day';
+  }
+
+  @override
+  String planWeekdayRest(String weekday) {
+    return '$weekday: rest day';
+  }
+
+  @override
+  String get planRemind => 'Remind me on training days';
+
+  @override
+  String planRemindAt(String time) {
+    return 'At $time';
+  }
+
+  @override
+  String get notifWorkoutTitle => 'Training day';
+
+  @override
+  String get notifWorkoutBody => 'Your plan has a workout today, whenever suits you.';
+
+  @override
   String get planMake => 'Make a workout plan';
 
   @override

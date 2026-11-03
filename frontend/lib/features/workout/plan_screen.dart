@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../core/l10n.dart';
 import '../../core/theme/app_theme.dart';
@@ -7,7 +8,9 @@ import '../../core/theme/tokens.dart';
 import '../../core/widgets/pill_button.dart';
 import '../../core/widgets/ruva_kit.dart';
 import '../../core/widgets/sheet.dart';
+import '../../domain/activity.dart';
 import '../../domain/plan.dart';
+import '../../domain/workout.dart';
 import '../../state/providers.dart';
 import 'exercise_detail.dart';
 import 'workout_screen.dart';
@@ -74,11 +77,126 @@ class _PlanScreenState extends ConsumerState<PlanScreen> {
                     title: l.planTitle,
                     subtitle: l.planSummary(goalLabel(l, p.goal), p.days.length, p.rest),
                   ),
+                  _WeekCard(plan: p),
+                  const SizedBox(height: 12),
                   for (var d = 0; d < p.days.length; d++) ...[_DayCard(plan: p, day: d), const SizedBox(height: 12)],
                   Text(l.planEditHint, textAlign: TextAlign.center, style: AppText.small),
                   TextButton(onPressed: () => setState(() => _changing = true), child: Text(l.planChange)),
                 ],
               ),
+      ),
+    );
+  }
+}
+
+/// [weekday]'s name (1 = Monday) in the app's language; [narrow] gives "M".
+String weekdayName(BuildContext context, int weekday, {bool narrow = false}) => DateFormat(
+  narrow ? 'EEEEE' : 'EEEE',
+  Localizations.localeOf(context).toString(),
+).format(DateTime(2024, 1, weekday)); // 1 Jan 2024 was a Monday
+
+/// This week, Monday to Sunday: the days you train (tap to change), what
+/// you've done, and the reminder for training days.
+class _WeekCard extends ConsumerWidget {
+  const _WeekCard({required this.plan});
+  final WorkoutPlan plan;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final now = ref.read(clockProvider)();
+    final monday = weekStart(now);
+    final today = now.toLocal().weekday;
+    final trained = {
+      for (final s in ref.watch(strengthSessionsProvider).value ?? const <ActivityEntry>[])
+        if (weekStart(s.startedAt) == monday) s.startedAt.toLocal().weekday,
+    };
+    final n = ref.read(planProvider.notifier);
+    final remindAt = plan.remindAt;
+    final time = TimeOfDay(hour: (remindAt ?? 18 * 60) ~/ 60, minute: (remindAt ?? 0) % 60);
+
+    Future<void> pickTime() async {
+      final t = await showTimePicker(context: context, initialTime: time);
+      if (t == null) return;
+      if (!await n.setReminder(t.hour * 60 + t.minute) && context.mounted) {
+        showRuvaSnack(context, l.settingsNotificationsBlocked);
+      }
+    }
+
+    return RuvaCard(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MonoLabel(l.planWeek),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              for (var w = 1; w <= 7; w++)
+                () {
+                  final name = weekdayName(context, w);
+                  final done = trained.contains(w), training = plan.weekdays.contains(w);
+                  return Semantics(
+                    button: true,
+                    selected: training,
+                    label: done
+                        ? l.planWeekdayTrained(name)
+                        : training
+                        ? l.planWeekdayTraining(name)
+                        : l.planWeekdayRest(name),
+                    excludeSemantics: true,
+                    child: InkWell(
+                      customBorder: const CircleBorder(),
+                      onTap: () => n.toggleWeekday(w),
+                      child: Column(
+                        children: [
+                          Text(weekdayName(context, w, narrow: true), style: AppText.small.copyWith(fontSize: 11)),
+                          const SizedBox(height: 4),
+                          Container(
+                            width: 40,
+                            height: 40,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: done
+                                  ? AppColors.primary
+                                  : training
+                                  ? AppColors.lime200
+                                  : null,
+                              border: Border.all(
+                                color: w == today ? AppColors.primary : AppColors.muted.withValues(alpha: 0.35),
+                                width: w == today ? 2 : 1,
+                              ),
+                            ),
+                            child: done
+                                ? const Icon(Icons.check, size: 20, color: AppColors.white)
+                                : Text('${DateTime(monday.year, monday.month, monday.day + w - 1).day}'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }(),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(l.planWeekHint, style: AppText.small),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l.planRemind, style: AppText.body.copyWith(fontSize: 15)),
+            subtitle: remindAt == null
+                ? null
+                : Text(l.planRemindAt(MaterialLocalizations.of(context).formatTimeOfDay(time)), style: AppText.small),
+            value: remindAt != null,
+            onChanged: (on) => on ? pickTime() : n.setReminder(null),
+          ),
+          if (remindAt != null)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(onPressed: pickTime, child: Text(l.settingsReminderTime)),
+            ),
+        ],
       ),
     );
   }

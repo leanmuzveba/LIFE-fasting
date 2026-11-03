@@ -18,6 +18,9 @@ class NotificationService {
   static const monthlyReviewId = 200;
   static const restOverId = 300;
 
+  /// Workout reminders use ids 401..407 (one per weekday).
+  static const workoutReminderBaseId = 400;
+
   final _plugin = FlutterLocalNotificationsPlugin();
 
   /// Strings in the device language (falls back to English); no BuildContext here.
@@ -165,6 +168,32 @@ class NotificationService {
       title: _l.notifRestTitle,
       body: _l.notifRestBody,
     );
+  }
+
+  /// Weekly on each of [weekdays] (1 = Monday) at a local time: a training day on your plan.
+  // ponytail: UTC-equivalent time like the daily reminder; drifts an hour across DST until the next launch re-syncs.
+  Future<void> scheduleWorkoutReminders(List<int> weekdays, int hour, int minute) async {
+    await cancelWorkoutReminders();
+    final now = DateTime.now();
+    for (final w in weekdays) {
+      var next = DateTime(now.year, now.month, now.day + (w - now.weekday) % 7, hour, minute);
+      if (!next.isAfter(now)) next = DateTime(next.year, next.month, next.day + 7, hour, minute);
+      await _plugin.zonedSchedule(
+        id: workoutReminderBaseId + w,
+        scheduledDate: tz.TZDateTime.from(next.toUtc(), tz.UTC),
+        notificationDetails: _details,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        title: _l.notifWorkoutTitle,
+        body: _l.notifWorkoutBody,
+      );
+    }
+  }
+
+  Future<void> cancelWorkoutReminders() async {
+    for (var w = 1; w <= 7; w++) {
+      await cancel(workoutReminderBaseId + w);
+    }
   }
 
   Future<void> cancelWaterReminders() async {

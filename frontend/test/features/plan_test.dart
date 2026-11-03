@@ -4,10 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:life_fasting/data/notification_service.dart';
 import 'package:life_fasting/domain/plan.dart';
 import 'package:life_fasting/domain/workout.dart';
 import 'package:life_fasting/state/providers.dart';
 
+import '../helpers.dart' show FakeNotifications;
 import '../widget_test.dart' show pumpApp, tick;
 
 List<LibraryExercise> _library() => [
@@ -50,6 +52,12 @@ void main() {
     // Round trip.
     final back = WorkoutPlan.fromJson(jsonDecode(jsonEncode(push.toJson())) as Map<String, dynamic>);
     expect(back.days[1].exercises.map((x) => '$x'), push.days[1].exercises.map((x) => '$x'));
+    expect(back.weekdays, [1, 3, 5]);
+    final old = push.toJson()..remove('weekdays'); // saved before scheduling
+    expect(WorkoutPlan.fromJson(old).weekdays, [1, 3, 5]);
+    final sunday = DateTime(2026, 10, 4, 7);
+    expect(push.nextSession(sunday), DateTime(2026, 10, 5));
+    expect(push.copyWith(weekdays: [7]).nextSession(sunday), DateTime(2026, 10, 4), reason: 'today counts');
   });
 
   test('home plans only use what you have, at your level', () {
@@ -123,7 +131,31 @@ void main() {
     expect((await c.read(planProvider.future))!.next, 1);
     await tester.pageBack(); // the plan screen
     await tester.pumpAndSettle();
-    expect(find.text('Up next: Day 2 · Back & biceps'), findsOneWidget);
+    expect(find.text('Up next Monday: Day 2 · Back & biceps'), findsOneWidget); // 4 days: Mon, Tue, Thu, Fri
     expect(find.text('Start day 2'), findsOneWidget);
+
+    // Your week: train Wednesdays too, and get reminded.
+    await tester.tap(find.text('Your plan'));
+    await tester.pumpAndSettle();
+    expect(find.bySemanticsLabel(RegExp('Sunday: trained')), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp('Monday: training day')), findsOneWidget);
+    await tester.tap(find.bySemanticsLabel(RegExp('Wednesday: rest day')));
+    await tester.pumpAndSettle();
+    expect((await c.read(planProvider.future))!.weekdays, [1, 2, 3, 4, 5]);
+    await tester.tap(find.text('Remind me on training days'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+    expect(find.text('At 6:00 PM'), findsOneWidget);
+    final fake = c.read(notificationServiceProvider) as FakeNotifications;
+    final ids = fake.scheduled.keys.where((id) => id > NotificationService.workoutReminderBaseId).toList()..sort();
+    expect(ids, [401, 402, 403, 404, 405]);
+    expect(fake.scheduled[401], DateTime(2000, 1, 1, 18));
+    await tester.tap(find.bySemanticsLabel(RegExp('Friday: training day')));
+    await tester.pumpAndSettle();
+    expect(fake.scheduled.containsKey(405), isFalse, reason: 'reminders follow your days');
+    await tester.tap(find.text('Remind me on training days'));
+    await tester.pumpAndSettle();
+    expect(fake.scheduled.keys.where((id) => id > NotificationService.workoutReminderBaseId), isEmpty);
   });
 }

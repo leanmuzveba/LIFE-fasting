@@ -423,7 +423,16 @@ class _WorkoutCard extends ConsumerWidget {
                   w != null && now != null
                       ? l.workoutInProgress(formatClockDuration(now.difference(w.startedAt)))
                       : upNext
-                      ? l.planUpNext(planDayLabel(l, plan, plan.next))
+                      ? switch (plan.nextSession(ref.read(clockProvider)())) {
+                          final on? when on == localDay(ref.read(clockProvider)()) => l.planToday(
+                            planDayLabel(l, plan, plan.next),
+                          ),
+                          final on? => l.planUpNextOn(
+                            weekdayName(context, on.weekday),
+                            planDayLabel(l, plan, plan.next),
+                          ),
+                          null => l.planUpNext(planDayLabel(l, plan, plan.next)),
+                        }
                       : l.workoutCardTitle,
                   style: AppText.title.copyWith(color: AppColors.white, fontSize: 18),
                 ),
